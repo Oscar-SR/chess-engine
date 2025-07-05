@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91677b60bf6d76c4082dff4cb0fddf04, type: 3}
+  m_Name: SetClasicoOutlined
+  m_EditorClassIdentifier: 
+  reyBlanco: {fileID: 1243956544, guid: cc652910bd36b774e887a8686143930c, type: 3}
+  reinaBlanca: {fileID: 263327535, guid: cc652910bd36b774e887a8686143930c, type: 3}
+  torreBlanca: {fileID: 1558327086, guid: cc652910bd36b774e887a8686143930c, type: 3}
+  alfilBlanco: {fileID: 1721516251, guid: cc652910bd36b774e887a8686143930c, type: 3}
+  caballoBlanco: {fileID: -299341620, guid: cc652910bd36b774e887a8686143930c, type: 3}
+  peonBlanco: {fileID: 1028892954, guid: cc652910bd36b774e887a8686143930c, type: 3}
+  reyNegro: {fileID: 566511671, guid: cc652910bd36b774e887a8686143930c, type: 3}
+  reinaNegra: {fileID: -283712609, guid: cc652910bd36b774e887a8686143930c, type: 3}
+  torreNegra: {fileID: -723509750, guid: cc652910bd36b774e887a8686143930c, type: 3}
+  alfilNegro: {fileID: 1517992629, guid: cc652910bd36b774e887a8686143930c, type: 3}
+  caballoNegro: {fileID: -470928630, guid: cc652910bd36b774e887a8686143930c, type: 3}
+  peonNegro: {fileID: 1905519612, guid: cc652910bd36b774e887a8686143930c, type: 3}
