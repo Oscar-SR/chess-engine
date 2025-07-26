@@ -6,18 +6,7 @@ namespace Ajedrez.Core
 {
     public class Tablero
     {
-        public enum TipoSituacionTablero : byte
-        {
-            Normal,
-            Jaque,
-            JaqueMate,
-            ReyAhogado,
-            TriplePosicionRepetida,
-            Regla50Movimientos,
-            MaterialInsuficiente,
-            SinTiempo
-        }
-
+        public const string POSICION_INICIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
         public const int MAX_PLYS_INACTIVO = 50;
 
         private ulong[] bitboards;
@@ -29,7 +18,7 @@ namespace Ajedrez.Core
 
         public Tablero()
         {
-            CargarFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+            CargarFEN(POSICION_INICIAL_FEN);
         }
 
         public Tablero(string fen)
@@ -57,50 +46,13 @@ namespace Ajedrez.Core
                     }
                     else
                     {
-                        char piezaCaracter;
-
-                        switch (pieza.TipoPieza)
-                        {
-                            case Pieza.Tipo.Peon:
-                                piezaCaracter = 'p';
-                                break;
-
-                            case Pieza.Tipo.Caballo:
-                                piezaCaracter = 'n';
-                                break;
-
-                            case Pieza.Tipo.Alfil:
-                                piezaCaracter = 'b';
-                                break;
-
-                            case Pieza.Tipo.Torre:
-                                piezaCaracter = 'r';
-                                break;
-
-                            case Pieza.Tipo.Reina:
-                                piezaCaracter = 'q';
-                                break;
-
-                            case Pieza.Tipo.Rey:
-                                piezaCaracter = 'k';
-                                break;
-
-                            default:
-                                piezaCaracter = 'x';
-                                break;
-                        }
-
-                        if (pieza.ColorPieza == Pieza.Color.Blancas)
-                        {
-                            piezaCaracter = char.ToUpper(piezaCaracter);
-                        }
-
                         if (casillasVacias > 0)
                         {
                             fen += casillasVacias.ToString();
                             casillasVacias = 0;
                         }
-                        fen += piezaCaracter;
+
+                        fen += pieza.ObtenerSimbolo();
                     }
                 }
 
@@ -131,7 +83,7 @@ namespace Ajedrez.Core
             if (incluirPeonAlPaso && estadoActual.HayPeonVulnerable)
             {
                 (int fila, int columna) = AjedrezUtils.IndiceACoordenadas(estadoActual.CasillaPeonVulnerable);
-                char colCaracter = (char)('a' + columna);
+                char colCaracter = AjedrezUtils.ColumnaANombre(columna);
                 if (fila == 3)
                 {
                     fila--;
@@ -140,7 +92,7 @@ namespace Ajedrez.Core
                 {
                     fila++;
                 }
-                char filaCaracter = (char)('1' + fila);
+                char filaCaracter = AjedrezUtils.FilaANombre(fila);
                 fen += $"{colCaracter}{filaCaracter}";
             }
             else
@@ -195,21 +147,10 @@ namespace Ajedrez.Core
                     }
                     else if ("pnbrqkPNBRQK".IndexOf(c) >= 0)
                     {
-                        Pieza.Color color = char.IsUpper(c) ? Pieza.Color.Blancas : Pieza.Color.Negras;
+                        Pieza pieza = new Pieza(c);
                         int indice = (7 - fila) * 8 + columna;
 
-                        Pieza.Tipo tipoPieza = char.ToLower(c) switch
-                        {
-                            'p' => Pieza.Tipo.Peon,
-                            'n' => Pieza.Tipo.Caballo,
-                            'b' => Pieza.Tipo.Alfil,
-                            'r' => Pieza.Tipo.Torre,
-                            'q' => Pieza.Tipo.Reina,
-                            'k' => Pieza.Tipo.Rey,
-                            _ => throw new ArgumentException($"Caracter de pieza desconocido: '{c}' en fila {fila + 1}.", nameof(fen))
-                        };
-
-                        bitboards[AjedrezUtils.ObtenerIndicePieza(tipoPieza, color)] |= BitboardUtils.SetBit(indice);
+                        bitboards[AjedrezUtils.ObtenerIndicePieza(pieza)] |= BitboardUtils.SetBit(indice);
                         columna++;
                     }
                     else
@@ -243,9 +184,9 @@ namespace Ajedrez.Core
                 if (!System.Text.RegularExpressions.Regex.IsMatch(peonAlPasoFEN, "^[a-h][36]$"))
                     throw new ArgumentException($"Valor de peón al paso inválido: '{peonAlPasoFEN}'.", nameof(fen));
 
-                int col = peonAlPasoFEN[0] - 'a';
-                int fila = int.Parse(peonAlPasoFEN[1].ToString()) - 1;
-                //estadoActual.CasillaPeonVulnerable = (fila * 8) + col;
+                int col = AjedrezUtils.NombreAColumna(peonAlPasoFEN[0]);
+                int fila = AjedrezUtils.NombreAFila(peonAlPasoFEN[1]);
+                //estadoActual.CasillaPeonVulnerable = AjedrezUtils.CoordenadasAIndice(fila, col);
                 if (fila == 2)
                     estadoActual.CasillaPeonVulnerable = (24 + col);
                 else
@@ -278,6 +219,14 @@ namespace Ajedrez.Core
             get
             {
                 return estadoActual;
+            }
+        }
+
+        public PilaRepeticiones HistorialPosicionesRepetidas
+        {
+            get
+            {
+                return historialPosicionesRepetidas;
             }
         }
 
@@ -408,150 +357,6 @@ namespace Ajedrez.Core
                 return numMovimientosTotales;
             }
         }
-
-        /*
-        public void CargarFEN(string fen)
-        {
-            if (!EsFENValido(fen))
-                throw new ArgumentException("La cadena FEN es inválida: " + fen);
-
-            bitboards = new ulong[12];
-            piezasMuertas = new Stack<(Pieza, int)>();
-            historialEstados = new Stack<EstadoTablero>(capacity: 64);
-            historialPosicionesRepetidas = new PilaRepeticiones();
-
-            string[] partes = fen.Split(' ');
-
-            // 1. Piezas en el tablero
-            string[] filas = partes[0].Split('/');
-            for (int fila = 0; fila < 8; fila++)
-            {
-                int columna = 0;
-                foreach (char c in filas[fila])
-                {
-                    if (char.IsDigit(c))
-                    {
-                        columna += c - '0';
-                    }
-                    else
-                    {
-                        Pieza.Color color = char.IsUpper(c) ? Pieza.Color.Blancas : Pieza.Color.Negras;
-                        int indice = (7 - fila) * 8 + columna;
-
-                        Pieza.Tipo tipoPieza = char.ToLower(c) switch
-                        {
-                            'p' => Pieza.Tipo.Peon,
-                            'n' => Pieza.Tipo.Caballo,
-                            'b' => Pieza.Tipo.Alfil,
-                            'r' => Pieza.Tipo.Torre,
-                            'q' => Pieza.Tipo.Reina,
-                            'k' => Pieza.Tipo.Rey,
-                            _ => throw new Exception($"Tipo de pieza desconocido: {c}")
-                        };
-
-                        bitboards[AjedrezUtils.ObtenerIndicePieza(tipoPieza, color)] |= BitboardUtils.SetBit(indice);
-
-                        columna++;
-                    }
-                }
-            }
-
-            // 2. Color del turno
-            estadoActual.Turno = partes[1] == "w" ? Pieza.Color.Blancas : Pieza.Color.Negras;
-
-            // 3. Enroques disponibles
-            if (partes[2].Contains("K")) estadoActual.InicializarEnroquesDisponibles(EstadoTablero.ENROQUE_CORTO_BLANCAS);
-            if (partes[2].Contains("Q")) estadoActual.InicializarEnroquesDisponibles(EstadoTablero.ENROQUE_LARGO_BLANCAS);
-            if (partes[2].Contains("k")) estadoActual.InicializarEnroquesDisponibles(EstadoTablero.ENROQUE_CORTO_NEGRAS);
-            if (partes[2].Contains("q")) estadoActual.InicializarEnroquesDisponibles(EstadoTablero.ENROQUE_LARGO_NEGRAS);
-
-            // 4. Peón al paso
-            if (partes[3] != "-")
-            {
-                int col = partes[3][0] - 'a';
-                int fila = int.Parse(partes[3][1].ToString()) - 1;
-                if (fila == 2)
-                    estadoActual.CasillaPeonVulnerable = (24 + col);
-                else
-                    estadoActual.CasillaPeonVulnerable = (32 + col);
-            }
-            else
-            {
-                estadoActual.HayPeonVulnerable = false;
-            }
-
-            // 5. Número de plys inactivo
-            estadoActual.NumPlysInactivo = partes.Length > 4
-                ? (byte)byte.Parse(partes[4])
-                : (byte)0;
-
-            // 6. Número de movimientos totales
-            numMovimientosTotales = partes.Length > 5 ? uint.Parse(partes[5]) : 1;
-
-            // 7. Generar el Zobrist hash
-            estadoActual.ZobristHash = ZobristHashing.CrearZobristHash(this);
-
-            // 8. Añadir el Zobrist hash al historial de posiciones (como movimiento irreversible, puesto que es la primera posición)
-            historialPosicionesRepetidas.Push(estadoActual.ZobristHash, true);
-        }
-
-        private bool EsFENValido(string fen)
-        {
-            if (string.IsNullOrWhiteSpace(fen)) return false;
-
-            string[] partes = fen.Trim().Split(' ');
-            if (partes.Length != 6) return false;
-
-            string piezas = partes[0];
-            string turno = partes[1];
-            string enroques = partes[2];
-            string peonAlPaso = partes[3];
-            string plys = partes[4];
-            string movimientos = partes[5];
-
-            // Validar layout de piezas
-            string[] filas = piezas.Split('/');
-            if (filas.Length != 8) return false;
-            foreach (var fila in filas)
-            {
-                int columnas = 0;
-                foreach (char c in fila)
-                {
-                    if (char.IsDigit(c))
-                    {
-                        columnas += c - '0';
-                    }
-                    else if ("pnbrqkPNBRQK".IndexOf(c) >= 0)
-                    {
-                        columnas += 1;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-
-                if (columnas != 8) return false;
-            }
-
-            // Validar turno
-            if (turno != "w" && turno != "b") return false;
-
-            // Validar enroques
-            if (!System.Text.RegularExpressions.Regex.IsMatch(enroques, "^(K?Q?k?q?|\\-)$"))
-                return false;
-
-            // Validar peón al paso
-            if (peonAlPaso != "-" && !System.Text.RegularExpressions.Regex.IsMatch(peonAlPaso, "^[a-h][36]$"))
-                return false;
-
-            // Validar plys y movimientos
-            if (!int.TryParse(plys, out int n1) || n1 < 0) return false;
-            if (!int.TryParse(movimientos, out int n2) || n2 < 1) return false;
-
-            return true;
-        }
-        */
 
         private void CambiarTurno()
         {
@@ -794,15 +599,19 @@ namespace Ajedrez.Core
             // Cambiamos el turno
             CambiarTurno(); // Cuidado con mover esto más abajo, afectará al Zobrist hash
 
-            // Aplicar la regla de los 50 movimientos
             if (!estadoActual.HayCaptura && piezaEnOrigen.TipoPieza != Pieza.Tipo.Peon)
             {
+                // Movimiento no irreversible
+                // Incrementar el contador de la regla de los 50 movimientos
                 estadoActual.NumPlysInactivo++;
+                // Añadir posición a la pila de repeticiones
                 historialPosicionesRepetidas.Push(estadoActual.ZobristHash, false);
             }
             else
             {
+                // Movimiento irreversible
                 estadoActual.NumPlysInactivo = 0;
+
                 if (enBusqueda)
                 {
                     // Si estamos en búsqueda, no borramos el contenido de la pila, sino que marcamos el último segmento válido
@@ -930,7 +739,7 @@ namespace Ajedrez.Core
                     return (movimientosLegales, false);
                 }
 
-                if (MaterialInsuficiente())
+                if (SituacionPartida.MaterialInsuficiente(this))
                 {
                     // El material es insuficiente
                     return (movimientosLegales, false);
@@ -1547,103 +1356,6 @@ namespace Ajedrez.Core
 
             return (pinned, pinnersRetorno);
         }
-
-        public TipoSituacionTablero ObtenerSituacionTablero(int numMovimientosLegales, bool jaque)
-        {
-            TipoSituacionTablero situacionTablero = TipoSituacionTablero.Normal;
-
-            if (estadoActual.NumPlysInactivo >= MAX_PLYS_INACTIVO)
-            {
-                // Regla de los 50 movimientos
-                situacionTablero = TipoSituacionTablero.Regla50Movimientos;
-            }
-            else if (MaterialInsuficiente())
-            {
-                // Material insuficiente
-                situacionTablero = TipoSituacionTablero.MaterialInsuficiente;
-            }
-            else if (historialPosicionesRepetidas.TripleRepeticion(estadoActual.ZobristHash))
-            {
-                // El último movimiento realizado supuso una triple repetición
-                situacionTablero = TipoSituacionTablero.TriplePosicionRepetida;
-            }
-            else if (numMovimientosLegales == 0)
-            {
-                if (jaque)
-                {
-                    // Hay jaque mate
-                    situacionTablero = TipoSituacionTablero.JaqueMate;
-
-                }
-                else
-                {
-                    // Hay rey ahogado
-                    situacionTablero = TipoSituacionTablero.ReyAhogado;
-                }
-            }
-            else if (jaque)
-            {
-                // Hay jaque
-                situacionTablero = TipoSituacionTablero.Jaque;
-            }
-
-            return situacionTablero;
-        }
-
-        private bool MaterialInsuficiente()
-        {
-            ulong piezasSinReyes = bitboards[1] | bitboards[2] | bitboards[3] | bitboards[4] | bitboards[5] | bitboards[7] | bitboards[8] | bitboards[9] | bitboards[10] | bitboards[11];
-
-            // Solo hay reyes
-            if (piezasSinReyes == 0)
-                return true;
-            else if (BitboardUtils.EsPotenciaDe2(piezasSinReyes))
-            {
-                // Solo hay rey y caballo contra rey
-                if (BitboardUtils.EsPotenciaDe2(bitboards[4] | bitboards[10]))
-                    return true;
-
-                // Solo hay rey y alfil contra rey
-                if (BitboardUtils.EsPotenciaDe2(bitboards[3] | bitboards[9]))
-                    return true;
-            }
-            else if ((bitboards[1] | bitboards[2] | bitboards[4] | bitboards[5] | bitboards[7] | bitboards[8] | bitboards[10] | bitboards[11]) == 0)
-            {
-                // Solo hay reyes y alfiles (si los alfiles controlan casillas del mismo color)
-                if ((bitboards[3] | bitboards[9]) != 0 && BitboardUtils.AlfilesEnCasillasMismoColor(bitboards[3] | bitboards[9]))
-                    return true;
-            }
-
-            return false;
-        }
-
-        /*
-        private bool MaterialInsuficiente()
-        {
-            int numPiezasSinReyes = BitboardUtils.ContarBitsActivos(bitboards[1] | bitboards[2] | bitboards[3] | bitboards[4] | bitboards[5] | bitboards[7] | bitboards[8] | bitboards[9] | bitboards[10] | bitboards[11]);
-
-            // Solo hay reyes
-            if (numPiezasSinReyes == 0)
-                return true;
-
-            // Solo hay rey y caballo contra rey
-            if (numPiezasSinReyes == 1 && (BitboardUtils.ContarBitsActivos(bitboards[4] | bitboards[10]) == 1))
-                return true;
-
-            // Solo hay rey y alfil contra rey
-            if (numPiezasSinReyes == 1 && (BitboardUtils.ContarBitsActivos(bitboards[3] | bitboards[9]) == 1))
-                return true;
-
-            // Solo hay reyes y alfiles (si los alfiles controlan casillas del mismo color)
-            if ((bitboards[1] | bitboards[2] | bitboards[4] | bitboards[5] | bitboards[7] | bitboards[8] | bitboards[10] | bitboards[11]) == 0)
-            {
-                if ((bitboards[3] | bitboards[9]) != 0 && BitboardUtils.AlfilesEnCasillasMismoColor(bitboards[3] | bitboards[9]))
-                    return true;
-            }
-
-            return false;
-        }
-        */
 
         public Pieza ObtenerPieza(int casilla)
         {

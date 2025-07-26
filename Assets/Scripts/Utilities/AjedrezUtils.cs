@@ -82,6 +82,26 @@ namespace Ajedrez.Utilities
             return fila * TAM_TABLERO + columna;
         }
 
+        public static char FilaANombre(int fila)
+        {
+            return (char)('1' + fila);
+        }
+
+        public static char ColumnaANombre(int columna)
+        {
+            return (char)('a' + columna);
+        }
+
+        public static int NombreAFila(char fila)
+        {
+            return fila - '1';
+        }
+
+        public static int NombreAColumna(char columna)
+        {
+            return char.ToLower(columna) - 'a';
+        }
+
         /// <summary>
         /// Devuelve verdadero si las coordenadas están dentro del tablero
         /// </summary>

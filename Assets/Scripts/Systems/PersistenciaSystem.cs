@@ -10,6 +10,7 @@ namespace Ajedrez.Systems
         public static PersistenciaSystem Instancia { get; private set; }
 
         public Partida partida;
+        public bool blancasAbajo;
 
         private void Awake()
         {

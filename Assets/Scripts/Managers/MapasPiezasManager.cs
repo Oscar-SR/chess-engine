@@ -135,7 +135,7 @@ namespace Ajedrez.Managers
             {
                 for (int j = 0; j < AjedrezUtils.TAM_TABLERO; j++)
                 {
-                    Vector2 posicion = new Vector2(3.5f - j, 3.5f - i);
+                    Vector2 posicion = new Vector2(j - 3.5f, 3.5f - i);
                     int valor = mapa[AjedrezUtils.CoordenadasAIndice(i, j)];
 
                     // Normalizar el valor a [0, 1]

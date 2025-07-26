@@ -27,7 +27,7 @@ namespace Ajedrez.UI
         private int ultimaCasillaReyJaque = SIN_CASILLA;
         private bool blancasAbajo = true;
 
-        public void Init(Tablero tablero, bool blancasAbajo = true, bool interactuable = true)
+        public void Init(Tablero tablero, bool blancasAbajo = true)
         {
             // Establecer la orientación
             this.blancasAbajo = blancasAbajo;
@@ -36,18 +36,21 @@ namespace Ajedrez.UI
             GenerarTablero();
 
             // Se generan las piezas
-            GenerarPiezas(tablero);
+            if(tablero != null)
+                GenerarPiezas(tablero);
 
             // Inicializar el diccionario de piezas para poder moverlas
-            if (interactuable)
-                InicializarDiccionario();
+            InicializarDiccionario();
         }
 
-        public void RegenerarPiezas(Tablero tablero)
+        public void CambiarPosicion(Tablero tablero)
         {
             LimpiarPiezas();
+
             if (tablero != null)
                 GenerarPiezas(tablero);
+
+            InicializarDiccionario();
         }
 
         private void InicializarDiccionario()
@@ -395,8 +398,12 @@ namespace Ajedrez.UI
 
         public bool ObtenerCasillaDeCoordenada(Vector2 worldPos, out int casilla)
         {
-            int file = (int)(worldPos.x + 4);
-            int rank = (int)(worldPos.y + 4);
+            // Convertir worldPos a posición local respecto al tablero
+            Vector2 localPos = worldPos - (Vector2)tableroTransform.position;
+
+            // Asumimos casillas de 1x1 unidades, tablero de 8x8 con el centro en (0,0) // CUIDADO SI LA ESCALA DEL TABLERO ES MENOR
+            int file = (int)(localPos.x + 4);
+            int rank = (int)(localPos.y + 4);
 
             if (!blancasAbajo)
             {
@@ -446,7 +453,7 @@ namespace Ajedrez.UI
                         }
 
                         // Se reproduce el sonido de enroque
-                        AudioSystem.Instancia.ReproducirSonido(AudioSystem.TipoSonido.Enroque);
+                        AudioSystem.Instancia?.ReproducirSonido(AudioSystem.TipoSonido.Enroque);
 
                         break;
                     }
@@ -455,7 +462,7 @@ namespace Ajedrez.UI
                     {
                         // Destruir el peón al paso
                         EliminarPieza(movimiento.Destino + (AjedrezUtils.ObtenerFila(movimiento.Destino) == 5 ? -8 : 8));
-                        AudioSystem.Instancia.ReproducirSonido(AudioSystem.TipoSonido.Captura);
+                        AudioSystem.Instancia?.ReproducirSonido(AudioSystem.TipoSonido.Captura);
                         break;
                     }
 
@@ -519,10 +526,10 @@ namespace Ajedrez.UI
                     break;
             }
 
-            AudioSystem.Instancia.ReproducirSonido(AudioSystem.TipoSonido.Promocion);
+            AudioSystem.Instancia?.ReproducirSonido(AudioSystem.TipoSonido.Promocion);
         }
 
-        public IEnumerator HacerMovimientoConAnimacion(Movimiento movimiento)
+        public IEnumerator HacerMovimiento(Movimiento movimiento, bool animar = true)
         {
             Vector3 origenPos = casillas[movimiento.Origen].transform.position;
             Vector3 destinoPos = casillas[movimiento.Destino].transform.position;
@@ -533,7 +540,7 @@ namespace Ajedrez.UI
             sr.sortingOrder = 1;
             ColorearCasillaUltimoMovimiento(movimiento.Origen);
 
-            while (tiempo < DURACION_ANIMACION_MOVIMIENTO)
+            while (animar && (tiempo < DURACION_ANIMACION_MOVIMIENTO))
             {
                 piezaTransform.position = Vector3.Lerp(origenPos, destinoPos, tiempo / DURACION_ANIMACION_MOVIMIENTO);
                 tiempo += Time.deltaTime;
@@ -568,12 +575,12 @@ namespace Ajedrez.UI
             {
                 // Si hay una captura
                 EliminarPieza(destino);
-                AudioSystem.Instancia.ReproducirSonido(AudioSystem.TipoSonido.Captura);
+                AudioSystem.Instancia?.ReproducirSonido(AudioSystem.TipoSonido.Captura);
             }
             else if (flagMovimiento != Movimiento.ENROQUE && flagMovimiento != Movimiento.CAPTURA_AL_PASO)
             {
                 // Si es un movimiento normal o promoción
-                AudioSystem.Instancia.ReproducirSonidoConPitchAleatorio(AudioSystem.TipoSonido.Movimiento);
+                AudioSystem.Instancia?.ReproducirSonidoConPitchAleatorio(AudioSystem.TipoSonido.Movimiento);
             }
 
             CambiarCasilla(piezaOrigen, casillaDestino, origen, destino);
@@ -629,7 +636,7 @@ namespace Ajedrez.UI
             if (jaque)
             {
                 // Reproducir el sonido de jaque
-                AudioSystem.Instancia.ReproducirSonido(AudioSystem.TipoSonido.Jaque);
+                AudioSystem.Instancia?.ReproducirSonido(AudioSystem.TipoSonido.Jaque);
 
                 // Colorear la casilla del rey
                 ultimaCasillaReyJaque = casillaRey;

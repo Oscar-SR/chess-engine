@@ -14,10 +14,10 @@ namespace Ajedrez.UI
         [SerializeField] private Text textoSituacionTablero;
         [SerializeField] private Text textoTipoResultado;
         [SerializeField] private Image lineaDivisoria;
-        [SerializeField] private TextMeshProUGUI textoTiempoJugador1;
-        [SerializeField] private TextMeshProUGUI textoTiempoJugador2;
-        [SerializeField] private TextMeshProUGUI textoNombreJugador1;
-        [SerializeField] private TextMeshProUGUI textoNombreJugador2;
+        [SerializeField] private TextMeshProUGUI textoTiempoJugadorAbajo;
+        [SerializeField] private TextMeshProUGUI textoTiempoJugadorArriba;
+        [SerializeField] private TextMeshProUGUI textoNombreJugadorAbajo;
+        [SerializeField] private TextMeshProUGUI textoNombreJugadorArriba;
         [SerializeField] private GameObject panelResultado;
         [SerializeField] private Color colorTextoTiempo;
         [SerializeField] private Color colorTextoTiempoEscaso;
@@ -27,27 +27,27 @@ namespace Ajedrez.UI
         private TextMeshProUGUI textoNombreJugadorBlancas;
         private TextMeshProUGUI textoNombreJugadorNegras;
 
-        public void Init(string nombreJugador1, string nombreJugador2, float duracion, bool blancasAbajo = true)
+        public void Init(string nombreJugadorBlancas, string nombreJugadorNegras, float duracion, bool blancasAbajo = true)
         {
             if (blancasAbajo)
             {
-                textoNombreJugadorBlancas = textoNombreJugador1;
-                textoNombreJugadorNegras = textoNombreJugador2;
-                textoTiempoJugadorBlancas = textoTiempoJugador1;
-                textoTiempoJugadorNegras = textoTiempoJugador2;
+                textoNombreJugadorBlancas = textoNombreJugadorAbajo;
+                textoNombreJugadorNegras = textoNombreJugadorArriba;
+                textoTiempoJugadorBlancas = textoTiempoJugadorAbajo;
+                textoTiempoJugadorNegras = textoTiempoJugadorArriba;
             }
             else
             {
-                textoNombreJugadorBlancas = textoNombreJugador2;
-                textoNombreJugadorNegras = textoNombreJugador1;
-                textoTiempoJugadorBlancas = textoTiempoJugador2;
-                textoTiempoJugadorNegras = textoTiempoJugador1;
+                textoNombreJugadorBlancas = textoNombreJugadorArriba;
+                textoNombreJugadorNegras = textoNombreJugadorAbajo;
+                textoTiempoJugadorBlancas = textoTiempoJugadorArriba;
+                textoTiempoJugadorNegras = textoTiempoJugadorAbajo;
             }
 
-            FormatearNombre(nombreJugador1, textoNombreJugador1);
-            FormatearNombre(nombreJugador2, textoNombreJugador2);
-            FormatearTiempo(duracion, textoTiempoJugador1);
-            FormatearTiempo(duracion, textoTiempoJugador2);
+            FormatearNombre(nombreJugadorBlancas, textoNombreJugadorAbajo);
+            FormatearNombre(nombreJugadorNegras, textoNombreJugadorArriba);
+            FormatearTiempo(duracion, textoTiempoJugadorAbajo);
+            FormatearTiempo(duracion, textoTiempoJugadorArriba);
         }
 
         public void FormatearTiempoJugadorBlancas(float tiempo)
@@ -112,68 +112,28 @@ namespace Ajedrez.UI
             textoTiempoJugadorNegras.color = new Color(textoTiempoJugadorNegras.color.r, textoTiempoJugadorNegras.color.g, textoTiempoJugadorNegras.color.b, 0.5f);
         }
 
-        public void ActivarLineaDivisoria()
-        {
-            lineaDivisoria.enabled = true;
-        }
-
-        public void DesactivarLineaDivisoria()
+        public void FinalizarPartida(SituacionPartida.Tipo resultado)
         {
             lineaDivisoria.enabled = false;
+            textoSituacionTablero.text = resultado.ObtenerDescripcion();
+            StartCoroutine(MostrarResultadoTrasRetraso(resultado));
         }
 
-        public void MostrarSituacionTablero(Tablero.TipoSituacionTablero situacionTablero)
-        {
-            textoSituacionTablero.text = ObtenerTexto(situacionTablero);
-        }
-
-        public void FinalizarPartida(Tablero.TipoSituacionTablero situacionTablero, Pieza.Color ganador)
-        {
-            lineaDivisoria.enabled = false;
-            textoSituacionTablero.text = ObtenerTexto(situacionTablero);
-            StartCoroutine(MostrarResultadoTrasRetraso(situacionTablero, ganador));
-        }
-
-        private string ObtenerTexto(Tablero.TipoSituacionTablero situacionTablero)
-        {
-            return situacionTablero switch
-            {
-                Tablero.TipoSituacionTablero.Normal => "",
-                Tablero.TipoSituacionTablero.Jaque => "¡Jaque!",
-                Tablero.TipoSituacionTablero.JaqueMate => "¡Jaque Mate!",
-                Tablero.TipoSituacionTablero.ReyAhogado => "Rey ahogado",
-                Tablero.TipoSituacionTablero.TriplePosicionRepetida => "Triple repetición\n de posición",
-                Tablero.TipoSituacionTablero.Regla50Movimientos => "Regla de los\n50 movimientos",
-                Tablero.TipoSituacionTablero.MaterialInsuficiente => "Material insuficiente",
-                Tablero.TipoSituacionTablero.SinTiempo => "¡Sin tiempo!",
-                _ => ""
-            };
-        }
-
-        private IEnumerator MostrarResultadoTrasRetraso(Tablero.TipoSituacionTablero situacionTablero, Pieza.Color ganador)
+        private IEnumerator MostrarResultadoTrasRetraso(SituacionPartida.Tipo resultado)
         {
             yield return new WaitForSeconds(TIEMPO_ESPERA_RESULTADO);
 
-            panelResultado.SetActive(true);
-
-            switch (situacionTablero)
+            Pieza.Color ganador = SituacionPartida.ObtenerGanador(resultado);
+            if (ganador == Pieza.Color.Nada)
             {
-                case Tablero.TipoSituacionTablero.JaqueMate:
-                case Tablero.TipoSituacionTablero.SinTiempo:
-                    {
-                        textoTipoResultado.text = $"Ganan las {ganador}";
-                        break;
-                    }
-
-                case Tablero.TipoSituacionTablero.ReyAhogado:
-                case Tablero.TipoSituacionTablero.TriplePosicionRepetida:
-                case Tablero.TipoSituacionTablero.Regla50Movimientos:
-                case Tablero.TipoSituacionTablero.MaterialInsuficiente:
-                    {
-                        textoTipoResultado.text = "Tablas";
-                        break;
-                    }
+                textoTipoResultado.text = "Tablas";
             }
+            else
+            {
+                textoTipoResultado.text = $"Ganan las {ganador}";
+            }
+
+            panelResultado.SetActive(true);
         }
 
         public void BotonSalir()

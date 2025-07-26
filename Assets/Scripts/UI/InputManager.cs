@@ -16,11 +16,12 @@ namespace Ajedrez.UI
         public event Action<ModoDebugBitboard> OnTeclaDebugBitboard;
         public event Action OnToggleEstadoTablero;
         public event Action OnToggleDebugBusqueda;
-        
+
         // Comunicarse con el tablero con eventos también, quizás
 
         [SerializeField] private PartidaManager partidaManager;
         [SerializeField] private PromocionUI promocionUI;
+        [SerializeField] private TableroUI tableroUI;
 
         private Mouse cursor;
         private Keyboard keyboard;
@@ -165,12 +166,16 @@ namespace Ajedrez.UI
                         partidaManager.DevolverColoresCasillasUltimoMovimiento();
                         partidaManager.ColorearCasillaUltimoMovimiento(nuevaCasilla);
                         StartCoroutine(HacerMovimientoTrasPromocion(movimiento));
-                        piezaSeleccionada = false; // Cambiar esto?
                         return;
                     }
                 }
             }
 
+            DeseleccionarPieza();
+        }
+
+        private void DeseleccionarPieza()
+        {
             partidaManager.ColorearCasillaOriginal(casilla);
             partidaManager.OcultarMovimientosLegales();
             partidaManager.DevolverPiezaACapa(casilla);
@@ -180,6 +185,10 @@ namespace Ajedrez.UI
 
         private IEnumerator HacerMovimientoTrasPromocion(Movimiento movimiento)
         {
+            // Desactivar la interacción con las piezas
+            colorInteractuable = Pieza.Color.Nada;
+            piezaSeleccionada = false;
+
             if (movimiento.EsPromocion())
             {
                 promocionEnCurso = true;
@@ -196,8 +205,6 @@ namespace Ajedrez.UI
                 movimiento = new Movimiento(movimiento.Origen, movimiento.Destino, tipoPromocion);
             }
 
-            // Desactivar la interacción con las piezas
-            colorInteractuable = Pieza.Color.Nada;
             StartCoroutine(partidaManager.HacerMovimiento(movimiento));
         }
 
@@ -206,6 +213,12 @@ namespace Ajedrez.UI
             set
             {
                 colorInteractuable = value;
+
+                if (value == Pieza.Color.Nada && piezaSeleccionada)
+                {
+                    // Soltar la pieza si se termina la partida y hay una pieza seleccionada
+                    DeseleccionarPieza();
+                }
             }
         }
     }

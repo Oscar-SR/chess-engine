@@ -11,10 +11,20 @@ namespace Ajedrez.IA
 {
     public class Busqueda
     {
+        public enum TipoBusqueda : byte
+        {
+            PorProfundidad,
+            PorTiempo,
+            PorNumeroDeNodos
+        }
+
         public const int INFINITO = 9999999;
         public const int EVALUACION_JAQUE_MATE = 100000;
         public const int TAM_TABLA_TRANSPOSICION_MB = 64;
-        private readonly int maxProfundidad = 256;
+        private const int MAX_PROFUNDIDAD = 256;
+
+        private readonly TipoBusqueda tipoBusqueda;
+        private readonly int limiteBusqueda;
 
         private Tablero tablero;
         private Evaluacion evaluacion;
@@ -89,109 +99,69 @@ namespace Ajedrez.IA
             }
         }
 
-        public Busqueda(Tablero tablero, int maxProfundidad = 256)
+        public Busqueda(Tablero tablero, TipoBusqueda tipoBusqueda, int limiteBusqueda = 0)
         {
-            this.maxProfundidad = maxProfundidad;
             this.tablero = tablero;
+            this.tipoBusqueda = tipoBusqueda;
+            this.limiteBusqueda = limiteBusqueda;
             evaluacion = new Evaluacion(tablero);
             ordenadorMovimientos = new OrdenadorMovimientos(tablero);
             tablaTransposicion = new TablaTransposicion(TAM_TABLA_TRANSPOSICION_MB);
         }
 
-        public Movimiento EmpezarBusqueda(List<Movimiento> movimientos)
+        public Movimiento EmpezarBusqueda(List<Movimiento> movimientosIniciales = null)
         {
             // Inicializar datos de diagnóstico
             diagnostico = new DiagnosticoBusqueda();
             Stopwatch cronometro = new Stopwatch();
             cronometro.Start();
-            BusquedaDebugger.Instancia.Log("Empezando búsqueda\n");
+            BusquedaDebugger.Instancia?.Log("Empezando búsqueda\n");
 
-            busquedaCancelada = false;
-            (int mejorEvaluacion, Movimiento mejorMovimiento) = BusquedaIterativa(movimientos);
+            // Generar los movimientos iniciales si no los hay
+            movimientosIniciales ??= tablero.GenerarMovimientosLegales(acortarGeneracion: true).movimientosLegales;
+            int mejorEvaluacion; Movimiento mejorMovimiento;
+
+            switch (tipoBusqueda)
+            {
+                case TipoBusqueda.PorProfundidad:
+                    {
+                        (mejorEvaluacion, mejorMovimiento) = BusquedaFija(movimientosIniciales, limiteBusqueda);
+                        break;
+                    }
+                case TipoBusqueda.PorTiempo:
+                    {
+                        busquedaCancelada = false;
+                        (mejorEvaluacion, mejorMovimiento) = BusquedaIterativa(movimientosIniciales);
+                        break;
+                    }
+                case TipoBusqueda.PorNumeroDeNodos:
+                    {
+                        (mejorEvaluacion, mejorMovimiento) = BusquedaFija(movimientosIniciales, limiteBusqueda);
+                        break;
+                    }
+                default:
+                    {
+                        mejorEvaluacion = 0;
+                        mejorMovimiento = Movimiento.Nulo;
+                        break;
+                    }
+            }
+
+            if (mejorMovimiento == Movimiento.Nulo)
+            {
+                mejorMovimiento = movimientosIniciales[0];
+            }
 
             // Guardar datos de diagnóstico
-            BusquedaDebugger.Instancia.Log("Búsqueda terminada con: " + mejorMovimiento.ToLAN() + " (" + mejorEvaluacion + ")\n\n");
+            BusquedaDebugger.Instancia?.Log("Búsqueda terminada con: " + mejorMovimiento.ToLAN() + " (" + mejorEvaluacion + ")\n\n");
             cronometro.Stop();
             diagnostico.TiempoBusqueda = cronometro.ElapsedMilliseconds;
             diagnostico.MejorEvaluacion = mejorEvaluacion;
             diagnostico.MejorMovimiento = mejorMovimiento;
             diagnostico.PorcentajeOcupacionTablaTransposicion = tablaTransposicion.PorcentajeOcupacion;
 
-            if (mejorMovimiento == Movimiento.Nulo)
-            {
-                mejorMovimiento = movimientos[0];
-            }
-
             return mejorMovimiento;
         }
-
-        /*
-        public async Task<Movimiento> EmpezarBusqueda(List<Movimiento> movimientos)
-        {
-            return await Task.Run(() =>
-            {
-                const int profundidadBusqueda = 4;
-
-                // Inicializar datos de diagnóstico
-                diagnostico = new DiagnosticoBusqueda();
-                diagnostico.MaxProfundidad = profundidadBusqueda;
-                Stopwatch cronometro = new Stopwatch();
-                cronometro.Start();
-                BusquedaDebugger.Instancia.Log("Empezando búsqueda\n");
-
-                busquedaCancelada = false;
-                int alfa = -INFINITO; // Almacena valores máximos de evaluación
-                int beta = INFINITO; // Almacena valores mínimos de evaluación
-
-                int evaluacion = tablaTransposicion.BuscarEvaluacion(tablero.EstadoActual.ZobristHash, profundidadBusqueda, 0, alfa, beta); // Cambiar esto en la iterative deeping
-                if (evaluacion != TablaTransposicion.BUSQUEDA_FALLIDA)
-                {
-                    mejorMovimientoEstaIteracion = tablaTransposicion.ObtenerMovimientoGuardado(tablero.EstadoActual.ZobristHash);
-                    mejorEvaluacionEstaIteracion = evaluacion;
-                    return mejorMovimientoEstaIteracion;
-                }
-
-                TablaTransposicion.TipoEvaluacion tipoEvaluacion = TablaTransposicion.TipoEvaluacion.CotaSuperior;
-                Movimiento mejorMovimiento = Movimiento.Nulo;
-
-                OrdenarMovimientos(movimientos);
-                foreach (Movimiento movimiento in movimientos)
-                {
-                    tablero.HacerMovimiento(movimiento, enBusqueda: true);
-                    evaluacion = -Alfabeta(profundidadBusqueda - 1, 1, -beta, -alfa);
-                    tablero.DeshacerMovimiento(movimiento);
-
-                    if (evaluacion > alfa)
-                    {
-                        // Se encontró un nuevo mejor movimiento en esta posición
-                        tipoEvaluacion = TablaTransposicion.TipoEvaluacion.Exacta;
-                        mejorMovimiento = movimiento;
-                        alfa = evaluacion;
-                    }
-
-                    //alfa = Max(alfa, evaluacion);
-                }
-
-                // Guardar posición evaluada ( con alfa, puesto que almacena evaluaciones máximas, es decir, la mejor evaluación)
-                tablaTransposicion.GuardarEvaluacion(tablero.EstadoActual.ZobristHash, profundidadBusqueda, 0, alfa, tipoEvaluacion, mejorMovimiento);
-
-                // Guardar datos de diagnóstico
-                BusquedaDebugger.Instancia.Log("Búsqueda terminada\n\n");
-                cronometro.Stop();
-                diagnostico.TiempoBusqueda = cronometro.ElapsedMilliseconds;
-                diagnostico.MejorEvaluacion = alfa;
-                diagnostico.MejorMovimiento = mejorMovimiento;
-                diagnostico.PorcentajeOcupacionTablaTransposicion = tablaTransposicion.PorcentajeOcupacion;
-
-                if (mejorMovimiento == Movimiento.Nulo)
-                {
-                    mejorMovimiento = movimientos[0];
-                }
-
-                return mejorMovimiento;
-            });
-        }
-        */
 
         public void TerminarBusqueda()
         {
@@ -207,9 +177,9 @@ namespace Ajedrez.IA
             /// EN ALGUNA PARTE DEL CÓDIGO Y ESTO HACE QUE MEJORE EN EL FINAL DE PARTIDA
             //tablaTransposicion.Limpiar();
 
-            for (int profundidadBusqueda = 1; profundidadBusqueda <= maxProfundidad; profundidadBusqueda++)
+            for (int profundidadBusqueda = 1; profundidadBusqueda <= MAX_PROFUNDIDAD; profundidadBusqueda++)
             {
-                BusquedaDebugger.Instancia.Log("Empezando iteración: " + profundidadBusqueda + "\n");
+                BusquedaDebugger.Instancia?.Log("Empezando iteración: " + profundidadBusqueda + "\n");
 
                 mejorEvaluacionEstaIteracion = -INFINITO;
                 mejorMovimientoEstaIteracion = Movimiento.Nulo;
@@ -229,7 +199,7 @@ namespace Ajedrez.IA
                     }
                     */
 
-                    BusquedaDebugger.Instancia.Log("Búsqueda cancelada\n");
+                    BusquedaDebugger.Instancia?.Log("Búsqueda cancelada\n");
                     break;
                 }
                 else
@@ -237,18 +207,27 @@ namespace Ajedrez.IA
                     diagnostico.MaxProfundidad = profundidadBusqueda;
                     mejorEvaluacion = mejorEvaluacionEstaIteracion;
                     mejorMovimiento = mejorMovimientoEstaIteracion;
-                    BusquedaDebugger.Instancia.Log("Resultado de la iteración: " + mejorMovimiento.ToLAN() + " (" + mejorEvaluacion + ")\n");
+                    BusquedaDebugger.Instancia?.Log("Resultado de la iteración: " + mejorMovimiento.ToLAN() + " (" + mejorEvaluacion + ")\n");
                 }
             }
 
             return (mejorEvaluacion, mejorMovimiento);
         }
 
+        private (int mejorEvaluacion, Movimiento mejorMovimiento) BusquedaFija(List<Movimiento> movimientos, int profundidadBusqueda)
+        {
+            AlfabetaRaiz(movimientos, profundidadBusqueda);
+            diagnostico.MaxProfundidad = profundidadBusqueda;
+            return (mejorEvaluacionEstaIteracion, mejorMovimientoEstaIteracion);
+        }
+
+        //Hacer una búsqueda por número de nodos
+
         private void AlfabetaRaiz(List<Movimiento> movimientos, int profundidadBusqueda)
         {
             if (busquedaCancelada)
                 return;
-            
+
             int alfa = -INFINITO; // Almacena valores máximos de evaluación
             int beta = INFINITO; // Almacena valores mínimos de evaluación
 
@@ -264,7 +243,7 @@ namespace Ajedrez.IA
             OrdenarMovimientos(movimientos);
             foreach (Movimiento movimiento in movimientos)
             {
-                tablero.HacerMovimiento(movimiento, enBusqueda : true);
+                tablero.HacerMovimiento(movimiento, enBusqueda: true);
                 evaluacion = -Alfabeta(profundidadBusqueda - 1, 1, -beta, -alfa);
                 tablero.DeshacerMovimiento(movimiento);
 

@@ -23,13 +23,10 @@ namespace Ajedrez.Managers
 
         private Partida partida;
         private Jugador jugadorActual;
+        private Pieza.Color turno;
         private bool partidaActiva = false;
         private bool primerTurno = true;
-        private List<Movimiento> movimientosLegales;
         private List<Movimiento> movimientosLegalesDePieza;
-        private Jugador jugadorBlancas;
-        private Jugador jugadorNegras;
-        private Tablero.TipoSituacionTablero situacionTablero;
 
         // Start is called before the first frame update
         void Start()
@@ -40,7 +37,8 @@ namespace Ajedrez.Managers
             }
 
             partida = PersistenciaSystem.Instancia.partida;
-            
+            bool blancasAbajo = PersistenciaSystem.Instancia.blancasAbajo;
+
             /*
             // Crear instancia del tablero
             Tablero tablero = new Tablero("rnbqkbnr/ppp1pppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 1");
@@ -48,35 +46,23 @@ namespace Ajedrez.Managers
             TextAsset archivoTexto = Resources.Load<TextAsset>("Aperturas");
             string libroAperturas = archivoTexto.text;
 
-            float duracion = 300f;
-            float incremento = 5f;
+            float duracion = 10f;
+            float incremento = 0f;
+            Reloj reloj = new Reloj(duracion, incremento);
 
             // Crear las instancias de los jugadores
-            JugadorHumano jugador2 = new JugadorHumano("Jugador 1", Pieza.Color.Blancas, duracion);
-            //JugadorHumano jugador2 = new JugadorHumano("Jugador 2", Pieza.Color.Negras, duracion);
-            //JugadorIA jugador1 = new JugadorIA(JugadorIA.TipoDificultad.Dificil, Pieza.Color.Blancas, duracion, tablero, libroAperturas, incremento);
-            JugadorIA jugador1 = new JugadorIA(JugadorIA.TipoDificultad.Dificil, Pieza.Color.Negras, duracion, tablero, libroAperturas, incremento);
+            //JugadorHumano jugadorBlancas = new JugadorHumano("Jugador 1");
+            JugadorIA jugadorBlancas = new JugadorIA(JugadorIA.TipoDificultad.Dificil, tablero, libroAperturas, reloj, Pieza.Color.Blancas);
+            JugadorIA jugadorNegras = new JugadorIA(JugadorIA.TipoDificultad.Dificil, tablero, libroAperturas, reloj, Pieza.Color.Negras);
 
             // Crear la instancia de la partida
-            partida = new Partida(tablero, jugador1, jugador2, duracion, incremento);
-            */
+            partida = new Partida(tablero, jugadorBlancas, jugadorNegras, reloj);
 
             // Definir orientación del tablero
-            bool blancasAbajo;
-            if (AjedrezUtils.MismoColor(partida.Jugador1.ColorPiezas, Pieza.Color.Blancas))
-            {
-                blancasAbajo = true;
-                jugadorBlancas = partida.Jugador1;
-                jugadorNegras = partida.Jugador2;
-            }
-            else
-            {
-                blancasAbajo = false;
-                jugadorBlancas = partida.Jugador2;
-                jugadorNegras = partida.Jugador1;
-            }
+            bool blancasAbajo = true;
+            */
 
-            partidaUI.Init(partida.Jugador1.Nombre, partida.Jugador2.Nombre, partida.Duracion, blancasAbajo);
+            partidaUI.Init(partida.JugadorBlancas.Nombre, partida.JugadorNegras.Nombre, partida.Reloj.DuracionInicial, blancasAbajo);
             tableroUI.Init(partida.Tablero, blancasAbajo);
             promocionUI.Init(blancasAbajo);
             BitboardDebugger.Instancia.Init(partida.Tablero);
@@ -89,74 +75,57 @@ namespace Ajedrez.Managers
             if (!partidaActiva)
                 return;
 
-            if (AjedrezUtils.MismoColor(jugadorActual.ColorPiezas, Pieza.Color.Blancas))
+            if (turno == Pieza.Color.Blancas)
             {
-                partida.Jugador1.TiempoRestante -= Time.deltaTime;
-                partidaUI.FormatearTiempoJugadorBlancas(partida.Jugador1.TiempoRestante);
+                partida.Reloj.ConsumirTiempoBlancas(Time.deltaTime);
+                partidaUI.FormatearTiempoJugadorBlancas(partida.Reloj.TiempoRestanteBlancas);
 
-                if (partida.Jugador1.TiempoRestante <= 0)
+                if (partida.Reloj.TiempoAgotadoBlancas)
                 {
-                    situacionTablero = Tablero.TipoSituacionTablero.SinTiempo;
-                    FinalizarPartida(Pieza.Color.Negras);
+                    partida.Situacion = SituacionPartida.Tipo.TiempoAgotadoBlancas;
+                    FinalizarPartida();
                 }
             }
             else
             {
-                partida.Jugador2.TiempoRestante -= Time.deltaTime;
-                partidaUI.FormatearTiempoJugadorNegras(partida.Jugador2.TiempoRestante);
+                partida.Reloj.ConsumirTiempoNegras(Time.deltaTime);
+                partidaUI.FormatearTiempoJugadorNegras(partida.Reloj.TiempoRestanteNegras);
 
-                if (partida.Jugador2.TiempoRestante <= 0)
+                if (partida.Reloj.TiempoAgotadoNegras)
                 {
-                    situacionTablero = Tablero.TipoSituacionTablero.SinTiempo;
-                    FinalizarPartida(Pieza.Color.Blancas);
+                    partida.Situacion = SituacionPartida.Tipo.TiempoAgotadoNegras;
+                    FinalizarPartida();
                 }
             }
         }
 
-        private void ActualizarEstadoPartida(Pieza.Color turno)
+        private void ActualizarEstadoPartida()
         {
             // Añadir el incremento de tiempo al jugador correspondiente
-            if (jugadorActual != null)
+            if (partidaActiva)
             {
-                jugadorActual.TiempoRestante += partida.Incremento;
-                if (AjedrezUtils.MismoColor(jugadorActual.ColorPiezas, Pieza.Color.Blancas))
+                if (turno == Pieza.Color.Negras)
                 {
-                    partidaUI.FormatearTiempoJugadorBlancas(jugadorActual.TiempoRestante);
+                    partida.Reloj.AplicarIncrementoBlancas();
+                    partidaUI.FormatearTiempoJugadorBlancas(partida.Reloj.TiempoRestanteBlancas);
                 }
                 else
                 {
-                    partidaUI.FormatearTiempoJugadorNegras(jugadorActual.TiempoRestante);
+                    partida.Reloj.AplicarIncrementoNegras();
+                    partidaUI.FormatearTiempoJugadorNegras(partida.Reloj.TiempoRestanteNegras);
                 }
             }
 
             if (AjedrezUtils.MismoColor(turno, Pieza.Color.Blancas))
             {
-                // El jugador actual es el de las blancas
-                jugadorActual = jugadorBlancas;
-
                 // Poner el cronómetro de las negras más transparente
                 partidaUI.TransparentarTiempoJugadorNegras();
             }
             else
             {
-                // El jugador actual es el de las negras
-                jugadorActual = jugadorNegras;
-
                 // Poner el cronómetro de las blancas más transparente
                 partidaUI.TransparentarTiempoJugadorBlancas();
             }
-
-            if (situacionTablero == Tablero.TipoSituacionTablero.Normal)
-            {
-                partidaUI.ActivarLineaDivisoria();
-            }
-            else
-            {
-                partidaUI.DesactivarLineaDivisoria();
-            }
-
-            // Mostrar la situación del tablero
-            partidaUI.MostrarSituacionTablero(situacionTablero);
 
             if (primerTurno)
             {
@@ -168,24 +137,30 @@ namespace Ajedrez.Managers
             IniciarTurno();
         }
 
-        private void FinalizarPartida(Pieza.Color ganador)
+        private void FinalizarPartida()
         {
             partidaActiva = false;
-            partidaUI.FinalizarPartida(situacionTablero, ganador);
+            InputManager.Instancia.ColorInteractuable = Pieza.Color.Nada;
+            partidaUI.FinalizarPartida(partida.Situacion);
         }
 
-        private void IniciarTurno()
+        private async void IniciarTurno()
         {
+            jugadorActual = turno == Pieza.Color.Blancas ? partida.JugadorBlancas : partida.JugadorNegras;
+
             if (jugadorActual is JugadorIA jugadorIA)
             {
-                IniciarTurnoIA(jugadorIA);
+                Movimiento movimiento = await jugadorIA.HallarMejorMovimiento(movimientosLegales : partida.UltimosMovimientosLegales);
+                StartCoroutine(HacerMovimiento(movimiento, esIA: true));
             }
             else if (jugadorActual is JugadorHumano jugadorHumano)
             {
-                IniciarTurnoHumano(jugadorHumano);
+                // Activar la interacción con las piezas del jugador correspondiente
+                InputManager.Instancia.ColorInteractuable = turno;
             }
         }
 
+        /*
         private async void IniciarTurnoIA(JugadorIA jugadorIA)
         {
             Movimiento mejorMovimiento;
@@ -209,7 +184,7 @@ namespace Ajedrez.Managers
                 // Ejecutar la búsqueda como una tarea en segundo plano y esperar a que termine
                 mejorMovimiento = await Task.Run(() =>
                 {
-                    return jugadorIA.EmpezarBusqueda(movimientosLegales);
+                    return jugadorIA.EmpezarBusqueda(partida.UltimosMovimientosLegales);
                 });
 
                 // Cancelar temporizador si la búsqueda termina antes
@@ -220,48 +195,27 @@ namespace Ajedrez.Managers
             }
 
             // Hacer el mejor movimiento
-            if (partidaActiva)
-                StartCoroutine(HacerMovimiento(mejorMovimiento, animar: true));
+            StartCoroutine(HacerMovimiento(mejorMovimiento, esIA: true));
         }
-
-        private void IniciarTurnoHumano(JugadorHumano jugadorHumano)
-        {
-            // Activar la interacción con las piezas del jugador correspondiente
-            InputManager.Instancia.ColorInteractuable = jugadorHumano.ColorPiezas;
-        }
+        */
 
         private void ActualizarTurno()
         {
-            bool jaque;
-
-            // Generar nuevos movimientos legales
-            (movimientosLegales, jaque) = partida.Tablero.GenerarMovimientosLegales();
+            turno = partida.Tablero.Turno;
 
             // Colorear casilla del rey si hay jaque
-            tableroUI.ColorearCasillaJaque(jaque, partida.Tablero.ObtenerCasillaRey(partida.Tablero.Turno));
+            tableroUI.ColorearCasillaJaque(partida.Jaque, partida.Tablero.ObtenerCasillaRey(turno));
 
             // Analizar situacion tablero
-            situacionTablero = partida.Tablero.ObtenerSituacionTablero(movimientosLegales.Count, jaque);
-            switch (situacionTablero)
+            if (partida.Situacion == SituacionPartida.Tipo.EnCurso)
             {
-                case Tablero.TipoSituacionTablero.JaqueMate:
-                case Tablero.TipoSituacionTablero.ReyAhogado:
-                case Tablero.TipoSituacionTablero.TriplePosicionRepetida:
-                case Tablero.TipoSituacionTablero.Regla50Movimientos:
-                case Tablero.TipoSituacionTablero.MaterialInsuficiente:
-                    {
-                        // Comunicar el fin de la partida
-                        FinalizarPartida(AjedrezUtils.InversoColor(partida.Tablero.Turno));
-                        break;
-                    }
-
-                case Tablero.TipoSituacionTablero.Jaque:
-                case Tablero.TipoSituacionTablero.Normal:
-                    {
-                        // Comunicar el cambio de turno
-                        ActualizarEstadoPartida(partida.Tablero.Turno);
-                        break;
-                    }
+                // Comunicar el cambio de turno
+                ActualizarEstadoPartida();
+            }
+            else
+            {
+                // Comunicar el fin de la partida
+                FinalizarPartida();
             }
 
             // Escribir contenido del estado en el debugger
@@ -271,12 +225,20 @@ namespace Ajedrez.Managers
             BitboardDebugger.Instancia.ActualizarModoDebugBitboard();
         }
 
-        public IEnumerator HacerMovimiento(Movimiento movimiento, bool animar = false)
+        private void MovimientoElegido(Movimiento movimiento)
         {
-            if (animar)
+            StartCoroutine(HacerMovimiento(movimiento, jugadorActual is JugadorIA));
+        }
+
+        public IEnumerator HacerMovimiento(Movimiento movimiento, bool esIA = false)
+        {
+            if (!partidaActiva)
+                yield break;
+
+            if (esIA)
             {
                 // Se hace la animación del movimiento
-                yield return StartCoroutine(tableroUI.HacerMovimientoConAnimacion(movimiento));
+                yield return StartCoroutine(tableroUI.HacerMovimiento(movimiento));
             }
             else
             {
@@ -284,7 +246,7 @@ namespace Ajedrez.Managers
             }
 
             // Se actualiza el modelo
-            partida.Tablero.HacerMovimiento(movimiento);
+            partida.HacerMovimiento(movimiento);
 
             // Actualizamos el turno
             ActualizarTurno();
@@ -297,7 +259,7 @@ namespace Ajedrez.Managers
 
         public void MostrarMovimientosLegalesDePieza(int casilla)
         {
-            movimientosLegalesDePieza = movimientosLegales.FindAll(m => m.Origen == casilla);
+            movimientosLegalesDePieza = partida.UltimosMovimientosLegales.FindAll(m => m.Origen == casilla);
             tableroUI.MostrarMovimientosLegales(movimientosLegalesDePieza);
         }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Ajedrez.Utilities;
 
 namespace Ajedrez.Core
@@ -66,8 +67,9 @@ namespace Ajedrez.Core
                 flag = ENROQUE;
             }
 
-            this.valor = (ushort)(origen | (destino << 6) | (flag << 12));
+            valor = (ushort)(origen | (destino << 6) | (flag << 12));
         }
+
         public static Movimiento Nulo => new Movimiento(0);
 
         public int Origen
@@ -121,20 +123,108 @@ namespace Ajedrez.Core
             return origenLAN + destinoLAN + sufijo;
         }
 
+        public string ToSAN(Tablero tablero)
+        {
+            Pieza pieza = tablero.ObtenerPieza(Origen);
+            string san = "";
+
+            bool esCaptura = tablero.ObtenerPieza(Destino).TipoPieza != Pieza.Tipo.Nada || Flag == CAPTURA_AL_PASO;
+
+            // Enroques
+            if (Flag == ENROQUE)
+            {
+                return Destino > Origen ? "O-O" : "O-O-O";
+            }
+
+            // Nombre de pieza (omitido para peones)
+            bool esPeon = pieza.TipoPieza == Pieza.Tipo.Peon;
+            if (esPeon)
+                san += pieza.ObtenerSimbolo(siempreMayuscula: true);
+
+            // Arreglar desambiguación si hay ambigüedad (p. ej. Nbd2 o R1a3)
+            if (!esPeon && pieza.TipoPieza != Pieza.Tipo.Rey)
+            {
+                (List<Movimiento> movimientos, _) = tablero.GenerarMovimientosLegales();
+                (int filaOrigen, int columnaOrigen) = AjedrezUtils.IndiceACoordenadas(Origen);
+                bool hayOtroMismaFila = false;
+                bool hayOtroMismaColumna = false;
+
+                foreach (Movimiento movimiento in movimientos)
+                {
+                    if (movimiento.Destino == Destino && movimiento.Origen != Origen)
+                    {
+                        Pieza.Tipo otroTipoPieza = tablero.ObtenerPieza(movimiento.Origen).TipoPieza;
+                        if (otroTipoPieza == pieza.TipoPieza)
+                        {
+                            (int otroFilaOrigen, int otroColumnaOrigen) = AjedrezUtils.IndiceACoordenadas(movimiento.Origen);
+
+                            if (filaOrigen == otroFilaOrigen)
+                                hayOtroMismaFila = true;
+                            if (columnaOrigen == otroColumnaOrigen)
+                                hayOtroMismaColumna = true;
+                        }
+                    }
+                }
+
+                if (hayOtroMismaFila)
+                    san += AjedrezUtils.ColumnaANombre(columnaOrigen);
+
+                if (hayOtroMismaColumna)
+                    san += AjedrezUtils.FilaANombre(filaOrigen);
+            }
+
+            // Captura
+            if (esCaptura)
+            {
+                if (esPeon)
+                    san += AjedrezUtils.ColumnaANombre(AjedrezUtils.ObtenerColumna(Origen)); // Columna del peón
+                san += "x";
+            }
+
+            // Casilla destino
+            san += CasillaANotacionAlgebraica(Destino);
+
+            // Promoción
+            if (EsPromocion())
+            {
+                string promocion = Flag switch
+                {
+                    PROMOVER_A_REINA => "Q",
+                    PROMOVER_A_CABALLO => "N",
+                    PROMOVER_A_TORRE => "R",
+                    PROMOVER_A_ALFIL => "B",
+                    _ => ""
+                };
+                san += "=" + promocion;
+            }
+
+            // Jaque o jaque mate
+            tablero.HacerMovimiento(this, enBusqueda : true);
+            (List<Movimiento> respuestas, bool jaque) = tablero.GenerarMovimientosLegales();
+            if (jaque)
+            {
+                san += respuestas.Count == 0 ? "#" : "+";
+            }
+            tablero.DeshacerMovimiento(this);
+
+            return san;
+        }
+
         private static int NotacionAlgebraicaACasilla(string casilla)
         {
             char columna = casilla[0];
             char fila = casilla[1];
-            int x = columna - 'a';     // 0 a 7
-            int y = fila - '1';        // 0 a 7
-            return y * 8 + x;          // fila*8 + columna
+            int x = AjedrezUtils.NombreAColumna(columna);
+            int y = AjedrezUtils.NombreAFila(fila);
+            return AjedrezUtils.CoordenadasAIndice(y,x);
         }
 
         private string CasillaANotacionAlgebraica(int indice)
         {
-            char columna = (char)('a' + (indice % 8));
-            char fila = (char)('1' + (indice / 8));
-            return $"{columna}{fila}";
+            (int fila, int columna) = AjedrezUtils.IndiceACoordenadas(indice);
+            char columnaCaracter = AjedrezUtils.ColumnaANombre(columna);
+            char filaCaracter = AjedrezUtils.FilaANombre(fila);
+            return $"{columnaCaracter}{filaCaracter}";
         }
 
         public static bool operator ==(Movimiento a, Movimiento b)

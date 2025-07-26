@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 48298560}
   - component: {fileID: 48298559}
   m_Layer: 5
-  m_Name: TextoTiempoJugador2
+  m_Name: TextoTiempoJugadorArriba
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -303,10 +303,10 @@ MonoBehaviour:
   textoSituacionTablero: {fileID: 1432753757}
   textoTipoResultado: {fileID: 1316589703}
   lineaDivisoria: {fileID: 1463491949}
-  textoTiempoJugador1: {fileID: 270898133}
-  textoTiempoJugador2: {fileID: 48298559}
-  textoNombreJugador1: {fileID: 2115484747}
-  textoNombreJugador2: {fileID: 1316908435}
+  textoTiempoJugadorAbajo: {fileID: 270898133}
+  textoTiempoJugadorArriba: {fileID: 48298559}
+  textoNombreJugadorAbajo: {fileID: 2115484747}
+  textoNombreJugadorArriba: {fileID: 1316908435}
   panelResultado: {fileID: 547489959}
   colorTextoTiempo: {r: 1, g: 1, b: 1, a: 1}
   colorTextoTiempoEscaso: {r: 1, g: 0, b: 0, a: 1}
@@ -644,7 +644,7 @@ GameObject:
   - component: {fileID: 270898134}
   - component: {fileID: 270898133}
   m_Layer: 5
-  m_Name: TextoTiempoJugador1
+  m_Name: TextoTiempoJugadorAbajo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3007,7 +3007,7 @@ GameObject:
   - component: {fileID: 1316908436}
   - component: {fileID: 1316908435}
   m_Layer: 5
-  m_Name: TextoNombreJugador2
+  m_Name: TextoNombreJugadorArriba
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3405,8 +3405,8 @@ MonoBehaviour:
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 1
-    m_VerticalOverflow: 0
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!222 &1432753758
@@ -3434,7 +3434,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: -260, y: 0}
-  m_SizeDelta: {x: 300, y: 150}
+  m_SizeDelta: {x: 400, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1440524394
 GameObject:
@@ -3843,6 +3843,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   partidaManager: {fileID: 2145555751}
   promocionUI: {fileID: 1440524396}
+  tableroUI: {fileID: 0}
 --- !u!4 &1843694729
 Transform:
   m_ObjectHideFlags: 0
@@ -4058,7 +4059,7 @@ GameObject:
   - component: {fileID: 2115484748}
   - component: {fileID: 2115484747}
   m_Layer: 5
-  m_Name: TextoNombreJugador1
+  m_Name: TextoNombreJugadorAbajo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

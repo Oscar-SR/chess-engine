@@ -73,15 +73,15 @@ namespace Ajedrez.Debugging
         }
 #endif
 
-        private void GuardarLog()
+        public void GuardarLog(string nombre = "busqueda")
         {
-            string carpetaLogs = Path.Combine(Application.dataPath, "../Logs");
+            string carpetaLogs = Path.Combine(Application.persistentDataPath, "Logs Busqueda");
             carpetaLogs = Path.GetFullPath(carpetaLogs); // Normalizar la ruta
 
             if (!Directory.Exists(carpetaLogs))
                 Directory.CreateDirectory(carpetaLogs);
 
-            string rutaArchivo = Path.Combine(carpetaLogs, $"log_busqueda_{System.DateTime.Now:yyyy-MM-dd_HH-mm-ss}.txt");
+            string rutaArchivo = Path.Combine(carpetaLogs, $"{nombre}_{System.DateTime.Now:yyyy-MM-dd_HH-mm-ss}.txt");
 
             File.WriteAllText(rutaArchivo, log);
 

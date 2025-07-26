@@ -14,29 +14,23 @@ namespace Ajedrez.Core
 
         protected string nombre;
         protected Pieza.Color colorPiezas;
-        protected float tiempoRestante; // En segundos
 
-        protected Jugador(string nombre, Pieza.Color colorPiezas, float tiempoRestante)
+        protected Jugador(string nombre, Pieza.Color colorPiezas)
         {
             this.nombre = nombre;
             this.colorPiezas = colorPiezas;
-            this.tiempoRestante = tiempoRestante;
         }
-        
+
         public string Nombre
         {
             get { return nombre; }
+            set { nombre = value; }
         }
 
-        public Pieza.Color ColorPiezas
+        public virtual Pieza.Color ColorPiezas
         {
             get { return colorPiezas; }
-        }
-
-        public float TiempoRestante
-        {
-            get { return tiempoRestante; }
-            set { tiempoRestante = Math.Max(0, value); }
+            set { colorPiezas = value; }
         }
     }
 }

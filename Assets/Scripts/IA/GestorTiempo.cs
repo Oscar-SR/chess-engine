@@ -1,27 +1,37 @@
 using System;
+using Ajedrez.Core;
 
 namespace Ajedrez.IA
 {
     public class GestorTiempo
     {
         public const float FACTOR_INCREMENTO = 0.6f;
-        private readonly float incremento; // En segundos
+        private Reloj reloj;
+        private Pieza.Color colorPiezas;
         private readonly float incrementoEmpleado;
 
-        public GestorTiempo(float incremento)
+        public GestorTiempo(Reloj reloj, Pieza.Color colorPiezas)
         {
-            this.incremento = incremento;
-            incrementoEmpleado = incremento * FACTOR_INCREMENTO;
+            this.reloj = reloj;
+            this.colorPiezas = colorPiezas;
+            incrementoEmpleado = reloj.IncrementoPorMovimiento * FACTOR_INCREMENTO;
         }
 
-        public int CalcularTiempoBusqueda(float tiempoRestante, uint movimientoNumero)
+        public Pieza.Color ColorPiezas
+        {
+            get { return colorPiezas; }
+            set { colorPiezas = value; }
+        }
+
+        public int CalcularTiempoBusqueda(uint movimientoNumero)
         {
             const float FRACCION_MAX_TIEMPO = 0.1f; // 10%
             const float MIN_SEGUNDOS_BUSQUEDA = 0.05f; // 50 ms
 
             int movimientosEsperados = EstimarMovimientosRestantes(movimientoNumero);
-            float tiempoOptimo = tiempoRestante / movimientosEsperados + incrementoEmpleado;
-            float tiempoMaximo = tiempoRestante * FRACCION_MAX_TIEMPO;
+            float tiempoRestante = TiempoRestante;
+            float tiempoOptimo = TiempoRestante / movimientosEsperados + incrementoEmpleado;
+            float tiempoMaximo = TiempoRestante * FRACCION_MAX_TIEMPO;
 
             // Limita el tiempo a no usar más del 10% del tiempo restante
             tiempoOptimo = Math.Min(tiempoOptimo, tiempoMaximo);
@@ -30,6 +40,7 @@ namespace Ajedrez.IA
             tiempoOptimo = Math.Max(tiempoOptimo, MIN_SEGUNDOS_BUSQUEDA);
 
             // Convierte a milisegundos y redondea
+            //UnityEngine.Debug.Log(tiempoRestante + " " + tiempoOptimo);
             return (int)Math.Round(tiempoOptimo * 1000);
         }
 
@@ -41,6 +52,21 @@ namespace Ajedrez.IA
                 return 20;
             else
                 return 10;
+        }
+
+        private float TiempoRestante
+        {
+            get
+            {
+                if (colorPiezas == Pieza.Color.Blancas)
+                {
+                    return reloj.TiempoRestanteBlancas;
+                }
+                else
+                {
+                    return reloj.TiempoRestanteNegras;
+                }
+            }
         }
     }
 }

@@ -53,7 +53,13 @@ namespace Ajedrez.UI
         {
             selectorJugador1.onValueChanged.AddListener(OnSelectorJugador1Changed);
             selectorJugador2.onValueChanged.AddListener(OnSelectorJugador2Changed);
+            selectorTiempo.onValueChanged.AddListener(OnDuracionChanged);
+            selectorIncremento.onValueChanged.AddListener(OnIncrementoChanged);
             posicionFEN.onValueChanged.AddListener(OnFenCambiado);
+            nombreJugador1.onEndEdit.AddListener(OnNombreJugador1EndEdit);
+            nombreJugador2.onEndEdit.AddListener(OnNombreJugador2EndEdit);
+            selectorDificultad1.onValueChanged.AddListener(OnDificultadJugador1Changed);
+            selectorDificultad2.onValueChanged.AddListener(OnDificultadJugador2Changed);
             CargarDropdowns();
         }
 
@@ -65,11 +71,13 @@ namespace Ajedrez.UI
             {
                 nombreJugador1.gameObject.SetActive(true);
                 selectorDificultad1.gameObject.SetActive(false);
+                configuracionesPreviasManager.CargarJugadorHumano1();
             }
             else
             {
                 selectorDificultad1.gameObject.SetActive(true);
                 nombreJugador1.gameObject.SetActive(false);
+                configuracionesPreviasManager.CargarJugadorIA1();
             }
         }
 
@@ -81,11 +89,13 @@ namespace Ajedrez.UI
             {
                 nombreJugador2.gameObject.SetActive(true);
                 selectorDificultad2.gameObject.SetActive(false);
+                configuracionesPreviasManager.CargarJugadorHumano2();
             }
             else
             {
                 selectorDificultad2.gameObject.SetActive(true);
                 nombreJugador2.gameObject.SetActive(false);
+                configuracionesPreviasManager.CargarJugadorIA2();
             }
         }
 
@@ -131,7 +141,7 @@ namespace Ajedrez.UI
             selectorIncremento.AddOptions(opciones);
 
             opciones.Clear();
-            foreach (JugadorIA.TipoDificultad dificultad in Enum.GetValues(typeof(JugadorIA.TipoDificultad)))
+            foreach (ConfiguracionIA.TipoDificultad dificultad in Enum.GetValues(typeof(ConfiguracionIA.TipoDificultad)))
             {
                 opciones.Add(new TMP_Dropdown.OptionData(dificultad.ToString()));
             }
@@ -147,7 +157,7 @@ namespace Ajedrez.UI
             selectorJugador2.AddOptions(opciones);
         }
 
-        public void CambiarColores()
+        private void CambiarColores()
         {
             string temp = textoJugador1.text;
             textoJugador1.text = textoJugador2.text;
@@ -155,71 +165,55 @@ namespace Ajedrez.UI
             configuracionesPreviasManager.CambiarColores();
         }
 
-        public float ObtenerDuracion()
+        private void OnDuracionChanged(int indice)
         {
             // Obtener el texto mostrado en el dropdown, que es el número de minutos
-            string textoSeleccionado = selectorTiempo.options[selectorTiempo.value].text;
+            string textoSeleccionado = selectorTiempo.options[indice].text;
 
             // Convertir minutos a segundos
             if (int.TryParse(textoSeleccionado, out int minutos))
             {
-                return minutos * 60f;
+                configuracionesPreviasManager.CambiarDuracion(minutos * 60f);
             }
-
-            return 0;
         }
 
-        public float ObtenerIncremento()
+        private void OnIncrementoChanged(int indice)
         {
             // Obtener el texto mostrado en el dropdown, que es el número de segundos
-            string textoSeleccionado = selectorIncremento.options[selectorIncremento.value].text;
+            string textoSeleccionado = selectorIncremento.options[indice].text;
 
             if (int.TryParse(textoSeleccionado, out int segundos))
             {
-                return segundos;
+                configuracionesPreviasManager.CambiarIncremento(segundos);
             }
-
-            return 0;
         }
 
-        public Jugador.Tipo ObtenerTipoJugador1()
+        private void OnNombreJugador1EndEdit(string nombre)
         {
-            return (Jugador.Tipo)selectorJugador1.value;
-        }
-
-        public Jugador.Tipo ObtenerTipoJugador2()
-        {
-            return (Jugador.Tipo)selectorJugador2.value;
-        }
-
-        public string ObtenerNombreJugador1()
-        {
-            if (string.IsNullOrWhiteSpace(nombreJugador1.text))
+            if (!string.IsNullOrWhiteSpace(nombre))
             {
-                return "Jugador 1";
+                configuracionesPreviasManager.CambiarNombreJugador1(nombre);
             }
-
-            return nombreJugador1.text;
         }
 
-        public string ObtenerNombreJugador2()
+        private void OnNombreJugador2EndEdit(string nombre)
         {
-            if (string.IsNullOrWhiteSpace(nombreJugador2.text))
+            if (!string.IsNullOrWhiteSpace(nombre))
             {
-                return "Jugador 2";
+                configuracionesPreviasManager.CambiarNombreJugador2(nombre);
             }
-
-            return nombreJugador2.text;
         }
 
-        public JugadorIA.TipoDificultad ObtenerDificultadJugador1()
+        private void OnDificultadJugador1Changed(int indice)
         {
-            return (JugadorIA.TipoDificultad)selectorDificultad1.value;
+            ConfiguracionIA.TipoDificultad dificultad = (ConfiguracionIA.TipoDificultad)indice;
+            configuracionesPreviasManager.CambiarDificultadJugador1(dificultad);
         }
 
-        public JugadorIA.TipoDificultad ObtenerDificultadJugador2()
+        private void OnDificultadJugador2Changed(int indice)
         {
-            return (JugadorIA.TipoDificultad)selectorDificultad2.value;
+            ConfiguracionIA.TipoDificultad dificultad = (ConfiguracionIA.TipoDificultad)indice;
+            configuracionesPreviasManager.CambiarDificultadJugador2(dificultad);
         }
 
         public void BotonEmpezar()
