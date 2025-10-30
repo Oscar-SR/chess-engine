@@ -23,7 +23,7 @@ namespace Ajedrez.Managers
         void Start()
         {
             libroAperturas = Resources.Load<TextAsset>("Aperturas");
-            partida = new Partida(new Tablero(), new JugadorHumano("Jugador1", Pieza.Color.Blancas), new JugadorHumano("Jugador2", Pieza.Color.Negras), new Reloj(60f, 0f));
+            partida = new Partida(new Tablero(), new JugadorHumano("Jugador 1", Pieza.Color.Blancas), new JugadorHumano("Jugador 2", Pieza.Color.Negras), new Reloj(60f, 0f));
             tableroUI.Init(partida.Tablero);
         }
 
