@@ -89,5 +89,18 @@ namespace Ajedrez.Core
                 MaxMovimientoLibro = maxMovimientoLibro
             };
         }
+
+        public override string ToString()
+        {
+            string libroNombre = LibroAperturas != null ? LibroAperturas.name : "null";
+
+            return $"ConfiguracionIA:\n" +
+                   $"  Dificultad: {Dificultad}\n" +
+                   $"  LimiteBusqueda: {LimiteBusqueda}\n" +
+                   $"  Limite: {Limite}\n" +
+                   $"  UsarLibroAperturas: {UsarLibroAperturas}\n" +
+                   $"  LibroAperturas: {libroNombre}\n" +
+                   $"  MaxMovimientoLibro: {MaxMovimientoLibro}";
+        }
     }
 }

@@ -40,6 +40,16 @@ namespace Ajedrez.Managers
                     partida.Tablero = new Tablero(fen);
                 }
 
+                // Actualizar representación del tablero de los jugadores IA si los hay
+                if (partida.JugadorBlancas is JugadorIA jugadorBlancasIA)
+                {
+                    jugadorBlancasIA.Tablero = partida.Tablero;
+                }
+                if (partida.JugadorNegras is JugadorIA jugadorNegrasIA)
+                {
+                    jugadorNegrasIA.Tablero = partida.Tablero;
+                }
+
                 configuracionesPreviasUI.LimpiarError();
             }
             catch (ArgumentException /*ex*/)
@@ -48,7 +58,8 @@ namespace Ajedrez.Managers
                 partida.Tablero = null;
                 configuracionesPreviasUI.MostrarError("La posición FEN del tablero es incorrecta");
             }
-
+            
+            // Actualizar UI
             tableroUI.CambiarPosicion(partida.Tablero);
         }
 

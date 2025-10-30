@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Ajedrez.Managers;
 using Ajedrez.IA;
 using Ajedrez.Debugging;
+using System.Diagnostics;
 
 namespace Ajedrez.Core
 {
@@ -57,6 +58,7 @@ namespace Ajedrez.Core
             set
             {
                 configuracionIA = value;
+                base.Nombre = "IA " + configuracionIA.Dificultad;
                 ConfigurarIA();
             }
         }
