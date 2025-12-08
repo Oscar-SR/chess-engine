@@ -1,4 +1,10 @@
-# Chess
+<div align="center">
+  <picture align="center">
+    <source media="(prefers-color-scheme: dark)" srcset="Documentation/Images/Banner.png">
+    <source media="(prefers-color-scheme: light)" srcset="Documentation/Images/Banner.png">
+  </picture>
+  <h1>C#ESS</h1>
+</div>
 
 This repository contains the code for my Bachelor’s Thesis in Computer Engineering, focused on developing a **chess artificial intelligence from scratch**. The project is a functional chess engine implemented within the **Unity** game development platform.
 
