@@ -2,6 +2,7 @@
   <picture align="center">
     <source media="(prefers-color-scheme: dark)" srcset="Documentation/Images/Banner.png">
     <source media="(prefers-color-scheme: light)" srcset="Documentation/Images/Banner.png">
+    <img alt="AI Foundry icon." src="Documentation/Images/Banner.png">
   </picture>
   <h1>C#ESS</h1>
 </div>
