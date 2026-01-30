@@ -10,7 +10,7 @@ namespace Ajedrez.Core
         public const int MAX_PLYS_INACTIVO = 50;
 
         private ulong[] bitboards;
-        private Stack<(Pieza, int)> piezasMuertas;
+        private Stack<(Piece, int)> piezasMuertas;
         private EstadoTablero estadoActual;
         private Stack<EstadoTablero> historialEstados;
         private PilaRepeticiones historialPosicionesRepetidas; // Mantiene un historial de las últimas posiciones hasheadas, hasta el último movimiento irreversible
@@ -38,9 +38,9 @@ namespace Ajedrez.Core
                 for (int columna = 0; columna < AjedrezUtils.TAM_TABLERO; columna++)
                 {
                     int indice = AjedrezUtils.CoordenadasAIndice(fila, columna);
-                    Pieza pieza = ObtenerPieza(indice);
+                    Piece pieza = ObtenerPieza(indice);
 
-                    if (pieza.TipoPieza == Pieza.Tipo.Nada)
+                    if (pieza.TipoPieza == Piece.Tipo.Nada)
                     {
                         casillasVacias++;
                     }
@@ -68,7 +68,7 @@ namespace Ajedrez.Core
             }
 
             // 2 Turno
-            fen += estadoActual.Turno == Pieza.Color.Blancas ? " w " : " b ";
+            fen += estadoActual.Turno == Piece.Color.Blancas ? " w " : " b ";
 
             // 3 Enroques
             string enroques = "";
@@ -120,7 +120,7 @@ namespace Ajedrez.Core
 
             // Inicializar estructuras de datos
             bitboards = new ulong[12];
-            piezasMuertas = new Stack<(Pieza, int)>();
+            piezasMuertas = new Stack<(Piece, int)>();
             historialEstados = new Stack<EstadoTablero>(capacity: 64);
             historialPosicionesRepetidas = new PilaRepeticiones();
 
@@ -147,7 +147,7 @@ namespace Ajedrez.Core
                     }
                     else if ("pnbrqkPNBRQK".IndexOf(c) >= 0)
                     {
-                        Pieza pieza = new Pieza(c);
+                        Piece pieza = new Piece(c);
                         int indice = (7 - fila) * 8 + columna;
 
                         bitboards[AjedrezUtils.ObtenerIndicePieza(pieza)] |= BitboardUtils.SetBit(indice);
@@ -167,7 +167,7 @@ namespace Ajedrez.Core
             if (turnoFEN != "w" && turnoFEN != "b")
                 throw new ArgumentException($"Valor de turno inválido: '{turnoFEN}'. Debe ser 'w' o 'b'.", nameof(fen));
 
-            estadoActual.Turno = turnoFEN == "w" ? Pieza.Color.Blancas : Pieza.Color.Negras;
+            estadoActual.Turno = turnoFEN == "w" ? Piece.Color.Blancas : Piece.Color.Negras;
 
             // 3. Enroques disponibles
             if (!System.Text.RegularExpressions.Regex.IsMatch(enroquesFEN, "^(K?Q?k?q?|\\-)$"))
@@ -230,7 +230,7 @@ namespace Ajedrez.Core
             }
         }
 
-        public Pieza.Color Turno
+        public Piece.Color Turno
         {
             get
             {
@@ -383,8 +383,8 @@ namespace Ajedrez.Core
             estadoActual.HayCaptura = false;
 
             // Obtenemos el índice de la pieza que se quiere mover
-            Pieza piezaEnOrigen = ObtenerPieza(movimiento.Origen);
-            Pieza piezaCapturada = ObtenerPieza(movimiento.Destino);
+            Piece piezaEnOrigen = ObtenerPieza(movimiento.Origen);
+            Piece piezaCapturada = ObtenerPieza(movimiento.Destino);
 
             // Actualizar Zobrist hash movimiento
             estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashCasilla(estadoActual.ZobristHash, piezaEnOrigen, movimiento.Origen);
@@ -394,7 +394,7 @@ namespace Ajedrez.Core
             // Cambiamos la casilla de la pieza
             ActualizarBitboardsMovimiento(piezaEnOrigen, movimiento.Origen, movimiento.Destino);
 
-            if (piezaCapturada.TipoPieza != Pieza.Tipo.Nada)
+            if (piezaCapturada.TipoPieza != Piece.Tipo.Nada)
             {
                 if (estadoActual.HayPeonVulnerable && (movimiento.Destino == PeonVulnerable))
                 {
@@ -402,7 +402,7 @@ namespace Ajedrez.Core
                     estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashColumnasAlPaso(estadoActual.ZobristHash, PeonVulnerable); // Cuidado con mover esta línea hacia abajo, PeonVulnerable ya no devolverá la casilla
                     estadoActual.HayPeonVulnerable = false;
                 }
-                else if (piezaCapturada.TipoPieza == Pieza.Tipo.Torre)
+                else if (piezaCapturada.TipoPieza == Piece.Tipo.Torre)
                 {
                     // Cancelar los enroques correspondientes de cada torre
                     switch (movimiento.Destino)
@@ -450,14 +450,14 @@ namespace Ajedrez.Core
             {
                 case Movimiento.CAPTURA_AL_PASO:
                     {
-                        EliminarPieza(new Pieza(Pieza.Tipo.Peon, AjedrezUtils.InversoColor(Turno)), PeonVulnerable);
+                        EliminarPieza(new Piece(Piece.Tipo.Peon, AjedrezUtils.InversoColor(Turno)), PeonVulnerable);
                         estadoActual.HayPeonVulnerable = false; ;
                         break;
                     }
 
                 case Movimiento.ENROQUE:
                     {
-                        Pieza torre = new Pieza(Pieza.Tipo.Torre, Turno);
+                        Piece torre = new Piece(Piece.Tipo.Torre, Turno);
 
                         switch (movimiento.Destino)
                         {
@@ -526,36 +526,36 @@ namespace Ajedrez.Core
 
                 case Movimiento.PROMOVER_A_REINA:
                     {
-                        ActualizarBitboardsPromocion(Pieza.Tipo.Reina, Turno, movimiento.Destino);
-                        estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashCasilla(estadoActual.ZobristHash, new Pieza(Pieza.Tipo.Reina, Turno), movimiento.Destino);
+                        ActualizarBitboardsPromocion(Piece.Tipo.Reina, Turno, movimiento.Destino);
+                        estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashCasilla(estadoActual.ZobristHash, new Piece(Piece.Tipo.Reina, Turno), movimiento.Destino);
                         break;
                     }
 
                 case Movimiento.PROMOVER_A_CABALLO:
                     {
-                        ActualizarBitboardsPromocion(Pieza.Tipo.Caballo, Turno, movimiento.Destino);
-                        estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashCasilla(estadoActual.ZobristHash, new Pieza(Pieza.Tipo.Caballo, Turno), movimiento.Destino);
+                        ActualizarBitboardsPromocion(Piece.Tipo.Caballo, Turno, movimiento.Destino);
+                        estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashCasilla(estadoActual.ZobristHash, new Piece(Piece.Tipo.Caballo, Turno), movimiento.Destino);
                         break;
                     }
 
                 case Movimiento.PROMOVER_A_TORRE:
                     {
-                        ActualizarBitboardsPromocion(Pieza.Tipo.Torre, Turno, movimiento.Destino);
-                        estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashCasilla(estadoActual.ZobristHash, new Pieza(Pieza.Tipo.Torre, Turno), movimiento.Destino);
+                        ActualizarBitboardsPromocion(Piece.Tipo.Torre, Turno, movimiento.Destino);
+                        estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashCasilla(estadoActual.ZobristHash, new Piece(Piece.Tipo.Torre, Turno), movimiento.Destino);
                         break;
                     }
 
                 case Movimiento.PROMOVER_A_ALFIL:
                     {
-                        ActualizarBitboardsPromocion(Pieza.Tipo.Alfil, Turno, movimiento.Destino);
-                        estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashCasilla(estadoActual.ZobristHash, new Pieza(Pieza.Tipo.Alfil, Turno), movimiento.Destino);
+                        ActualizarBitboardsPromocion(Piece.Tipo.Alfil, Turno, movimiento.Destino);
+                        estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashCasilla(estadoActual.ZobristHash, new Piece(Piece.Tipo.Alfil, Turno), movimiento.Destino);
                         break;
                     }
             }
 
-            if (piezaEnOrigen.TipoPieza == Pieza.Tipo.Rey /*&& movimiento.Flag != Movimiento.ENROQUE*/)
+            if (piezaEnOrigen.TipoPieza == Piece.Tipo.Rey /*&& movimiento.Flag != Movimiento.ENROQUE*/)
             {
-                if (AjedrezUtils.MismoColor(piezaEnOrigen.ColorPieza, Pieza.Color.Blancas))
+                if (AjedrezUtils.MismoColor(piezaEnOrigen.ColorPieza, Piece.Color.Blancas))
                 {
                     estadoActual.CancelarEnroque(EstadoTablero.ENROQUE_CORTO_BLANCAS | EstadoTablero.ENROQUE_LARGO_BLANCAS);
                 }
@@ -568,9 +568,9 @@ namespace Ajedrez.Core
                 estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashEnroquesDisponibles(estadoActual.ZobristHash, historialEstados.Peek().EnroquesDisponibles); // Eliminar los enroques disponibles antiguos
                 estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashEnroquesDisponibles(estadoActual.ZobristHash, estadoActual.EnroquesDisponibles); // Añadir los enroques disponibles nuevos
             }
-            else if (piezaEnOrigen.TipoPieza == Pieza.Tipo.Torre)
+            else if (piezaEnOrigen.TipoPieza == Piece.Tipo.Torre)
             {
-                if (AjedrezUtils.MismoColor(piezaEnOrigen.ColorPieza, Pieza.Color.Blancas))
+                if (AjedrezUtils.MismoColor(piezaEnOrigen.ColorPieza, Piece.Color.Blancas))
                 {
                     if (movimiento.Origen == 0)
                         estadoActual.CancelarEnroque(EstadoTablero.ENROQUE_LARGO_BLANCAS);
@@ -591,7 +591,7 @@ namespace Ajedrez.Core
             }
 
             // Incrementar movimientos totales
-            if (Turno == Pieza.Color.Negras)
+            if (Turno == Piece.Color.Negras)
             {
                 numMovimientosTotales++;
             }
@@ -599,7 +599,7 @@ namespace Ajedrez.Core
             // Cambiamos el turno
             CambiarTurno(); // Cuidado con mover esto más abajo, afectará al Zobrist hash
 
-            if (!estadoActual.HayCaptura && piezaEnOrigen.TipoPieza != Pieza.Tipo.Peon)
+            if (!estadoActual.HayCaptura && piezaEnOrigen.TipoPieza != Piece.Tipo.Peon)
             {
                 // Movimiento no irreversible
                 // Incrementar el contador de la regla de los 50 movimientos
@@ -628,7 +628,7 @@ namespace Ajedrez.Core
         public void DeshacerMovimiento(Movimiento movimiento)
         {
             // Obtenemos el índice de la pieza que quiere deshacer su movimiento
-            Pieza pieza = ObtenerPieza(movimiento.Destino);
+            Piece pieza = ObtenerPieza(movimiento.Destino);
 
             // Cambiamos la casilla de la pieza
             ActualizarBitboardsMovimiento(pieza, movimiento.Destino, movimiento.Origen);
@@ -643,28 +643,28 @@ namespace Ajedrez.Core
                             case AjedrezUtils.ENROQUE_LARGO_BLANCAS:
                                 {
                                     // Enroque largo blancas
-                                    ActualizarBitboardsMovimiento(Pieza.Tipo.Torre, pieza.ColorPieza, 3, 0);
+                                    ActualizarBitboardsMovimiento(Piece.Tipo.Torre, pieza.ColorPieza, 3, 0);
                                     break;
                                 }
 
                             case AjedrezUtils.ENROQUE_CORTO_BLANCAS:
                                 {
                                     // Enroque corto blancas
-                                    ActualizarBitboardsMovimiento(Pieza.Tipo.Torre, pieza.ColorPieza, 5, 7);
+                                    ActualizarBitboardsMovimiento(Piece.Tipo.Torre, pieza.ColorPieza, 5, 7);
                                     break;
                                 }
 
                             case AjedrezUtils.ENROQUE_LARGO_NEGRAS:
                                 {
                                     // Enroque largo negras
-                                    ActualizarBitboardsMovimiento(Pieza.Tipo.Torre, pieza.ColorPieza, 59, 56);
+                                    ActualizarBitboardsMovimiento(Piece.Tipo.Torre, pieza.ColorPieza, 59, 56);
                                     break;
                                 }
 
                             case AjedrezUtils.ENROQUE_CORTO_NEGRAS:
                                 {
                                     // Enroque corto negras
-                                    ActualizarBitboardsMovimiento(Pieza.Tipo.Torre, pieza.ColorPieza, 61, 63);
+                                    ActualizarBitboardsMovimiento(Piece.Tipo.Torre, pieza.ColorPieza, 61, 63);
                                     break;
                                 }
                         }
@@ -674,37 +674,37 @@ namespace Ajedrez.Core
 
                 case Movimiento.PROMOVER_A_REINA:
                     {
-                        DesactualizarBitboardsPromocion(Pieza.Tipo.Reina, pieza.ColorPieza, movimiento.Origen);
+                        DesactualizarBitboardsPromocion(Piece.Tipo.Reina, pieza.ColorPieza, movimiento.Origen);
                         break;
                     }
 
                 case Movimiento.PROMOVER_A_CABALLO:
                     {
-                        DesactualizarBitboardsPromocion(Pieza.Tipo.Caballo, pieza.ColorPieza, movimiento.Origen);
+                        DesactualizarBitboardsPromocion(Piece.Tipo.Caballo, pieza.ColorPieza, movimiento.Origen);
                         break;
                     }
 
                 case Movimiento.PROMOVER_A_TORRE:
                     {
-                        DesactualizarBitboardsPromocion(Pieza.Tipo.Torre, pieza.ColorPieza, movimiento.Origen);
+                        DesactualizarBitboardsPromocion(Piece.Tipo.Torre, pieza.ColorPieza, movimiento.Origen);
                         break;
                     }
 
                 case Movimiento.PROMOVER_A_ALFIL:
                     {
-                        DesactualizarBitboardsPromocion(Pieza.Tipo.Alfil, pieza.ColorPieza, movimiento.Origen);
+                        DesactualizarBitboardsPromocion(Piece.Tipo.Alfil, pieza.ColorPieza, movimiento.Origen);
                         break;
                     }
             }
 
             if (estadoActual.HayCaptura)
             {
-                (Pieza piezaCapturada, int casilla) = piezasMuertas.Pop();
+                (Piece piezaCapturada, int casilla) = piezasMuertas.Pop();
                 bitboards[AjedrezUtils.ObtenerIndicePieza(piezaCapturada.TipoPieza, piezaCapturada.ColorPieza)] |= BitboardUtils.SetBit(casilla);
             }
 
             // Decrementar movimientos totales
-            if (Turno == Pieza.Color.Blancas)
+            if (Turno == Piece.Color.Blancas)
             {
                 numMovimientosTotales--;
             }
@@ -756,7 +756,7 @@ namespace Ajedrez.Core
             ulong atacantesRey = CasillaAtacadaPor(casillasOcupadas, casillaRey, AjedrezUtils.InversoColor(Turno));
             (ulong piezasClavadas, ulong pinners) = ObtenerPiezasClavadas(casillasOcupadas, casillaRey, Turno);
             bool jaque = atacantesRey == 0 ? false : true;
-            ulong piezas = AjedrezUtils.MismoColor(Turno, Pieza.Color.Blancas) ? ObtenerOcupadasBlancas() : ObtenerOcupadasNegras();
+            ulong piezas = AjedrezUtils.MismoColor(Turno, Piece.Color.Blancas) ? ObtenerOcupadasBlancas() : ObtenerOcupadasNegras();
 
             while (piezas != 0)
             {
@@ -765,37 +765,37 @@ namespace Ajedrez.Core
 
                 switch (ObtenerPieza(casilla).TipoPieza)
                 {
-                    case Pieza.Tipo.Rey:
+                    case Piece.Tipo.Rey:
                         {
                             GenerarMovimientosRey(movimientosLegales, casilla, casillasOcupadas, ObtenerBitboardMovimientosValidosRey(jaque, casillasOcupadas), soloGenerarCapturas);
                             break;
                         }
 
-                    case Pieza.Tipo.Reina:
+                    case Piece.Tipo.Reina:
                         {
                             GenerarMovimientosReina(movimientosLegales, casilla, casillasOcupadas, ObtenerBitboardMovimientosValidos(casilla, jaque, atacantesRey, piezasClavadas, pinners, casillaRey), soloGenerarCapturas);
                             break;
                         }
 
-                    case Pieza.Tipo.Torre:
+                    case Piece.Tipo.Torre:
                         {
                             GenerarMovimientosTorre(movimientosLegales, casilla, casillasOcupadas, ObtenerBitboardMovimientosValidos(casilla, jaque, atacantesRey, piezasClavadas, pinners, casillaRey), soloGenerarCapturas);
                             break;
                         }
 
-                    case Pieza.Tipo.Alfil:
+                    case Piece.Tipo.Alfil:
                         {
                             GenerarMovimientosAlfil(movimientosLegales, casilla, casillasOcupadas, ObtenerBitboardMovimientosValidos(casilla, jaque, atacantesRey, piezasClavadas, pinners, casillaRey), soloGenerarCapturas);
                             break;
                         }
 
-                    case Pieza.Tipo.Caballo:
+                    case Piece.Tipo.Caballo:
                         {
                             GenerarMovimientosCaballo(movimientosLegales, casilla, ObtenerBitboardMovimientosValidos(casilla, jaque, atacantesRey, piezasClavadas, pinners, casillaRey), soloGenerarCapturas);
                             break;
                         }
 
-                    case Pieza.Tipo.Peon:
+                    case Piece.Tipo.Peon:
                         {
                             GenerarMovimientosPeon(movimientosLegales, casilla, casillaRey, casillasOcupadas, ObtenerBitboardMovimientosValidos(casilla, jaque, atacantesRey, piezasClavadas, pinners, casillaRey), soloGenerarCapturas);
                             break;
@@ -813,16 +813,16 @@ namespace Ajedrez.Core
                 if (AjedrezUtils.NumCasillasHastaBorde[casilla][direccion] > 0)
                 {
                     int casillaDestino = casilla + AjedrezUtils.Direcciones[direccion];
-                    Pieza piezaEnDestino = ObtenerPieza(casillaDestino);
+                    Piece piezaEnDestino = ObtenerPieza(casillaDestino);
 
                     // Si hay una pieza del mismo color, no es un movimiento válido
-                    if (piezaEnDestino.TipoPieza != Pieza.Tipo.Nada && AjedrezUtils.MismoColor(piezaEnDestino.ColorPieza, Turno))
+                    if (piezaEnDestino.TipoPieza != Piece.Tipo.Nada && AjedrezUtils.MismoColor(piezaEnDestino.ColorPieza, Turno))
                     {
                         continue;
                     }
 
                     // Si solo se generan capturas y no hay una pieza en el destino, buscar en el siguente
-                    if (soloGenerarCapturas && piezaEnDestino.TipoPieza == Pieza.Tipo.Nada)
+                    if (soloGenerarCapturas && piezaEnDestino.TipoPieza == Piece.Tipo.Nada)
                     {
                         continue;
                     }
@@ -837,7 +837,7 @@ namespace Ajedrez.Core
 
             if (!soloGenerarCapturas)
             {
-                if (Turno == Pieza.Color.Blancas)
+                if (Turno == Piece.Color.Blancas)
                 {
                     // Enroque largo blancas
                     if (estadoActual.EnroqueDisponible(EstadoTablero.ENROQUE_LARGO_BLANCAS) && !CasillaAtacada(casillasOcupadas, casilla, AjedrezUtils.InversoColor(Turno)) && CasillaVacia(casillasOcupadas, 1) && CasillaVacia(casillasOcupadas, 2) && !CasillaAtacada(casillasOcupadas, 2, AjedrezUtils.InversoColor(Turno)) && CasillaVacia(casillasOcupadas, 3) && !CasillaAtacada(casillasOcupadas, 3, AjedrezUtils.InversoColor(Turno)))
@@ -881,12 +881,12 @@ namespace Ajedrez.Core
                 int destino = BitboardUtils.PrimerBitActivo(movimientos);
                 movimientos &= movimientos - 1; // Borra el bit más bajo activo
 
-                Pieza piezaEnDestino = ObtenerPieza(destino);
+                Piece piezaEnDestino = ObtenerPieza(destino);
 
                 // Si no hay pieza del mismo color y el flag de solo generar capturas está activo, solo agregar si hay una pieza del color contrario
-                if (piezaEnDestino.TipoPieza == Pieza.Tipo.Nada || !AjedrezUtils.MismoColor(piezaEnDestino.ColorPieza, Turno))
+                if (piezaEnDestino.TipoPieza == Piece.Tipo.Nada || !AjedrezUtils.MismoColor(piezaEnDestino.ColorPieza, Turno))
                 {
-                    if (!soloGenerarCapturas || (piezaEnDestino.TipoPieza != Pieza.Tipo.Nada))
+                    if (!soloGenerarCapturas || (piezaEnDestino.TipoPieza != Piece.Tipo.Nada))
                     {
                         movimientosLegales.Add(new Movimiento(casilla, destino, Movimiento.SIN_FLAG));
                     }
@@ -907,12 +907,12 @@ namespace Ajedrez.Core
                 int destino = BitboardUtils.PrimerBitActivo(movimientos);
                 movimientos &= movimientos - 1; // Borra el bit más bajo activo
 
-                Pieza piezaEnDestino = ObtenerPieza(destino);
+                Piece piezaEnDestino = ObtenerPieza(destino);
 
                 // Si no hay pieza del mismo color y el flag de solo generar capturas está activo, solo agregar si hay una pieza del color contrario
-                if (piezaEnDestino.TipoPieza == Pieza.Tipo.Nada || !AjedrezUtils.MismoColor(piezaEnDestino.ColorPieza, Turno))
+                if (piezaEnDestino.TipoPieza == Piece.Tipo.Nada || !AjedrezUtils.MismoColor(piezaEnDestino.ColorPieza, Turno))
                 {
-                    if (!soloGenerarCapturas || (piezaEnDestino.TipoPieza != Pieza.Tipo.Nada))
+                    if (!soloGenerarCapturas || (piezaEnDestino.TipoPieza != Piece.Tipo.Nada))
                     {
                         movimientosLegales.Add(new Movimiento(casilla, destino, Movimiento.SIN_FLAG));
                     }
@@ -933,12 +933,12 @@ namespace Ajedrez.Core
                 int destino = BitboardUtils.PrimerBitActivo(movimientos);
                 movimientos &= movimientos - 1; // Borra el bit más bajo activo
 
-                Pieza piezaEnDestino = ObtenerPieza(destino);
+                Piece piezaEnDestino = ObtenerPieza(destino);
 
                 // Si no hay pieza del mismo color y el flag de solo generar capturas está activo, solo agregar si hay una pieza del color contrario
-                if (piezaEnDestino.TipoPieza == Pieza.Tipo.Nada || !AjedrezUtils.MismoColor(piezaEnDestino.ColorPieza, Turno))
+                if (piezaEnDestino.TipoPieza == Piece.Tipo.Nada || !AjedrezUtils.MismoColor(piezaEnDestino.ColorPieza, Turno))
                 {
-                    if (!soloGenerarCapturas || (piezaEnDestino.TipoPieza != Pieza.Tipo.Nada))
+                    if (!soloGenerarCapturas || (piezaEnDestino.TipoPieza != Piece.Tipo.Nada))
                     {
                         movimientosLegales.Add(new Movimiento(casilla, destino, Movimiento.SIN_FLAG));
                     }
@@ -959,16 +959,16 @@ namespace Ajedrez.Core
                 }
 
                 // Verificar si hay una pieza en el destino
-                Pieza piezaEnDestino = ObtenerPieza(casillaDestino);
+                Piece piezaEnDestino = ObtenerPieza(casillaDestino);
 
                 // Si hay una pieza del mismo color, no se puede mover ahí
-                if (piezaEnDestino.TipoPieza != Pieza.Tipo.Nada && AjedrezUtils.MismoColor(piezaEnDestino.ColorPieza, Turno))
+                if (piezaEnDestino.TipoPieza != Piece.Tipo.Nada && AjedrezUtils.MismoColor(piezaEnDestino.ColorPieza, Turno))
                 {
                     continue;
                 }
 
                 // Si solo se generan capturas y no hay una pieza en el destino, buscar en el siguente
-                if (soloGenerarCapturas && piezaEnDestino.TipoPieza == Pieza.Tipo.Nada)
+                if (soloGenerarCapturas && piezaEnDestino.TipoPieza == Piece.Tipo.Nada)
                 {
                     continue;
                 }
@@ -983,15 +983,15 @@ namespace Ajedrez.Core
 
         private void GenerarMovimientosPeon(List<Movimiento> movimientosLegales, int casilla, int casillaRey, ulong casillasOcupadas, ulong movimientosValidos, bool soloGenerarCapturas)
         {
-            int avance = AjedrezUtils.MismoColor(Turno, Pieza.Color.Blancas) ? 8 : -8;
+            int avance = AjedrezUtils.MismoColor(Turno, Piece.Color.Blancas) ? 8 : -8;
             int casillaAvance = casilla + avance;
-            Pieza piezaEnDestino = ObtenerPieza(casillaAvance);
+            Piece piezaEnDestino = ObtenerPieza(casillaAvance);
 
             // Puede promocionar
-            if ((AjedrezUtils.MismoColor(Turno, Pieza.Color.Blancas) && (AjedrezUtils.ObtenerFila(casilla) == 6)) || (AjedrezUtils.MismoColor(Turno, Pieza.Color.Negras) && (AjedrezUtils.ObtenerFila(casilla) == 1)))
+            if ((AjedrezUtils.MismoColor(Turno, Piece.Color.Blancas) && (AjedrezUtils.ObtenerFila(casilla) == 6)) || (AjedrezUtils.MismoColor(Turno, Piece.Color.Negras) && (AjedrezUtils.ObtenerFila(casilla) == 1)))
             {
                 // No lo bloquea una pieza
-                if (piezaEnDestino.TipoPieza == Pieza.Tipo.Nada && BitboardUtils.EstaCasillaActiva(casillaAvance, movimientosValidos))
+                if (piezaEnDestino.TipoPieza == Piece.Tipo.Nada && BitboardUtils.EstaCasillaActiva(casillaAvance, movimientosValidos))
                 {
                     if (!soloGenerarCapturas)
                     {
@@ -1008,7 +1008,7 @@ namespace Ajedrez.Core
                     piezaEnDestino = ObtenerPieza(casillaAvance - 1);
 
                     // Hay captura al oeste
-                    if (piezaEnDestino.TipoPieza != Pieza.Tipo.Nada && !AjedrezUtils.MismoColor(Turno, piezaEnDestino.ColorPieza))
+                    if (piezaEnDestino.TipoPieza != Piece.Tipo.Nada && !AjedrezUtils.MismoColor(Turno, piezaEnDestino.ColorPieza))
                     {
                         movimientosLegales.Add(new Movimiento(casilla, casillaAvance - 1, Movimiento.PROMOVER_A_REINA));
                         movimientosLegales.Add(new Movimiento(casilla, casillaAvance - 1, Movimiento.PROMOVER_A_CABALLO));
@@ -1023,7 +1023,7 @@ namespace Ajedrez.Core
                     piezaEnDestino = ObtenerPieza(casillaAvance + 1);
 
                     // Hay captura al este
-                    if (piezaEnDestino.TipoPieza != Pieza.Tipo.Nada && !AjedrezUtils.MismoColor(Turno, piezaEnDestino.ColorPieza))
+                    if (piezaEnDestino.TipoPieza != Piece.Tipo.Nada && !AjedrezUtils.MismoColor(Turno, piezaEnDestino.ColorPieza))
                     {
                         movimientosLegales.Add(new Movimiento(casilla, casillaAvance + 1, Movimiento.PROMOVER_A_REINA));
                         movimientosLegales.Add(new Movimiento(casilla, casillaAvance + 1, Movimiento.PROMOVER_A_CABALLO));
@@ -1035,7 +1035,7 @@ namespace Ajedrez.Core
             else
             {
                 // Verifica si el movimiento es un avance normal, si no es captura y si el flag de captura está activado
-                if (!soloGenerarCapturas && piezaEnDestino.TipoPieza == Pieza.Tipo.Nada && BitboardUtils.EstaCasillaActiva(casillaAvance, movimientosValidos))
+                if (!soloGenerarCapturas && piezaEnDestino.TipoPieza == Piece.Tipo.Nada && BitboardUtils.EstaCasillaActiva(casillaAvance, movimientosValidos))
                 {
                     movimientosLegales.Add(new Movimiento(casilla, casillaAvance, Movimiento.SIN_FLAG));
                 }
@@ -1046,7 +1046,7 @@ namespace Ajedrez.Core
                     piezaEnDestino = ObtenerPieza(casillaAvance - 1);
 
                     // Hay captura al oeste
-                    if (piezaEnDestino.TipoPieza != Pieza.Tipo.Nada && !AjedrezUtils.MismoColor(Turno, piezaEnDestino.ColorPieza))
+                    if (piezaEnDestino.TipoPieza != Piece.Tipo.Nada && !AjedrezUtils.MismoColor(Turno, piezaEnDestino.ColorPieza))
                     {
                         movimientosLegales.Add(new Movimiento(casilla, casillaAvance - 1, Movimiento.SIN_FLAG));
                     }
@@ -1058,7 +1058,7 @@ namespace Ajedrez.Core
                     piezaEnDestino = ObtenerPieza(casillaAvance + 1);
 
                     // Hay captura al este
-                    if (piezaEnDestino.TipoPieza != Pieza.Tipo.Nada && !AjedrezUtils.MismoColor(Turno, piezaEnDestino.ColorPieza))
+                    if (piezaEnDestino.TipoPieza != Piece.Tipo.Nada && !AjedrezUtils.MismoColor(Turno, piezaEnDestino.ColorPieza))
                     {
                         movimientosLegales.Add(new Movimiento(casilla, casillaAvance + 1, Movimiento.SIN_FLAG));
                     }
@@ -1081,15 +1081,15 @@ namespace Ajedrez.Core
                 }
 
                 // Si es el primer movimiento y no está activado el flag de sólo capturas
-                if (!soloGenerarCapturas && ((AjedrezUtils.MismoColor(Turno, Pieza.Color.Blancas) && AjedrezUtils.ObtenerFila(casilla) == 1) || (AjedrezUtils.MismoColor(Turno, Pieza.Color.Negras) && AjedrezUtils.ObtenerFila(casilla) == 6)))
+                if (!soloGenerarCapturas && ((AjedrezUtils.MismoColor(Turno, Piece.Color.Blancas) && AjedrezUtils.ObtenerFila(casilla) == 1) || (AjedrezUtils.MismoColor(Turno, Piece.Color.Negras) && AjedrezUtils.ObtenerFila(casilla) == 6)))
                 {
                     // Puede mover dos casillas
                     piezaEnDestino = ObtenerPieza(casillaAvance);
                     casillaAvance += avance;
-                    Pieza piezaEnDestino2 = ObtenerPieza(casillaAvance);
+                    Piece piezaEnDestino2 = ObtenerPieza(casillaAvance);
 
                     // No lo bloquea una pieza
-                    if (piezaEnDestino.TipoPieza == Pieza.Tipo.Nada && piezaEnDestino2.TipoPieza == Pieza.Tipo.Nada && BitboardUtils.EstaCasillaActiva(casillaAvance, movimientosValidos))
+                    if (piezaEnDestino.TipoPieza == Piece.Tipo.Nada && piezaEnDestino2.TipoPieza == Piece.Tipo.Nada && BitboardUtils.EstaCasillaActiva(casillaAvance, movimientosValidos))
                     {
                         movimientosLegales.Add(new Movimiento(casilla, casillaAvance, Movimiento.PEON_MUEVE_DOS));
                     }
@@ -1103,7 +1103,7 @@ namespace Ajedrez.Core
 
             if (jaque)
             {
-                movimientosValidos &= ~BitboardUtils.AtaquesDeslizantesSinFiltrar(casillasOcupadas, bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Torre, AjedrezUtils.InversoColor(Turno))], bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Alfil, AjedrezUtils.InversoColor(Turno))], bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Reina, AjedrezUtils.InversoColor(Turno))], bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Rey, Turno)]);
+                movimientosValidos &= ~BitboardUtils.AtaquesDeslizantesSinFiltrar(casillasOcupadas, bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Torre, AjedrezUtils.InversoColor(Turno))], bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Alfil, AjedrezUtils.InversoColor(Turno))], bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Reina, AjedrezUtils.InversoColor(Turno))], bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Rey, Turno)]);
             }
 
             return movimientosValidos;
@@ -1159,7 +1159,7 @@ namespace Ajedrez.Core
             return movimientosValidos;
         }
 
-        private bool CapturaAlPasoExponeAlRey(int casillaPeon, ulong casillasOcupadas, int casillaRey, Pieza.Color colorRey)
+        private bool CapturaAlPasoExponeAlRey(int casillaPeon, ulong casillasOcupadas, int casillaRey, Piece.Color colorRey)
         {
             // Si el peon en cuestión es una pieza clavada quitando el peon vulnerable, delvolver true, si no, devolver false
             (ulong clavadasSinPeonVulnerable, _) = ObtenerPiezasClavadas(casillasOcupadas & ~BitboardUtils.SetBit(PeonVulnerable), casillaRey, colorRey);
@@ -1174,7 +1174,7 @@ namespace Ajedrez.Core
             }
         }
 
-        private void EliminarPieza(Pieza pieza, int casilla)
+        private void EliminarPieza(Piece pieza, int casilla)
         {
             // Añadimos la pieza a la lista de piezas muertas
             piezasMuertas.Push((pieza, casilla));
@@ -1194,33 +1194,33 @@ namespace Ajedrez.Core
             return (ocupadas & BitboardUtils.SetBit(casilla)) == 0;
         }
 
-        private bool CasillaAtacada(ulong casillasOcupadas, int casilla, Pieza.Color color)
+        private bool CasillaAtacada(ulong casillasOcupadas, int casilla, Piece.Color color)
         {
             // 1. Verificar si un peón ataca la casilla
-            ulong peones = bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Peon, color)]; // Peones del color contrario
-            if ((BitboardUtils.AtaquesPeon[AjedrezUtils.MismoColor(color, Pieza.Color.Blancas) ? 0 : 1, casilla] & peones) != 0)
+            ulong peones = bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Peon, color)]; // Peones del color contrario
+            if ((BitboardUtils.AtaquesPeon[AjedrezUtils.MismoColor(color, Piece.Color.Blancas) ? 0 : 1, casilla] & peones) != 0)
                 return true;
 
             // 2. Verificar si un caballo ataca la casilla
-            ulong caballos = bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Caballo, color)]; // Caballos del color contrario
+            ulong caballos = bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Caballo, color)]; // Caballos del color contrario
             if ((BitboardUtils.AtaquesCaballo[casilla] & caballos) != 0)
                 return true;
 
             // 3. Verificar si un rey ataca la casilla
-            ulong rey = bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Rey, color)]; // Rey del color contrario
+            ulong rey = bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Rey, color)]; // Rey del color contrario
             if ((BitboardUtils.AtaquesRey[casilla] & rey) != 0)
                 return true;
 
             // 4. Verificar si una reina o un alfil atacan la casilla
-            ulong reinasAlfiles = bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Reina, color)] // Reinas del color contrario
-                                | bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Alfil, color)]; // Alfiles del color contrario
+            ulong reinasAlfiles = bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Reina, color)] // Reinas del color contrario
+                                | bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Alfil, color)]; // Alfiles del color contrario
 
             if ((BitboardUtils.AtaquesAlfil(casillasOcupadas, casilla) & reinasAlfiles) != 0)
                 return true;
 
             // 5. Verificar si una reina o una torre atacan la casilla
-            ulong reinasTorres = bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Reina, color)] // Reinas del color contrario
-                                | bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Torre, color)]; // Torres del color contrario
+            ulong reinasTorres = bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Reina, color)] // Reinas del color contrario
+                                | bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Torre, color)]; // Torres del color contrario
 
             if ((BitboardUtils.AtaquesTorre(casillasOcupadas, casilla) & reinasTorres) != 0)
                 return true;
@@ -1228,81 +1228,81 @@ namespace Ajedrez.Core
             return false;
         }
 
-        private ulong CasillaAtacadaPor(ulong casillasOcupadas, int casilla, Pieza.Color color)
+        private ulong CasillaAtacadaPor(ulong casillasOcupadas, int casilla, Piece.Color color)
         {
             ulong atacantes = 0;
 
             // 1. Verificar si un peón ataca la casilla
-            ulong peones = bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Peon, color)]; // Peones del color contrario
-            atacantes |= (BitboardUtils.AtaquesPeon[AjedrezUtils.MismoColor(color, Pieza.Color.Blancas) ? 0 : 1, casilla] & peones);
+            ulong peones = bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Peon, color)]; // Peones del color contrario
+            atacantes |= (BitboardUtils.AtaquesPeon[AjedrezUtils.MismoColor(color, Piece.Color.Blancas) ? 0 : 1, casilla] & peones);
 
             // 2. Verificar si un caballo ataca la casilla
-            ulong caballos = bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Caballo, color)]; // Caballos del color contrario
+            ulong caballos = bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Caballo, color)]; // Caballos del color contrario
             atacantes |= (BitboardUtils.AtaquesCaballo[casilla] & caballos);
 
             // 3. Verificar si un rey ataca la casilla
-            ulong rey = bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Rey, color)]; // Rey del color contrario
+            ulong rey = bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Rey, color)]; // Rey del color contrario
             atacantes |= (BitboardUtils.AtaquesRey[casilla] & rey);
 
             // 4. Verificar si una reina o un alfil atacan la casilla
-            ulong reinasAlfiles = bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Reina, color)] // Reinas del color contrario
-                                | bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Alfil, color)]; // Alfiles del color contrario
+            ulong reinasAlfiles = bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Reina, color)] // Reinas del color contrario
+                                | bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Alfil, color)]; // Alfiles del color contrario
 
             atacantes |= (BitboardUtils.AtaquesAlfil(casillasOcupadas, casilla) & reinasAlfiles);
 
             // 5. Verificar si una reina o una torre atacan la casilla
-            ulong reinasTorres = bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Reina, color)] // Reinas del color contrario
-                                | bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Torre, color)]; // Torres del color contrario
+            ulong reinasTorres = bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Reina, color)] // Reinas del color contrario
+                                | bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Torre, color)]; // Torres del color contrario
 
             atacantes |= (BitboardUtils.AtaquesTorre(casillasOcupadas, casilla) & reinasTorres);
 
             return atacantes;
         }
 
-        private void ActualizarBitboardsMovimiento(Pieza.Tipo tipoPieza, Pieza.Color color, int origen, int destino)
+        private void ActualizarBitboardsMovimiento(Piece.Tipo tipoPieza, Piece.Color color, int origen, int destino)
         {
             bitboards[AjedrezUtils.ObtenerIndicePieza(tipoPieza, color)] &= ~(1UL << origen); // limpiar casilla origen
             bitboards[AjedrezUtils.ObtenerIndicePieza(tipoPieza, color)] |= (1UL << destino); // poner casilla destino
         }
 
-        private void ActualizarBitboardsMovimiento(Pieza pieza, int origen, int destino)
+        private void ActualizarBitboardsMovimiento(Piece pieza, int origen, int destino)
         {
             bitboards[AjedrezUtils.ObtenerIndicePieza(pieza)] &= ~(1UL << origen); // limpiar casilla origen
             bitboards[AjedrezUtils.ObtenerIndicePieza(pieza)] |= (1UL << destino); // poner casilla destino
         }
 
-        private void EliminarPiezaDeBitboard(Pieza.Tipo tipoPieza, Pieza.Color color, int casilla)
+        private void EliminarPiezaDeBitboard(Piece.Tipo tipoPieza, Piece.Color color, int casilla)
         {
             bitboards[AjedrezUtils.ObtenerIndicePieza(tipoPieza, color)] &= ~(1UL << casilla);
         }
 
-        private void EliminarPiezaDeBitboard(Pieza pieza, int casilla)
+        private void EliminarPiezaDeBitboard(Piece pieza, int casilla)
         {
             bitboards[AjedrezUtils.ObtenerIndicePieza(pieza)] &= ~(1UL << casilla);
         }
 
-        private void ActualizarBitboardsPromocion(Pieza.Tipo tipoPieza, Pieza.Color color, int casilla)
+        private void ActualizarBitboardsPromocion(Piece.Tipo tipoPieza, Piece.Color color, int casilla)
         {
-            bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Peon, color)] &= ~(1UL << casilla);
+            bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Peon, color)] &= ~(1UL << casilla);
             bitboards[AjedrezUtils.ObtenerIndicePieza(tipoPieza, color)] |= (1UL << casilla);
         }
 
-        private void ActualizarBitboardsPromocion(Pieza pieza, int casilla)
+        private void ActualizarBitboardsPromocion(Piece pieza, int casilla)
         {
-            bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Peon, pieza.ColorPieza)] &= ~(1UL << casilla);
+            bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Peon, pieza.ColorPieza)] &= ~(1UL << casilla);
             bitboards[AjedrezUtils.ObtenerIndicePieza(pieza.TipoPieza, pieza.ColorPieza)] |= (1UL << casilla);
         }
 
-        private void DesactualizarBitboardsPromocion(Pieza.Tipo tipoPieza, Pieza.Color color, int casilla)
+        private void DesactualizarBitboardsPromocion(Piece.Tipo tipoPieza, Piece.Color color, int casilla)
         {
             bitboards[AjedrezUtils.ObtenerIndicePieza(tipoPieza, color)] &= ~(1UL << casilla);
-            bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Peon, color)] |= (1UL << casilla);
+            bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Peon, color)] |= (1UL << casilla);
         }
 
-        private void DesactualizarBitboardsPromocion(Pieza pieza, int casilla)
+        private void DesactualizarBitboardsPromocion(Piece pieza, int casilla)
         {
             bitboards[AjedrezUtils.ObtenerIndicePieza(pieza.TipoPieza, pieza.ColorPieza)] &= ~(1UL << casilla);
-            bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Peon, pieza.ColorPieza)] |= (1UL << casilla);
+            bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Peon, pieza.ColorPieza)] |= (1UL << casilla);
         }
 
         private ulong ObtenerOcupadasBlancas()
@@ -1320,9 +1320,9 @@ namespace Ajedrez.Core
             return ObtenerOcupadasBlancas() | ObtenerOcupadasNegras();
         }
 
-        public int ObtenerCasillaRey(Pieza.Color color)
+        public int ObtenerCasillaRey(Piece.Color color)
         {
-            ulong rey = bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Rey, color)];
+            ulong rey = bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Rey, color)];
             if (rey == 0)
             {
                 return -1;
@@ -1331,12 +1331,12 @@ namespace Ajedrez.Core
             return BitboardUtils.PrimerBitActivo(rey);
         }
 
-        private (ulong pinned, ulong pinners) ObtenerPiezasClavadas(ulong casillasOcupadas, int casillaRey, Pieza.Color colorRey)
+        private (ulong pinned, ulong pinners) ObtenerPiezasClavadas(ulong casillasOcupadas, int casillaRey, Piece.Color colorRey)
         {
-            ulong piezasAliadas = AjedrezUtils.MismoColor(colorRey, Pieza.Color.Blancas) ? ObtenerOcupadasBlancas() : ObtenerOcupadasNegras();
+            ulong piezasAliadas = AjedrezUtils.MismoColor(colorRey, Piece.Color.Blancas) ? ObtenerOcupadasBlancas() : ObtenerOcupadasNegras();
             ulong pinned = 0;
 
-            ulong pinners = BitboardUtils.AtaquesRayosXTorre(casillasOcupadas, piezasAliadas, casillaRey) & (bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Torre, AjedrezUtils.InversoColor(colorRey))] | bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Reina, AjedrezUtils.InversoColor(colorRey))]);
+            ulong pinners = BitboardUtils.AtaquesRayosXTorre(casillasOcupadas, piezasAliadas, casillaRey) & (bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Torre, AjedrezUtils.InversoColor(colorRey))] | bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Reina, AjedrezUtils.InversoColor(colorRey))]);
             ulong pinnersRetorno = pinners;
             while (pinners != 0)
             {
@@ -1345,7 +1345,7 @@ namespace Ajedrez.Core
                 pinners &= pinners - 1;
             }
 
-            pinners = BitboardUtils.AtaquesRayosXAlfil(casillasOcupadas, piezasAliadas, casillaRey) & (bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Alfil, AjedrezUtils.InversoColor(colorRey))] | bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Reina, AjedrezUtils.InversoColor(colorRey))]);
+            pinners = BitboardUtils.AtaquesRayosXAlfil(casillasOcupadas, piezasAliadas, casillaRey) & (bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Alfil, AjedrezUtils.InversoColor(colorRey))] | bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Reina, AjedrezUtils.InversoColor(colorRey))]);
             pinnersRetorno |= pinners;
             while (pinners != 0)
             {
@@ -1357,37 +1357,37 @@ namespace Ajedrez.Core
             return (pinned, pinnersRetorno);
         }
 
-        public Pieza ObtenerPieza(int casilla)
+        public Piece ObtenerPieza(int casilla)
         {
             for (int i = 0; i < bitboards.Length; i++)
             {
                 if ((bitboards[i] & BitboardUtils.SetBit(casilla)) != 0)
                 {
-                    Pieza.Color color = (i < 6) ? Pieza.Color.Blancas : Pieza.Color.Negras;
+                    Piece.Color color = (i < 6) ? Piece.Color.Blancas : Piece.Color.Negras;
                     int tipoIndex = i % 6;
 
-                    Pieza.Tipo tipo = tipoIndex switch
+                    Piece.Tipo tipo = tipoIndex switch
                     {
-                        0 => Pieza.Tipo.Rey,
-                        1 => Pieza.Tipo.Reina,
-                        2 => Pieza.Tipo.Torre,
-                        3 => Pieza.Tipo.Alfil,
-                        4 => Pieza.Tipo.Caballo,
-                        5 => Pieza.Tipo.Peon,
-                        _ => Pieza.Tipo.Nada
+                        0 => Piece.Tipo.Rey,
+                        1 => Piece.Tipo.Reina,
+                        2 => Piece.Tipo.Torre,
+                        3 => Piece.Tipo.Alfil,
+                        4 => Piece.Tipo.Caballo,
+                        5 => Piece.Tipo.Peon,
+                        _ => Piece.Tipo.Nada
                     };
 
-                    return new Pieza(tipo, color);
+                    return new Piece(tipo, color);
                 }
             }
 
             // Si no hay pieza en la casilla, devolvemos una pieza vacía (Nada, Blancas)
-            return new Pieza(Pieza.Tipo.Nada, Pieza.Color.Blancas);
+            return new Piece(Piece.Tipo.Nada, Piece.Color.Blancas);
         }
 
         public bool CasillaAtacadaPorPeonRival(int casilla)
         {
-            if (AjedrezUtils.MismoColor(Turno, Pieza.Color.Blancas))
+            if (AjedrezUtils.MismoColor(Turno, Piece.Color.Blancas))
             {
                 ulong peonesRivales = bitboards[11];
                 // Ataques posibles a 'casilla' desde peones rivales

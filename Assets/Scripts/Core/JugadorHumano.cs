@@ -7,7 +7,7 @@ namespace Ajedrez.Core
 {
     public class JugadorHumano : Jugador
     {
-        public JugadorHumano(string nombre, Pieza.Color colorPiezas)
+        public JugadorHumano(string nombre, Piece.Color colorPiezas)
             : base(nombre, colorPiezas)
         {
         }

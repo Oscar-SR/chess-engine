@@ -140,9 +140,9 @@ namespace Ajedrez.Utilities
         /// </summary>
         /// <param name="color">Color de uno de los bandos del ajedrez (blanco o negro)</param>
         /// <returns>Color opuesto al color de entrada</returns>
-        public static Pieza.Color InversoColor(Pieza.Color color)
+        public static Piece.Color InversoColor(Piece.Color color)
         {
-            return color == Pieza.Color.Blancas ? Pieza.Color.Negras : Pieza.Color.Blancas;
+            return color == Piece.Color.Blancas ? Piece.Color.Negras : Piece.Color.Blancas;
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace Ajedrez.Utilities
         /// <param name="color1">Color de uno de los bandos del ajedrez (blanco o negro)</param>
         /// <param name="color2">Color de uno de los bandos del ajedrez (blanco o negro)</param>
         /// <returns>Verdadero si ambos colores son el mismo, y falso si no lo son</returns>
-        public static bool MismoColor(Pieza.Color color1, Pieza.Color color2)
+        public static bool MismoColor(Piece.Color color1, Piece.Color color2)
         {
             return color1 == color2;
         }
@@ -238,17 +238,17 @@ namespace Ajedrez.Utilities
         /// Halla si el tipo de pieza es deslizante o no
         /// </summary>
         /// <returns>Verdadero si el tipo de pieza es deslizante, y falso si no lo es</returns>
-        public static bool EsDeslizante(this Pieza.Tipo tipo)
+        public static bool EsDeslizante(this Piece.Tipo tipo)
         {
-            return tipo == Pieza.Tipo.Reina || tipo == Pieza.Tipo.Torre || tipo == Pieza.Tipo.Alfil;
+            return tipo == Piece.Tipo.Reina || tipo == Piece.Tipo.Torre || tipo == Piece.Tipo.Alfil;
         }
 
-        public static int ObtenerIndicePieza(Pieza.Tipo tipoPieza, Pieza.Color color)
+        public static int ObtenerIndicePieza(Piece.Tipo tipoPieza, Piece.Color color)
         {
             return (int) tipoPieza + (int) color;
         }
 
-        public static int ObtenerIndicePieza(Pieza pieza)
+        public static int ObtenerIndicePieza(Piece pieza)
         {
             return ObtenerIndicePieza(pieza.TipoPieza, pieza.ColorPieza);
         }

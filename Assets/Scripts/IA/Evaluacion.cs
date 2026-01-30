@@ -96,16 +96,16 @@ namespace Ajedrez.IA
             public int NumReinas => numReinas;
         }
 
-        public static int ObtenerValorPieza(Pieza.Tipo tipo)
+        public static int ObtenerValorPieza(Piece.Tipo tipo)
         {
             return tipo switch
             {
-                Pieza.Tipo.Peon => VALOR_PEON,
-                Pieza.Tipo.Caballo => VALOR_CABALLO,
-                Pieza.Tipo.Alfil => VALOR_ALFIL,
-                Pieza.Tipo.Torre => VALOR_TORRE,
-                Pieza.Tipo.Reina => VALOR_REINA,
-                Pieza.Tipo.Rey => Busqueda.INFINITO,
+                Piece.Tipo.Peon => VALOR_PEON,
+                Piece.Tipo.Caballo => VALOR_CABALLO,
+                Piece.Tipo.Alfil => VALOR_ALFIL,
+                Piece.Tipo.Torre => VALOR_TORRE,
+                Piece.Tipo.Reina => VALOR_REINA,
+                Piece.Tipo.Rey => Busqueda.INFINITO,
                 _ => 0
             };
         }
@@ -138,32 +138,32 @@ namespace Ajedrez.IA
             float valorEndgameNegras = CalcularValorEndgame(materialNegras);
 
             // Se calcula el valor de la posición del rey
-            datosEvaluacionBlancas.ValorPosicionRey = ForzarMovimientoReyEndgame(Pieza.Color.Blancas, datosEvaluacionBlancas.ValorMaterial, datosEvaluacionNegras.ValorMaterial, valorEndgameNegras);
-            datosEvaluacionNegras.ValorPosicionRey = ForzarMovimientoReyEndgame(Pieza.Color.Negras, datosEvaluacionNegras.ValorMaterial, datosEvaluacionBlancas.ValorMaterial, valorEndgameBlancas);
+            datosEvaluacionBlancas.ValorPosicionRey = ForzarMovimientoReyEndgame(Piece.Color.Blancas, datosEvaluacionBlancas.ValorMaterial, datosEvaluacionNegras.ValorMaterial, valorEndgameNegras);
+            datosEvaluacionNegras.ValorPosicionRey = ForzarMovimientoReyEndgame(Piece.Color.Negras, datosEvaluacionNegras.ValorMaterial, datosEvaluacionBlancas.ValorMaterial, valorEndgameBlancas);
 
             // Calcular el valor de los mapas de piezas
-            datosEvaluacionBlancas.ValorMapasPiezas = EvaluarMapasPiezas(Pieza.Color.Blancas, valorEndgameNegras);
-            datosEvaluacionNegras.ValorMapasPiezas = EvaluarMapasPiezas(Pieza.Color.Negras, valorEndgameBlancas);
+            datosEvaluacionBlancas.ValorMapasPiezas = EvaluarMapasPiezas(Piece.Color.Blancas, valorEndgameNegras);
+            datosEvaluacionNegras.ValorMapasPiezas = EvaluarMapasPiezas(Piece.Color.Negras, valorEndgameBlancas);
 
             // Calcular el total de la evaluación aplicando la perspectiva
-            int evaluacion = (datosEvaluacionBlancas.Total - datosEvaluacionNegras.Total) * (AjedrezUtils.MismoColor(tablero.Turno, Pieza.Color.Blancas) ? 1 : -1);
+            int evaluacion = (datosEvaluacionBlancas.Total - datosEvaluacionNegras.Total) * (AjedrezUtils.MismoColor(tablero.Turno, Piece.Color.Blancas) ? 1 : -1);
 
             return evaluacion;
         }
 
         private (Material materialBlancas, Material materialNegras) ContarMaterial()
         {
-            int numPeonesBlancos = BitboardUtils.ContarBitsActivos(tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Peon, Pieza.Color.Blancas)]);
-            int numCaballosBlancos = BitboardUtils.ContarBitsActivos(tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Caballo, Pieza.Color.Blancas)]);
-            int numAlfilesBlancos = BitboardUtils.ContarBitsActivos(tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Alfil, Pieza.Color.Blancas)]);
-            int numTorresBlancas = BitboardUtils.ContarBitsActivos(tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Torre, Pieza.Color.Blancas)]);
-            int numReinasBlancas = BitboardUtils.ContarBitsActivos(tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Reina, Pieza.Color.Blancas)]);
+            int numPeonesBlancos = BitboardUtils.ContarBitsActivos(tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Peon, Piece.Color.Blancas)]);
+            int numCaballosBlancos = BitboardUtils.ContarBitsActivos(tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Caballo, Piece.Color.Blancas)]);
+            int numAlfilesBlancos = BitboardUtils.ContarBitsActivos(tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Alfil, Piece.Color.Blancas)]);
+            int numTorresBlancas = BitboardUtils.ContarBitsActivos(tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Torre, Piece.Color.Blancas)]);
+            int numReinasBlancas = BitboardUtils.ContarBitsActivos(tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Reina, Piece.Color.Blancas)]);
 
-            int numPeonesNegros = BitboardUtils.ContarBitsActivos(tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Peon, Pieza.Color.Negras)]);
-            int numCaballosNegros = BitboardUtils.ContarBitsActivos(tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Caballo, Pieza.Color.Negras)]);
-            int numAlfilesNegros = BitboardUtils.ContarBitsActivos(tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Alfil, Pieza.Color.Negras)]);
-            int numTorresNegras = BitboardUtils.ContarBitsActivos(tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Torre, Pieza.Color.Negras)]);
-            int numReinasNegras = BitboardUtils.ContarBitsActivos(tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(Pieza.Tipo.Reina, Pieza.Color.Negras)]);
+            int numPeonesNegros = BitboardUtils.ContarBitsActivos(tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Peon, Piece.Color.Negras)]);
+            int numCaballosNegros = BitboardUtils.ContarBitsActivos(tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Caballo, Piece.Color.Negras)]);
+            int numAlfilesNegros = BitboardUtils.ContarBitsActivos(tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Alfil, Piece.Color.Negras)]);
+            int numTorresNegras = BitboardUtils.ContarBitsActivos(tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Torre, Piece.Color.Negras)]);
+            int numReinasNegras = BitboardUtils.ContarBitsActivos(tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Reina, Piece.Color.Negras)]);
 
             Material materialBlancas = new Material(numPeonesBlancos, numCaballosBlancos, numAlfilesBlancos, numTorresBlancas, numReinasBlancas);
             Material materialNegras = new Material(numPeonesNegros, numCaballosNegros, numAlfilesNegros, numTorresNegras, numReinasNegras);
@@ -184,7 +184,7 @@ namespace Ajedrez.IA
         /// control y cercanía estratégica entre los reyes.
         /// Fuente: <see href="https://www.chessprogramming.org/Mop-up_Evaluation">Chess Programming - Mop-up Evaluation</see>
         /// </remarks>
-        private int ForzarMovimientoReyEndgame(Pieza.Color color, int valorMaterialAliado, int valorMaterialEnemigo, float valorEndgameEnemigo)
+        private int ForzarMovimientoReyEndgame(Piece.Color color, int valorMaterialAliado, int valorMaterialEnemigo, float valorEndgameEnemigo)
         {
             if ((valorMaterialAliado > (valorMaterialEnemigo + VALOR_PEON * 2)) && valorEndgameEnemigo > 0)
             {
@@ -210,29 +210,29 @@ namespace Ajedrez.IA
             return valorEndgame;
         }
 
-        private int EvaluarMapasPiezas(Pieza.Color color, float valorEndgame)
+        private int EvaluarMapasPiezas(Piece.Color color, float valorEndgame)
         {
             int evaluacion = 0;
 
-            int evaluacionRey = EvaluarMapaPieza(MapasPiezas.Rey, Pieza.Tipo.Rey, color);
-            int evaluacionReyEndgame = EvaluarMapaPieza(MapasPiezas.ReyEndgame, Pieza.Tipo.Rey, color);
+            int evaluacionRey = EvaluarMapaPieza(MapasPiezas.Rey, Piece.Tipo.Rey, color);
+            int evaluacionReyEndgame = EvaluarMapaPieza(MapasPiezas.ReyEndgame, Piece.Tipo.Rey, color);
             evaluacion += MapasPiezas.CalcularInterpolacion(evaluacionRey, evaluacionReyEndgame, valorEndgame);
 
-            int evaluacionPeones = EvaluarMapaPieza(MapasPiezas.Peones, Pieza.Tipo.Peon, color);
-            int evaluacionPeonesEndgame = EvaluarMapaPieza(MapasPiezas.PeonesEndgame, Pieza.Tipo.Peon, color);
+            int evaluacionPeones = EvaluarMapaPieza(MapasPiezas.Peones, Piece.Tipo.Peon, color);
+            int evaluacionPeonesEndgame = EvaluarMapaPieza(MapasPiezas.PeonesEndgame, Piece.Tipo.Peon, color);
             evaluacion += MapasPiezas.CalcularInterpolacion(evaluacionPeones, evaluacionPeonesEndgame, valorEndgame);
 
-            //evaluacion += EvaluarMapaPieza(MapasPiezas.Rey, Pieza.Tipo.Rey, color);
-            //evaluacion += EvaluarMapaPieza(MapasPiezas.Peones, Pieza.Tipo.Peon, color);
-            evaluacion += EvaluarMapaPieza(MapasPiezas.Reinas, Pieza.Tipo.Reina, color);
-            evaluacion += EvaluarMapaPieza(MapasPiezas.Torres, Pieza.Tipo.Torre, color);
-            evaluacion += EvaluarMapaPieza(MapasPiezas.Alfiles, Pieza.Tipo.Alfil, color);
-            evaluacion += EvaluarMapaPieza(MapasPiezas.Caballos, Pieza.Tipo.Caballo, color);
+            //evaluacion += EvaluarMapaPieza(MapasPiezas.Rey, Piece.Tipo.Rey, color);
+            //evaluacion += EvaluarMapaPieza(MapasPiezas.Peones, Piece.Tipo.Peon, color);
+            evaluacion += EvaluarMapaPieza(MapasPiezas.Reinas, Piece.Tipo.Reina, color);
+            evaluacion += EvaluarMapaPieza(MapasPiezas.Torres, Piece.Tipo.Torre, color);
+            evaluacion += EvaluarMapaPieza(MapasPiezas.Alfiles, Piece.Tipo.Alfil, color);
+            evaluacion += EvaluarMapaPieza(MapasPiezas.Caballos, Piece.Tipo.Caballo, color);
 
             return evaluacion;
         }
 
-        private int EvaluarMapaPieza(int[] mapa, Pieza.Tipo tipoPieza, Pieza.Color colorPieza)
+        private int EvaluarMapaPieza(int[] mapa, Piece.Tipo tipoPieza, Piece.Color colorPieza)
         {
             int evaluacion = 0;
             ulong piezas = tablero.Bitboards[AjedrezUtils.ObtenerIndicePieza(tipoPieza, colorPieza)];

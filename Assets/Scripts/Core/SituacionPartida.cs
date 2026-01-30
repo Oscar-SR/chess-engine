@@ -42,7 +42,7 @@ namespace Ajedrez.Core
                 if (jaque)
                 {
                     // Hay jaque mate
-                    situacionPartida = tablero.Turno == Pieza.Color.Blancas ? Tipo.JaqueMateBlancas : Tipo.JaqueMateNegras;
+                    situacionPartida = tablero.Turno == Piece.Color.Blancas ? Tipo.JaqueMateBlancas : Tipo.JaqueMateNegras;
 
                 }
                 else
@@ -100,20 +100,20 @@ namespace Ajedrez.Core
             };
         }
 
-        public static Pieza.Color ObtenerGanador(Tipo resultado)
+        public static Piece.Color ObtenerGanador(Tipo resultado)
         {
             switch (resultado)
             {
                 case Tipo.JaqueMateBlancas:
                 case Tipo.TiempoAgotadoBlancas:
-                    return Pieza.Color.Negras;
+                    return Piece.Color.Negras;
 
                 case Tipo.JaqueMateNegras:
                 case Tipo.TiempoAgotadoNegras:
-                    return Pieza.Color.Blancas;
+                    return Piece.Color.Blancas;
 
                 default:
-                    return Pieza.Color.Nada;
+                    return Piece.Color.Nada;
             }
         }
     }

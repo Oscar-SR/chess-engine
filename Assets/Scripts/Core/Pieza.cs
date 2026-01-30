@@ -1,8 +1,8 @@
 namespace Ajedrez.Core
 {
-    public readonly struct Pieza
+    public readonly struct Piece
     {
-        public const int NUM_TIPOS_PIEZAS = 12;
+        public const int NUM_PIECE_TYPES = 12;
 
         public enum Tipo : byte
         {
@@ -25,13 +25,13 @@ namespace Ajedrez.Core
         private readonly Tipo tipoPieza;
         private readonly Color colorPieza;
 
-        public Pieza(Tipo tipo, Color color)
+        public Piece(Tipo tipo, Color color)
         {
             tipoPieza = tipo;
             colorPieza = color;
         }
 
-        public Pieza(char simbolo)
+        public Piece(char simbolo)
         {
             tipoPieza = ObtenerTipo(simbolo);
             colorPieza = ObtenerColor(simbolo);

@@ -7,17 +7,17 @@ namespace Ajedrez.IA
     {
         public const float FACTOR_INCREMENTO = 0.6f;
         private Reloj reloj;
-        private Pieza.Color colorPiezas;
+        private Piece.Color colorPiezas;
         private readonly float incrementoEmpleado;
 
-        public GestorTiempo(Reloj reloj, Pieza.Color colorPiezas)
+        public GestorTiempo(Reloj reloj, Piece.Color colorPiezas)
         {
             this.reloj = reloj;
             this.colorPiezas = colorPiezas;
             incrementoEmpleado = reloj.IncrementoPorMovimiento * FACTOR_INCREMENTO;
         }
 
-        public Pieza.Color ColorPiezas
+        public Piece.Color ColorPiezas
         {
             get { return colorPiezas; }
             set { colorPiezas = value; }
@@ -58,7 +58,7 @@ namespace Ajedrez.IA
         {
             get
             {
-                if (colorPiezas == Pieza.Color.Blancas)
+                if (colorPiezas == Piece.Color.Blancas)
                 {
                     return reloj.TiempoRestanteBlancas;
                 }

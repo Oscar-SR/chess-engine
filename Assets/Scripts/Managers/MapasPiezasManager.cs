@@ -12,7 +12,7 @@ namespace Ajedrez.Managers
         [SerializeField] private Transform mapasPiezas;
         [SerializeField] private Color colorMinimo;
         [SerializeField] private Color colorMaximo;
-        [SerializeField] private Pieza.Tipo tipoPieza = Pieza.Tipo.Peon;
+        [SerializeField] private Piece.Tipo tipoPieza = Piece.Tipo.Peon;
         [SerializeField, Range(0f, 1f)] private float valorEndgame;
         [SerializeField] private string salida;
 
@@ -44,36 +44,36 @@ namespace Ajedrez.Managers
 
             switch (tipoPieza)
             {
-                case Pieza.Tipo.Peon:
+                case Piece.Tipo.Peon:
                     {
                         mapa = CalcularMatrizTransicion(MapasPiezas.Peones, MapasPiezas.PeonesEndgame, valorEndgame);
                         break;
                     }
 
-                case Pieza.Tipo.Caballo:
+                case Piece.Tipo.Caballo:
                     {
                         mapa = MapasPiezas.Caballos;
                         break;
                     }
 
-                case Pieza.Tipo.Alfil:
+                case Piece.Tipo.Alfil:
                     {
                         mapa = MapasPiezas.Alfiles;
                         break;
                     }
 
-                case Pieza.Tipo.Torre:
+                case Piece.Tipo.Torre:
                     {
                         mapa = MapasPiezas.Torres;
                         break;
                     }
 
-                case Pieza.Tipo.Reina:
+                case Piece.Tipo.Reina:
                     {
                         mapa = MapasPiezas.Reinas;
                         break;
                     }
-                case Pieza.Tipo.Rey:
+                case Piece.Tipo.Rey:
                     {
                         mapa = CalcularMatrizTransicion(MapasPiezas.Rey, MapasPiezas.ReyEndgame, valorEndgame);
                         break;
@@ -89,7 +89,7 @@ namespace Ajedrez.Managers
 
         private string ObtenerSalida()
         {
-            if (tipoPieza == Pieza.Tipo.Nada)
+            if (tipoPieza == Piece.Tipo.Nada)
                 return "";
 
             System.Text.StringBuilder sb = new System.Text.StringBuilder();

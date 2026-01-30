@@ -27,11 +27,11 @@ namespace Ajedrez.IA
             {
                 Movimiento movimiento = movimientos[i];
                 int puntuacion = 0;
-                Pieza piezaOrigen = tablero.ObtenerPieza(movimiento.Origen);
-                Pieza piezaCapturada = tablero.ObtenerPieza(movimiento.Destino);
+                Piece piezaOrigen = tablero.ObtenerPieza(movimiento.Origen);
+                Piece piezaCapturada = tablero.ObtenerPieza(movimiento.Destino);
 
                 // Priorizar la captura de piezas más valiosas que la que se mueve
-                if (piezaOrigen.TipoPieza != Pieza.Tipo.Nada)
+                if (piezaOrigen.TipoPieza != Piece.Tipo.Nada)
                 {
                     puntuacion = 10 * Evaluacion.ObtenerValorPieza(piezaCapturada.TipoPieza) - Evaluacion.ObtenerValorPieza(piezaOrigen.TipoPieza);
                 }

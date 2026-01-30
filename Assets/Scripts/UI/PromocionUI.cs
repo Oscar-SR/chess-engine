@@ -29,11 +29,11 @@ namespace Ajedrez.UI
             }
         }
 
-        public void Mostrar(Pieza.Color color, Action<int> onSeleccion)
+        public void Mostrar(Piece.Color color, Action<int> onSeleccion)
         {
             callbackSeleccion = onSeleccion;
 
-            if (AjedrezUtils.MismoColor(color, Pieza.Color.Blancas))
+            if (AjedrezUtils.MismoColor(color, Piece.Color.Blancas))
             {
                 panelPromocionActual = panelPromocionBlancas;
             }

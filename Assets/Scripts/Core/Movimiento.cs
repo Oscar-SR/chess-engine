@@ -35,10 +35,10 @@ namespace Ajedrez.Core
 
             int origen = NotacionAlgebraicaACasilla(LAN.Substring(0, 2));
             int destino = NotacionAlgebraicaACasilla(LAN.Substring(2, 2));
-            Pieza.Tipo tipoPieza = tablero.ObtenerPieza(origen).TipoPieza;
+            Piece.Tipo tipoPieza = tablero.ObtenerPieza(origen).TipoPieza;
             int flag = SIN_FLAG;
 
-            if (tipoPieza == Pieza.Tipo.Peon)
+            if (tipoPieza == Piece.Tipo.Peon)
             {
                 if (LAN.Length == 5)
                 {
@@ -56,12 +56,12 @@ namespace Ajedrez.Core
                 {
                     flag = PEON_MUEVE_DOS;
                 }
-                else if ((AjedrezUtils.ObtenerColumna(origen) != AjedrezUtils.ObtenerColumna(destino)) && (tablero.ObtenerPieza(destino).TipoPieza == Pieza.Tipo.Nada))
+                else if ((AjedrezUtils.ObtenerColumna(origen) != AjedrezUtils.ObtenerColumna(destino)) && (tablero.ObtenerPieza(destino).TipoPieza == Piece.Tipo.Nada))
                 {
                     flag = CAPTURA_AL_PASO;
                 }
             }
-            else if ((tipoPieza == Pieza.Tipo.Rey) && (Math.Abs(AjedrezUtils.ObtenerColumna(origen) - AjedrezUtils.ObtenerColumna(destino)) > 1))
+            else if ((tipoPieza == Piece.Tipo.Rey) && (Math.Abs(AjedrezUtils.ObtenerColumna(origen) - AjedrezUtils.ObtenerColumna(destino)) > 1))
             {
                 // Enroque
                 flag = ENROQUE;
@@ -125,10 +125,10 @@ namespace Ajedrez.Core
 
         public string ToSAN(Tablero tablero)
         {
-            Pieza pieza = tablero.ObtenerPieza(Origen);
+            Piece pieza = tablero.ObtenerPieza(Origen);
             string san = "";
 
-            bool esCaptura = tablero.ObtenerPieza(Destino).TipoPieza != Pieza.Tipo.Nada || Flag == CAPTURA_AL_PASO;
+            bool esCaptura = tablero.ObtenerPieza(Destino).TipoPieza != Piece.Tipo.Nada || Flag == CAPTURA_AL_PASO;
 
             // Enroques
             if (Flag == ENROQUE)
@@ -137,12 +137,12 @@ namespace Ajedrez.Core
             }
 
             // Nombre de pieza (omitido para peones)
-            bool esPeon = pieza.TipoPieza == Pieza.Tipo.Peon;
+            bool esPeon = pieza.TipoPieza == Piece.Tipo.Peon;
             if (esPeon)
                 san += pieza.ObtenerSimbolo(siempreMayuscula: true);
 
             // Arreglar desambiguación si hay ambigüedad (p. ej. Nbd2 o R1a3)
-            if (!esPeon && pieza.TipoPieza != Pieza.Tipo.Rey)
+            if (!esPeon && pieza.TipoPieza != Piece.Tipo.Rey)
             {
                 (List<Movimiento> movimientos, _) = tablero.GenerarMovimientosLegales();
                 (int filaOrigen, int columnaOrigen) = AjedrezUtils.IndiceACoordenadas(Origen);
@@ -153,7 +153,7 @@ namespace Ajedrez.Core
                 {
                     if (movimiento.Destino == Destino && movimiento.Origen != Origen)
                     {
-                        Pieza.Tipo otroTipoPieza = tablero.ObtenerPieza(movimiento.Origen).TipoPieza;
+                        Piece.Tipo otroTipoPieza = tablero.ObtenerPieza(movimiento.Origen).TipoPieza;
                         if (otroTipoPieza == pieza.TipoPieza)
                         {
                             (int otroFilaOrigen, int otroColumnaOrigen) = AjedrezUtils.IndiceACoordenadas(movimiento.Origen);

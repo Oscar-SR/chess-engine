@@ -15,15 +15,15 @@ namespace Ajedrez.Core
         private ulong zobristHash;
 
         // Bit 0 - Turno (0 blancas, 1 negras)
-        public Pieza.Color Turno
+        public Piece.Color Turno
         {
             get
             {
-                return (this.estado & 0b0000000000000001) == 0 ? Pieza.Color.Blancas : Pieza.Color.Negras;
+                return (this.estado & 0b0000000000000001) == 0 ? Piece.Color.Blancas : Piece.Color.Negras;
             }
             set
             {
-                if (AjedrezUtils.MismoColor(value, Pieza.Color.Negras))
+                if (AjedrezUtils.MismoColor(value, Piece.Color.Negras))
                     this.estado |= 0b0000000000000001;
                 else
                     this.estado &= 0b1111111111111110;

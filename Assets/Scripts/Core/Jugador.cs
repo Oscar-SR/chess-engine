@@ -13,9 +13,9 @@ namespace Ajedrez.Core
         }
 
         protected string nombre;
-        protected Pieza.Color colorPiezas;
+        protected Piece.Color colorPiezas;
 
-        protected Jugador(string nombre, Pieza.Color colorPiezas)
+        protected Jugador(string nombre, Piece.Color colorPiezas)
         {
             this.nombre = nombre;
             this.colorPiezas = colorPiezas;
@@ -27,7 +27,7 @@ namespace Ajedrez.Core
             set { nombre = value; }
         }
 
-        public virtual Pieza.Color ColorPiezas
+        public virtual Piece.Color ColorPiezas
         {
             get { return colorPiezas; }
             set { colorPiezas = value; }

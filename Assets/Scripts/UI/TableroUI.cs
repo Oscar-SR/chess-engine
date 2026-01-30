@@ -172,98 +172,98 @@ namespace Ajedrez.UI
             piezas = tablero.BitboardReyBlanco;
             while (piezas != 0)
             {
-                GenerarPieza(Pieza.Tipo.Rey, Pieza.Color.Blancas, BitboardUtils.PrimerBitActivo(piezas));
+                GenerarPieza(Piece.Tipo.Rey, Piece.Color.Blancas, BitboardUtils.PrimerBitActivo(piezas));
                 piezas &= piezas - 1;
             }
 
             piezas = tablero.BitboardReinasBlancas;
             while (piezas != 0)
             {
-                GenerarPieza(Pieza.Tipo.Reina, Pieza.Color.Blancas, BitboardUtils.PrimerBitActivo(piezas));
+                GenerarPieza(Piece.Tipo.Reina, Piece.Color.Blancas, BitboardUtils.PrimerBitActivo(piezas));
                 piezas &= piezas - 1;
             }
 
             piezas = tablero.BitboardTorresBlancas;
             while (piezas != 0)
             {
-                GenerarPieza(Pieza.Tipo.Torre, Pieza.Color.Blancas, BitboardUtils.PrimerBitActivo(piezas));
+                GenerarPieza(Piece.Tipo.Torre, Piece.Color.Blancas, BitboardUtils.PrimerBitActivo(piezas));
                 piezas &= piezas - 1;
             }
 
             piezas = tablero.BitboardAlfilesBlancos;
             while (piezas != 0)
             {
-                GenerarPieza(Pieza.Tipo.Alfil, Pieza.Color.Blancas, BitboardUtils.PrimerBitActivo(piezas));
+                GenerarPieza(Piece.Tipo.Alfil, Piece.Color.Blancas, BitboardUtils.PrimerBitActivo(piezas));
                 piezas &= piezas - 1;
             }
 
             piezas = tablero.BitboardCaballosBlancos;
             while (piezas != 0)
             {
-                GenerarPieza(Pieza.Tipo.Caballo, Pieza.Color.Blancas, BitboardUtils.PrimerBitActivo(piezas));
+                GenerarPieza(Piece.Tipo.Caballo, Piece.Color.Blancas, BitboardUtils.PrimerBitActivo(piezas));
                 piezas &= piezas - 1;
             }
 
             piezas = tablero.BitboardPeonesBlancos;
             while (piezas != 0)
             {
-                GenerarPieza(Pieza.Tipo.Peon, Pieza.Color.Blancas, BitboardUtils.PrimerBitActivo(piezas));
+                GenerarPieza(Piece.Tipo.Peon, Piece.Color.Blancas, BitboardUtils.PrimerBitActivo(piezas));
                 piezas &= piezas - 1;
             }
 
             piezas = tablero.BitboardReyNegro;
             while (piezas != 0)
             {
-                GenerarPieza(Pieza.Tipo.Rey, Pieza.Color.Negras, BitboardUtils.PrimerBitActivo(piezas));
+                GenerarPieza(Piece.Tipo.Rey, Piece.Color.Negras, BitboardUtils.PrimerBitActivo(piezas));
                 piezas &= piezas - 1;
             }
 
             piezas = tablero.BitboardReinasNegras;
             while (piezas != 0)
             {
-                GenerarPieza(Pieza.Tipo.Reina, Pieza.Color.Negras, BitboardUtils.PrimerBitActivo(piezas));
+                GenerarPieza(Piece.Tipo.Reina, Piece.Color.Negras, BitboardUtils.PrimerBitActivo(piezas));
                 piezas &= piezas - 1;
             }
 
             piezas = tablero.BitboardTorresNegras;
             while (piezas != 0)
             {
-                GenerarPieza(Pieza.Tipo.Torre, Pieza.Color.Negras, BitboardUtils.PrimerBitActivo(piezas));
+                GenerarPieza(Piece.Tipo.Torre, Piece.Color.Negras, BitboardUtils.PrimerBitActivo(piezas));
                 piezas &= piezas - 1;
             }
 
             piezas = tablero.BitboardAlfilesNegros;
             while (piezas != 0)
             {
-                GenerarPieza(Pieza.Tipo.Alfil, Pieza.Color.Negras, BitboardUtils.PrimerBitActivo(piezas));
+                GenerarPieza(Piece.Tipo.Alfil, Piece.Color.Negras, BitboardUtils.PrimerBitActivo(piezas));
                 piezas &= piezas - 1;
             }
 
             piezas = tablero.BitboardCaballosNegros;
             while (piezas != 0)
             {
-                GenerarPieza(Pieza.Tipo.Caballo, Pieza.Color.Negras, BitboardUtils.PrimerBitActivo(piezas));
+                GenerarPieza(Piece.Tipo.Caballo, Piece.Color.Negras, BitboardUtils.PrimerBitActivo(piezas));
                 piezas &= piezas - 1;
             }
 
             piezas = tablero.BitboardPeonesNegros;
             while (piezas != 0)
             {
-                GenerarPieza(Pieza.Tipo.Peon, Pieza.Color.Negras, BitboardUtils.PrimerBitActivo(piezas));
+                GenerarPieza(Piece.Tipo.Peon, Piece.Color.Negras, BitboardUtils.PrimerBitActivo(piezas));
                 piezas &= piezas - 1;
             }
         }
 
-        private void GenerarPieza(Pieza.Tipo tipoPieza, Pieza.Color color, int casilla)
+        private void GenerarPieza(Piece.Tipo tipoPieza, Piece.Color color, int casilla)
         {
             string nombre;
             Sprite sprite;
 
             switch (tipoPieza)
             {
-                case Pieza.Tipo.Rey:
+                case Piece.Tipo.Rey:
                     {
-                        if (AjedrezUtils.MismoColor(color, Pieza.Color.Blancas))
+                        if (AjedrezUtils.MismoColor(color, Piece.Color.Blancas))
                         {
                             nombre = "Rey blanco";
                             sprite = piezasSet.reyBlanco;
@@ -276,9 +276,9 @@ namespace Ajedrez.UI
                         break;
                     }
 
-                case Pieza.Tipo.Reina:
+                case Piece.Tipo.Reina:
                     {
-                        if (AjedrezUtils.MismoColor(color, Pieza.Color.Blancas))
+                        if (AjedrezUtils.MismoColor(color, Piece.Color.Blancas))
                         {
                             nombre = "Reina blanca";
                             sprite = piezasSet.reinaBlanca;
@@ -291,9 +291,9 @@ namespace Ajedrez.UI
                         break;
                     }
 
-                case Pieza.Tipo.Torre:
+                case Piece.Tipo.Torre:
                     {
-                        if (AjedrezUtils.MismoColor(color, Pieza.Color.Blancas))
+                        if (AjedrezUtils.MismoColor(color, Piece.Color.Blancas))
                         {
                             nombre = "Torre blanca";
                             sprite = piezasSet.torreBlanca;
@@ -306,9 +306,9 @@ namespace Ajedrez.UI
                         break;
                     }
 
-                case Pieza.Tipo.Alfil:
+                case Piece.Tipo.Alfil:
                     {
-                        if (AjedrezUtils.MismoColor(color, Pieza.Color.Blancas))
+                        if (AjedrezUtils.MismoColor(color, Piece.Color.Blancas))
                         {
                             nombre = "Alfil blanco";
                             sprite = piezasSet.alfilBlanco;
@@ -321,9 +321,9 @@ namespace Ajedrez.UI
                         break;
                     }
 
-                case Pieza.Tipo.Caballo:
+                case Piece.Tipo.Caballo:
                     {
-                        if (AjedrezUtils.MismoColor(color, Pieza.Color.Blancas))
+                        if (AjedrezUtils.MismoColor(color, Piece.Color.Blancas))
                         {
                             nombre = "Caballo blanco";
                             sprite = piezasSet.caballoBlanco;
@@ -336,9 +336,9 @@ namespace Ajedrez.UI
                         break;
                     }
 
-                case Pieza.Tipo.Peon:
+                case Piece.Tipo.Peon:
                     {
-                        if (AjedrezUtils.MismoColor(color, Pieza.Color.Blancas))
+                        if (AjedrezUtils.MismoColor(color, Piece.Color.Blancas))
                         {
                             nombre = "Peón blanco";
                             sprite = piezasSet.peonBlanco;
@@ -354,7 +354,7 @@ namespace Ajedrez.UI
                 // Indeterminada
                 default:
                     {
-                        nombre = "Pieza";
+                        nombre = "Piece";
                         sprite = piezasSet.reyBlanco;
                         break;
                     }
@@ -471,18 +471,18 @@ namespace Ajedrez.UI
                 case Movimiento.PROMOVER_A_CABALLO:
                 case Movimiento.PROMOVER_A_ALFIL:
                     {
-                        PromoverPeon(casillaAPieza[movimiento.Destino].GetComponent<SpriteRenderer>(), movimiento.Flag, AjedrezUtils.ObtenerFila(movimiento.Destino) == 7 ? Pieza.Color.Blancas : Pieza.Color.Negras);
+                        PromoverPeon(casillaAPieza[movimiento.Destino].GetComponent<SpriteRenderer>(), movimiento.Flag, AjedrezUtils.ObtenerFila(movimiento.Destino) == 7 ? Piece.Color.Blancas : Piece.Color.Negras);
                         break;
                     }
             }
         }
 
-        private void PromoverPeon(SpriteRenderer sr, int flagPromocion, Pieza.Color color)
+        private void PromoverPeon(SpriteRenderer sr, int flagPromocion, Piece.Color color)
         {
             switch (flagPromocion)
             {
                 case Movimiento.PROMOVER_A_REINA:
-                    if (AjedrezUtils.MismoColor(color, Pieza.Color.Blancas))
+                    if (AjedrezUtils.MismoColor(color, Piece.Color.Blancas))
                     {
                         sr.sprite = piezasSet.reinaBlanca;
                     }
@@ -493,7 +493,7 @@ namespace Ajedrez.UI
                     break;
 
                 case Movimiento.PROMOVER_A_CABALLO:
-                    if (AjedrezUtils.MismoColor(color, Pieza.Color.Blancas))
+                    if (AjedrezUtils.MismoColor(color, Piece.Color.Blancas))
                     {
                         sr.sprite = piezasSet.caballoBlanco;
                     }
@@ -504,7 +504,7 @@ namespace Ajedrez.UI
                     break;
 
                 case Movimiento.PROMOVER_A_TORRE:
-                    if (AjedrezUtils.MismoColor(color, Pieza.Color.Blancas))
+                    if (AjedrezUtils.MismoColor(color, Piece.Color.Blancas))
                     {
                         sr.sprite = piezasSet.torreBlanca;
                     }
@@ -515,7 +515,7 @@ namespace Ajedrez.UI
                     break;
 
                 case Movimiento.PROMOVER_A_ALFIL:
-                    if (AjedrezUtils.MismoColor(color, Pieza.Color.Blancas))
+                    if (AjedrezUtils.MismoColor(color, Piece.Color.Blancas))
                     {
                         sr.sprite = piezasSet.alfilBlanco;
                     }
@@ -723,15 +723,15 @@ namespace Ajedrez.UI
                 GenerarPiezas(tablero);
         }
 
-        public (Pieza.Color colorJugador1, Pieza.Color colorJugador2) ObtenerColoresJugadores()
+        public (Piece.Color colorJugador1, Piece.Color colorJugador2) ObtenerColoresJugadores()
         {
             if (blancasAbajo)
             {
-                return (Pieza.Color.Blancas, Pieza.Color.Negras);
+                return (Piece.Color.Blancas, Piece.Color.Negras);
             }
             else
             {
-                return (Pieza.Color.Negras, Pieza.Color.Blancas);
+                return (Piece.Color.Negras, Piece.Color.Blancas);
             }
         }
     }

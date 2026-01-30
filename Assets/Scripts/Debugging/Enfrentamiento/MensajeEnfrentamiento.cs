@@ -19,7 +19,7 @@ namespace Ajedrez.Debugging.Enfrentamiento
 
 		// Datos para el mensaje de NuevaPartida:
 		public string fenInicial;
-		public Pieza.Color colorPiezas;
+		public Piece.Color colorPiezas;
 		public int tiempoMaximoPensamientoMs;
 
 		// Método para crear un mensaje de registro de jugador
@@ -35,7 +35,7 @@ namespace Ajedrez.Debugging.Enfrentamiento
 		}
 
 		// Método para crear un mensaje de nueva partida
-		public static MensajeEnfrentamiento CrearMensajeNuevaPartida(string fen, Pieza.Color color, int tiempoMaximoPensamientoMs)
+		public static MensajeEnfrentamiento CrearMensajeNuevaPartida(string fen, Piece.Color color, int tiempoMaximoPensamientoMs)
 		{
 			MensajeEnfrentamiento mensaje = new MensajeEnfrentamiento()
 			{

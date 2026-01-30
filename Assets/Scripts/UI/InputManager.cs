@@ -29,7 +29,7 @@ namespace Ajedrez.UI
         private LayerMask capaPiezas;
         private int casilla;
 
-        private Pieza.Color colorInteractuable = Pieza.Color.Nada;
+        private Piece.Color colorInteractuable = Piece.Color.Nada;
         private bool piezaSeleccionada = false;
         private bool promocionEnCurso = false;
         private Vector2 offsetCursorPieza;
@@ -63,7 +63,7 @@ namespace Ajedrez.UI
         // Update is called once per frame
         void Update()
         {
-            if (colorInteractuable != Pieza.Color.Nada)
+            if (colorInteractuable != Piece.Color.Nada)
             {
                 if (piezaSeleccionada)
                 {
@@ -134,8 +134,8 @@ namespace Ajedrez.UI
 
             if (partidaManager.ObtenerCasillaDeCoordenada(clickPosition, out casilla))
             {
-                Pieza pieza = partidaManager.ObtenerPieza(casilla);
-                if (pieza.TipoPieza != Pieza.Tipo.Nada && AjedrezUtils.MismoColor(pieza.ColorPieza, colorInteractuable))
+                Piece pieza = partidaManager.ObtenerPieza(casilla);
+                if (pieza.TipoPieza != Piece.Tipo.Nada && AjedrezUtils.MismoColor(pieza.ColorPieza, colorInteractuable))
                 {
                     piezaSeleccionada = true;
                     partidaManager.DibujarPiezaPorEncima(casilla);
@@ -186,7 +186,7 @@ namespace Ajedrez.UI
         private IEnumerator HacerMovimientoTrasPromocion(Movimiento movimiento)
         {
             // Desactivar la interacción con las piezas
-            colorInteractuable = Pieza.Color.Nada;
+            colorInteractuable = Piece.Color.Nada;
             piezaSeleccionada = false;
 
             if (movimiento.EsPromocion())
@@ -208,13 +208,13 @@ namespace Ajedrez.UI
             StartCoroutine(partidaManager.HacerMovimiento(movimiento));
         }
 
-        public Pieza.Color ColorInteractuable
+        public Piece.Color ColorInteractuable
         {
             set
             {
                 colorInteractuable = value;
 
-                if (value == Pieza.Color.Nada && piezaSeleccionada)
+                if (value == Piece.Color.Nada && piezaSeleccionada)
                 {
                     // Soltar la pieza si se termina la partida y hay una pieza seleccionada
                     DeseleccionarPieza();

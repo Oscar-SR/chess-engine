@@ -77,7 +77,7 @@ namespace Ajedrez.Debugging.Enfrentamiento
 			}
 		}
 
-		private void EmpezarNuevaPartida(string fen, Pieza.Color colorPiezas, int maxTiempoPensar)
+		private void EmpezarNuevaPartida(string fen, Piece.Color colorPiezas, int maxTiempoPensar)
 		{
 			tablero = new Tablero(fen);
 
