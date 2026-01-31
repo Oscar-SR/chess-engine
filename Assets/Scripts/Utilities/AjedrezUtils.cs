@@ -250,7 +250,7 @@ namespace Ajedrez.Utilities
 
         public static int ObtenerIndicePieza(Piece pieza)
         {
-            return ObtenerIndicePieza(pieza.TipoPieza, pieza.ColorPieza);
+            return ObtenerIndicePieza(pieza.PieceType, pieza.PieceColor);
         }
     }
 }

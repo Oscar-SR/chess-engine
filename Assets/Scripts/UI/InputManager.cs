@@ -135,7 +135,7 @@ namespace Ajedrez.UI
             if (partidaManager.ObtenerCasillaDeCoordenada(clickPosition, out casilla))
             {
                 Piece pieza = partidaManager.ObtenerPieza(casilla);
-                if (pieza.TipoPieza != Piece.Type.None && AjedrezUtils.MismoColor(pieza.ColorPieza, colorInteractuable))
+                if (pieza.PieceType != Piece.Type.None && AjedrezUtils.MismoColor(pieza.PieceColor, colorInteractuable))
                 {
                     piezaSeleccionada = true;
                     partidaManager.DibujarPiezaPorEncima(casilla);
@@ -194,7 +194,7 @@ namespace Ajedrez.UI
                 promocionEnCurso = true;
                 int tipoPromocion = Movimiento.PROMOVER_A_REINA;
 
-                promocionUI.Mostrar(partidaManager.ObtenerPieza(casilla).ColorPieza, tipo =>
+                promocionUI.Mostrar(partidaManager.ObtenerPieza(casilla).PieceColor, tipo =>
                 {
                     tipoPromocion = tipo;
                     promocionEnCurso = false;

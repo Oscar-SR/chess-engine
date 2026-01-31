@@ -22,40 +22,40 @@ namespace Ajedrez.Core
             None
         }
 
-        private readonly Type tipoPieza;
-        private readonly Color colorPieza;
+        private readonly Type pieceType;
+        private readonly Color pieceColor;
 
-        public Piece(Type tipo, Color color)
+        public Piece(Type type, Color color)
         {
-            tipoPieza = tipo;
-            colorPieza = color;
+            pieceType = type;
+            pieceColor = color;
         }
 
-        public Piece(char simbolo)
+        public Piece(char symbol)
         {
-            tipoPieza = ObtenerTipo(simbolo);
-            colorPieza = ObtenerColor(simbolo);
+            pieceType = GetType(symbol);
+            pieceColor = GetColor(symbol);
         }
 
-        public Type TipoPieza
+        public Type PieceType
         {
             get
             {
-                return this.tipoPieza;
+                return this.pieceType;
             }
         }
 
-        public Color ColorPieza
+        public Color PieceColor
         {
             get
             {
-                return this.colorPieza;
+                return this.pieceColor;
             }
         }
 
-        public char ObtenerSimbolo(bool siempreMayuscula = false)
+        public char GetSymbol(bool uppercase = false)
         {
-            char simbolo = tipoPieza switch
+            char symbol = pieceType switch
             {
                 Type.Rook => 'R',
                 Type.Knight => 'N',
@@ -66,17 +66,17 @@ namespace Ajedrez.Core
                 _ => ' '
             };
 
-            if (siempreMayuscula)
-                return simbolo;
+            if (uppercase)
+                return symbol;
 
-            return colorPieza == Color.Black ? char.ToLower(simbolo) : simbolo;
+            return pieceColor == Color.Black ? char.ToLower(symbol) : symbol;
         }
 
-        public static Type ObtenerTipo(char simbolo)
+        public static Type GetType(char symbol)
         {
-            simbolo = char.ToUpper(simbolo);
+            symbol = char.ToUpper(symbol);
 
-            return simbolo switch
+            return symbol switch
             {
                 'R' => Type.Rook,
                 'N' => Type.Knight,
@@ -88,9 +88,9 @@ namespace Ajedrez.Core
             };
         }
         
-        public static Color ObtenerColor(char simbolo)
+        public static Color GetColor(char symbol)
         {
-            return char.IsUpper(simbolo) ? Color.White : Color.Black;
+            return char.IsUpper(symbol) ? Color.White : Color.Black;
         }
     }
 }

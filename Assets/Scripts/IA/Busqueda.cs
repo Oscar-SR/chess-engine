@@ -398,9 +398,9 @@ namespace Ajedrez.IA
                 Piece piezaCapturada = tablero.ObtenerPieza(movimiento.Destino);
 
                 // Priorizar la captura de piezas más valiosas que la que se mueve
-                if (piezaOrigen.TipoPieza != Piece.Type.None)
+                if (piezaOrigen.PieceType != Piece.Type.None)
                 {
-                    puntuacion = 10 * Evaluacion.ObtenerValorPieza(piezaCapturada.TipoPieza) - Evaluacion.ObtenerValorPieza(piezaOrigen.TipoPieza);
+                    puntuacion = 10 * Evaluacion.ObtenerValorPieza(piezaCapturada.PieceType) - Evaluacion.ObtenerValorPieza(piezaOrigen.PieceType);
                 }
 
                 // Priorizar las promociones
@@ -412,7 +412,7 @@ namespace Ajedrez.IA
                 // Penalizar el mover hacia una casilla atacada por un peón rival
                 if (tablero.CasillaAtacadaPorPeonRival(movimiento.Destino))
                 {
-                    puntuacion -= Evaluacion.ObtenerValorPieza(piezaOrigen.TipoPieza);
+                    puntuacion -= Evaluacion.ObtenerValorPieza(piezaOrigen.PieceType);
                 }
 
                 puntuaciones[i] = puntuacion;

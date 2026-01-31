@@ -57,7 +57,7 @@ namespace Ajedrez.Utilities
             for (int square = 0; square < 64; square++)
             {
                 Piece pieza = tablero.ObtenerPieza(square);
-                if (pieza.TipoPieza != Piece.Type.None)
+                if (pieza.PieceType != Piece.Type.None)
                 {
                     hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(pieza), square];
                 }
