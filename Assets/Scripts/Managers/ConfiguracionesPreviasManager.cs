@@ -81,7 +81,7 @@ namespace Ajedrez.Managers
         public void CargarJugadorIA1()
         {
             Piece.Color color = blancasAbajo ? Piece.Color.White : Piece.Color.Black;
-            JugadorIA jugador = new JugadorIA(color, partida.Tablero, partida.Reloj, ConfiguracionIA.CrearFacil(libroAperturas));
+            JugadorIA jugador = new JugadorIA(color, partida.Tablero, partida.Reloj, AIConfiguration.CreateEasy(libroAperturas));
 
             if (color == Piece.Color.White)
             {
@@ -111,7 +111,7 @@ namespace Ajedrez.Managers
         public void CargarJugadorIA2()
         {
             Piece.Color color = blancasAbajo ? Piece.Color.Black : Piece.Color.White;
-            JugadorIA jugador = new JugadorIA(color, partida.Tablero, partida.Reloj, ConfiguracionIA.CrearFacil(libroAperturas));
+            JugadorIA jugador = new JugadorIA(color, partida.Tablero, partida.Reloj, AIConfiguration.CreateEasy(libroAperturas));
 
             if (color == Piece.Color.White)
             {
@@ -164,22 +164,22 @@ namespace Ajedrez.Managers
             }
         }
 
-        private ConfiguracionIA ObtenerConfiguracion(ConfiguracionIA.TipoDificultad dificultad)
+        private AIConfiguration ObtenerConfiguracion(AIConfiguration.DifficultyType dificultad)
         {
             switch (dificultad)
             {
-                case ConfiguracionIA.TipoDificultad.Facil:
-                    return ConfiguracionIA.CrearFacil(libroAperturas);
-                case ConfiguracionIA.TipoDificultad.Media:
-                    return ConfiguracionIA.CrearMedia(libroAperturas);
-                case ConfiguracionIA.TipoDificultad.Maxima:
-                    return ConfiguracionIA.CrearMaxima(libroAperturas);
+                case AIConfiguration.DifficultyType.Easy:
+                    return AIConfiguration.CreateEasy(libroAperturas);
+                case AIConfiguration.DifficultyType.Medium:
+                    return AIConfiguration.CreateMedium(libroAperturas);
+                case AIConfiguration.DifficultyType.Maximum:
+                    return AIConfiguration.CreateMaximum(libroAperturas);
                 default:
-                    return ConfiguracionIA.CrearPersonalizada(Busqueda.TipoBusqueda.PorTiempo, ConfiguracionIA.TIEMPO_DINAMICO, false, 0, null);
+                    return AIConfiguration.CreateCustom(Busqueda.TipoBusqueda.PorTiempo, AIConfiguration.DYNAMIC_TIME, false, 0, null);
             }
         }
 
-        public void CambiarDificultadJugador1(ConfiguracionIA.TipoDificultad dificultad)
+        public void CambiarDificultadJugador1(AIConfiguration.DifficultyType dificultad)
         {
             if (blancasAbajo)
             {
@@ -191,7 +191,7 @@ namespace Ajedrez.Managers
             }
         }
 
-        public void CambiarDificultadJugador2(ConfiguracionIA.TipoDificultad dificultad)
+        public void CambiarDificultadJugador2(AIConfiguration.DifficultyType dificultad)
         {
             if (blancasAbajo)
             {

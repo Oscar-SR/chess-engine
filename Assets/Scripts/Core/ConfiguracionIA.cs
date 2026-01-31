@@ -4,103 +4,104 @@ using Ajedrez.IA;
 
 namespace Ajedrez.Core
 {
-    public class ConfiguracionIA
+    public class AIConfiguration
     {
-        public const int TIEMPO_DINAMICO = -1;
+        public const int DYNAMIC_TIME = -1;
 
-        public enum TipoDificultad : byte
+        public enum DifficultyType : byte
         {
-            Facil,
-            Media,
-            Maxima,
-            Personalizada
+            Easy,
+            Medium,
+            Maximum,
+            Custom
         }
 
-        public TipoDificultad Dificultad { get; private set; }
+        public DifficultyType Difficulty { get; private set; }
 
-        public Busqueda.TipoBusqueda LimiteBusqueda { get; private set; }
-        public int Limite { get; private set; }
+        public Busqueda.TipoBusqueda SearchLimit { get; private set; }
+        public int Limit { get; private set; }
 
-        public bool UsarLibroAperturas { get; private set; }
-        public TextAsset LibroAperturas { get; private set; }
-        public int MaxMovimientoLibro { get; private set; }
+        public bool UseOpeningBook { get; private set; }
+        public TextAsset OpeningBook { get; private set; }
+        public int MaxBookMovement { get; private set; }
 
         // ✅ Constructores privados para evitar usos incorrectos
-        private ConfiguracionIA() { }
+        private AIConfiguration() { }
 
         // 🔹 Preconfigurados
-        public static ConfiguracionIA CrearFacil(TextAsset libro)
+        public static AIConfiguration CreateEasy(TextAsset book)
         {
-            return new ConfiguracionIA
+            return new AIConfiguration
             {
-                Dificultad = TipoDificultad.Facil,
-                LimiteBusqueda = Busqueda.TipoBusqueda.PorProfundidad,
-                Limite = 2,
-                UsarLibroAperturas = true,
-                LibroAperturas = libro,
-                MaxMovimientoLibro = 2
+                Difficulty = DifficultyType.Easy,
+                SearchLimit = Busqueda.TipoBusqueda.PorProfundidad,
+                Limit = 2,
+                UseOpeningBook = true,
+                OpeningBook = book,
+                MaxBookMovement = 2
             };
         }
 
-        public static ConfiguracionIA CrearMedia(TextAsset libro)
+        public static AIConfiguration CreateMedium(TextAsset book)
         {
-            return new ConfiguracionIA
+            return new AIConfiguration
             {
-                Dificultad = TipoDificultad.Media,
-                LimiteBusqueda = Busqueda.TipoBusqueda.PorProfundidad,
-                Limite = 4,
-                UsarLibroAperturas = true,
-                LibroAperturas = libro,
-                MaxMovimientoLibro = 4
+                Difficulty = DifficultyType.Medium,
+                SearchLimit = Busqueda.TipoBusqueda.PorProfundidad,
+                Limit = 4,
+                UseOpeningBook = true,
+                OpeningBook = book,
+                MaxBookMovement = 4
             };
         }
 
-        public static ConfiguracionIA CrearMaxima(TextAsset libro)
+        public static AIConfiguration CreateMaximum(TextAsset book)
         {
-            return new ConfiguracionIA
+            return new AIConfiguration
             {
-                Dificultad = TipoDificultad.Maxima,
-                LimiteBusqueda = Busqueda.TipoBusqueda.PorTiempo,
-                Limite = TIEMPO_DINAMICO,
-                UsarLibroAperturas = true,
-                LibroAperturas = libro,
-                MaxMovimientoLibro = 8
+                Difficulty = DifficultyType.Maximum,
+                SearchLimit = Busqueda.TipoBusqueda.PorTiempo,
+                Limit = DYNAMIC_TIME,
+                UseOpeningBook = true,
+                OpeningBook = book,
+                MaxBookMovement = 8
             };
         }
 
         // 🔹 Personalizado
-        public static ConfiguracionIA CrearPersonalizada(
-            Busqueda.TipoBusqueda limiteBusqueda,
-            int limite,
-            bool usarLibroAperturas,
-            int maxMovimientoLibro,
-            TextAsset libro)
-        {
-            if (usarLibroAperturas && libro == null)
-                throw new ArgumentException("Se requiere un libro si 'usarLibroAperturas' es verdadero.");
+        public static AIConfiguration CreateCustom
+        (
+            Busqueda.TipoBusqueda searchLimit,
+            int limit,
+            bool useOpeningBook,
+            int maxBookMovement,
+            TextAsset book
+        ) {
+            if (useOpeningBook && book == null)
+                throw new ArgumentException("A book is required if 'useOpeningBook' is true.");
 
-            return new ConfiguracionIA
+            return new AIConfiguration
             {
-                Dificultad = TipoDificultad.Personalizada,
-                LimiteBusqueda = limiteBusqueda,
-                Limite = limite,
-                UsarLibroAperturas = usarLibroAperturas,
-                LibroAperturas = libro,
-                MaxMovimientoLibro = maxMovimientoLibro
+                Difficulty = DifficultyType.Custom,
+                SearchLimit = searchLimit,
+                Limit = limit,
+                UseOpeningBook = useOpeningBook,
+                OpeningBook = book,
+                MaxBookMovement = maxBookMovement
             };
         }
 
         public override string ToString()
         {
-            string libroNombre = LibroAperturas != null ? LibroAperturas.name : "null";
+            string bookName = OpeningBook != null ? OpeningBook.name : "null";
 
-            return $"ConfiguracionIA:\n" +
-                   $"  Dificultad: {Dificultad}\n" +
-                   $"  LimiteBusqueda: {LimiteBusqueda}\n" +
-                   $"  Limite: {Limite}\n" +
-                   $"  UsarLibroAperturas: {UsarLibroAperturas}\n" +
-                   $"  LibroAperturas: {libroNombre}\n" +
-                   $"  MaxMovimientoLibro: {MaxMovimientoLibro}";
+            return $"AIConfiguration:\n" +
+                   $"  Difficulty: {Difficulty}\n" +
+                   $"  SearchLimit: {SearchLimit}\n" +
+                   $"  Limit: {Limit}\n" +
+                   $"  UseOpeningBook: {UseOpeningBook}\n" +
+                   $"  OpeningBook: {bookName}\n" +
+                   $"  MaxBookMovement: {MaxBookMovement}";
         }
     }
 }

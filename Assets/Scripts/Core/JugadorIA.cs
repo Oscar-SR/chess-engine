@@ -11,13 +11,13 @@ namespace Ajedrez.Core
 {
     public class JugadorIA : Jugador
     {
-        private ConfiguracionIA configuracionIA;
+        private AIConfiguration configuracionIA;
         private Tablero tablero;
         private Busqueda busqueda;
         private LibroAperturas libroAperturas;
         private GestorTiempo gestorTiempo;
 
-        public JugadorIA(string nombre, Piece.Color colorPiezas, Tablero tablero, Reloj reloj, ConfiguracionIA configuracionIA)
+        public JugadorIA(string nombre, Piece.Color colorPiezas, Tablero tablero, Reloj reloj, AIConfiguration configuracionIA)
             : base(nombre, colorPiezas)
         {
             this.tablero = tablero;
@@ -29,8 +29,8 @@ namespace Ajedrez.Core
             ConfigurarIA();
         }
 
-        public JugadorIA(Piece.Color colorPiezas, Tablero tablero, Reloj reloj, ConfiguracionIA configuracionIA)
-            : base("IA " + configuracionIA.Dificultad, colorPiezas)
+        public JugadorIA(Piece.Color colorPiezas, Tablero tablero, Reloj reloj, AIConfiguration configuracionIA)
+            : base("IA " + configuracionIA.Difficulty, colorPiezas)
         {
             this.tablero = tablero;
             this.configuracionIA = configuracionIA;
@@ -43,13 +43,13 @@ namespace Ajedrez.Core
 
         private void ConfigurarIA()
         {
-            if (configuracionIA.UsarLibroAperturas)
-                libroAperturas = new LibroAperturas(configuracionIA.LibroAperturas.text);
+            if (configuracionIA.UseOpeningBook)
+                libroAperturas = new LibroAperturas(configuracionIA.OpeningBook.text);
 
-            busqueda = new Busqueda(tablero, configuracionIA.LimiteBusqueda, configuracionIA.Limite);
+            busqueda = new Busqueda(tablero, configuracionIA.SearchLimit, configuracionIA.Limit);
         }
 
-        public ConfiguracionIA ConfiguracionIA
+        public AIConfiguration ConfiguracionIA
         {
             get
             {
@@ -58,7 +58,7 @@ namespace Ajedrez.Core
             set
             {
                 configuracionIA = value;
-                base.Nombre = "IA " + configuracionIA.Dificultad;
+                base.Nombre = "IA " + configuracionIA.Difficulty;
                 ConfigurarIA();
             }
         }
@@ -96,7 +96,7 @@ namespace Ajedrez.Core
             set
             {
                 tablero = value;
-                busqueda = new Busqueda(tablero, configuracionIA.LimiteBusqueda, configuracionIA.Limite);
+                busqueda = new Busqueda(tablero, configuracionIA.SearchLimit, configuracionIA.Limit);
             }
         }
 
@@ -104,7 +104,7 @@ namespace Ajedrez.Core
         {
             Movimiento mejorMovimiento;
 
-            if (configuracionIA.UsarLibroAperturas && tablero.NumMovimientosTotales <= configuracionIA.MaxMovimientoLibro && libroAperturas.TryGetValue(tablero.ToFEN(incluirPeonAlPaso: false), out string movimientoLAN))
+            if (configuracionIA.UseOpeningBook && tablero.NumMovimientosTotales <= configuracionIA.MaxBookMovement && libroAperturas.TryGetValue(tablero.ToFEN(incluirPeonAlPaso: false), out string movimientoLAN))
             {
                 mejorMovimiento = new Movimiento(movimientoLAN, tablero);
             }
@@ -112,10 +112,10 @@ namespace Ajedrez.Core
             {
                 CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
 
-                if (configuracionIA.LimiteBusqueda == Busqueda.TipoBusqueda.PorTiempo)
+                if (configuracionIA.SearchLimit == Busqueda.TipoBusqueda.PorTiempo)
                 {
                     // Lanzar una tarea que cancela la búsqueda después del tiempo requerido de búsqueda
-                    int tiempoBusqueda = configuracionIA.Limite == ConfiguracionIA.TIEMPO_DINAMICO ? gestorTiempo.CalcularTiempoBusqueda(tablero.NumMovimientosTotales) : configuracionIA.Limite;
+                    int tiempoBusqueda = configuracionIA.Limit == AIConfiguration.DYNAMIC_TIME ? gestorTiempo.CalcularTiempoBusqueda(tablero.NumMovimientosTotales) : configuracionIA.Limit;
                     Task delayTask = Task.Delay(tiempoBusqueda, cancelTokenSource.Token)
                     .ContinueWith(_ =>
                     {

@@ -141,7 +141,7 @@ namespace Ajedrez.UI
             selectorIncremento.AddOptions(opciones);
 
             opciones.Clear();
-            foreach (ConfiguracionIA.TipoDificultad dificultad in Enum.GetValues(typeof(ConfiguracionIA.TipoDificultad)))
+            foreach (AIConfiguration.DifficultyType dificultad in Enum.GetValues(typeof(AIConfiguration.DifficultyType)))
             {
                 opciones.Add(new TMP_Dropdown.OptionData(dificultad.ToString()));
             }
@@ -206,13 +206,13 @@ namespace Ajedrez.UI
 
         private void OnDificultadJugador1Changed(int indice)
         {
-            ConfiguracionIA.TipoDificultad dificultad = (ConfiguracionIA.TipoDificultad)indice;
+            AIConfiguration.DifficultyType dificultad = (AIConfiguration.DifficultyType)indice;
             configuracionesPreviasManager.CambiarDificultadJugador1(dificultad);
         }
 
         private void OnDificultadJugador2Changed(int indice)
         {
-            ConfiguracionIA.TipoDificultad dificultad = (ConfiguracionIA.TipoDificultad)indice;
+            AIConfiguration.DifficultyType dificultad = (AIConfiguration.DifficultyType)indice;
             configuracionesPreviasManager.CambiarDificultadJugador2(dificultad);
         }
 

@@ -83,7 +83,7 @@ namespace Ajedrez.Debugging.Enfrentamiento
 
 			if (jugador == null)
 			{
-				jugador = new JugadorIA(nombreJugador, colorPiezas, tablero, null, ConfiguracionIA.CrearPersonalizada(Busqueda.TipoBusqueda.PorTiempo, maxTiempoPensar, true, 8, libroAperturas));
+				jugador = new JugadorIA(nombreJugador, colorPiezas, tablero, null, AIConfiguration.CreateCustom(Busqueda.TipoBusqueda.PorTiempo, maxTiempoPensar, true, 8, libroAperturas));
 			}
 			else
 			{
