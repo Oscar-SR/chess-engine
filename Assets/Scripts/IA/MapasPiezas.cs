@@ -111,20 +111,20 @@ namespace Ajedrez.IA
             Mapas = new int[Piece.NUM_TIPOS_PIEZAS][];
 
             // Piezas blancas
-            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Peon, Piece.Color.Blancas)] = Peones;
-            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Torre, Piece.Color.Blancas)] = Torres;
-            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Caballo, Piece.Color.Blancas)] = Caballos;
-            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Alfil, Piece.Color.Blancas)] = Alfiles;
-            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Reina, Piece.Color.Blancas)] = Reinas;
-            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Rey, Piece.Color.Blancas)] = Rey;
+            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Peon, Piece.Color.White)] = Peones;
+            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Torre, Piece.Color.White)] = Torres;
+            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Caballo, Piece.Color.White)] = Caballos;
+            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Alfil, Piece.Color.White)] = Alfiles;
+            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Reina, Piece.Color.White)] = Reinas;
+            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Rey, Piece.Color.White)] = Rey;
 
             // Piezas negras
-            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Peon, Piece.Color.Negras)] = VoltearMapa(Peones);
-            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Torre, Piece.Color.Negras)] = VoltearMapa(Torres);
-            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Caballo, Piece.Color.Negras)] = VoltearMapa(Caballos);
-            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Alfil, Piece.Color.Negras)] = VoltearMapa(Alfiles);
-            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Reina, Piece.Color.Negras)] = VoltearMapa(Reinas);
-            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Rey, Piece.Color.Negras)] = VoltearMapa(Rey);
+            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Peon, Piece.Color.Black)] = VoltearMapa(Peones);
+            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Torre, Piece.Color.Black)] = VoltearMapa(Torres);
+            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Caballo, Piece.Color.Black)] = VoltearMapa(Caballos);
+            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Alfil, Piece.Color.Black)] = VoltearMapa(Alfiles);
+            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Reina, Piece.Color.Black)] = VoltearMapa(Reinas);
+            Mapas[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Rey, Piece.Color.Black)] = VoltearMapa(Rey);
             */
         }
 
@@ -143,7 +143,7 @@ namespace Ajedrez.IA
 
         public static int Leer(int[] mapa, int casilla, Piece.Color color)
         {
-            if (AjedrezUtils.MismoColor(color, Piece.Color.Blancas))
+            if (AjedrezUtils.MismoColor(color, Piece.Color.White))
             {
                 (int fila, int columna) = AjedrezUtils.IndiceACoordenadas(casilla);
                 fila = 7 - fila;

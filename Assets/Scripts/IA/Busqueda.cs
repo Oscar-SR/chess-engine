@@ -398,7 +398,7 @@ namespace Ajedrez.IA
                 Piece piezaCapturada = tablero.ObtenerPieza(movimiento.Destino);
 
                 // Priorizar la captura de piezas más valiosas que la que se mueve
-                if (piezaOrigen.TipoPieza != Piece.Tipo.Nada)
+                if (piezaOrigen.TipoPieza != Piece.Type.None)
                 {
                     puntuacion = 10 * Evaluacion.ObtenerValorPieza(piezaCapturada.TipoPieza) - Evaluacion.ObtenerValorPieza(piezaOrigen.TipoPieza);
                 }

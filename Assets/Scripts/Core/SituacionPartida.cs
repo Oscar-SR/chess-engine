@@ -42,7 +42,7 @@ namespace Ajedrez.Core
                 if (jaque)
                 {
                     // Hay jaque mate
-                    situacionPartida = tablero.Turno == Piece.Color.Blancas ? Tipo.JaqueMateBlancas : Tipo.JaqueMateNegras;
+                    situacionPartida = tablero.Turno == Piece.Color.White ? Tipo.JaqueMateBlancas : Tipo.JaqueMateNegras;
 
                 }
                 else
@@ -106,14 +106,14 @@ namespace Ajedrez.Core
             {
                 case Tipo.JaqueMateBlancas:
                 case Tipo.TiempoAgotadoBlancas:
-                    return Piece.Color.Negras;
+                    return Piece.Color.Black;
 
                 case Tipo.JaqueMateNegras:
                 case Tipo.TiempoAgotadoNegras:
-                    return Piece.Color.Blancas;
+                    return Piece.Color.White;
 
                 default:
-                    return Piece.Color.Nada;
+                    return Piece.Color.None;
             }
         }
     }

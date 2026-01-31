@@ -124,7 +124,7 @@ namespace Ajedrez.UI
             yield return new WaitForSeconds(TIEMPO_ESPERA_RESULTADO);
 
             Piece.Color ganador = SituacionPartida.ObtenerGanador(resultado);
-            if (ganador == Piece.Color.Nada)
+            if (ganador == Piece.Color.None)
             {
                 textoTipoResultado.text = "Tablas";
             }

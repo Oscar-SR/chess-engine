@@ -4,28 +4,28 @@ namespace Ajedrez.Core
     {
         public const int NUM_PIECE_TYPES = 12;
 
-        public enum Tipo : byte
+        public enum Type : byte
         {
-            Rey,
-            Reina,
-            Torre,
-            Alfil,
-            Caballo,
-            Peon,
-            Nada
+            King,
+            Queen,
+            Rook,
+            Bishop,
+            Knight,
+            Pawn,
+            None
         }
 
         public enum Color : byte
         {
-            Blancas = 0,
-            Negras = 6,
-            Nada
+            White = 0,
+            Black = 6,
+            None
         }
 
-        private readonly Tipo tipoPieza;
+        private readonly Type tipoPieza;
         private readonly Color colorPieza;
 
-        public Piece(Tipo tipo, Color color)
+        public Piece(Type tipo, Color color)
         {
             tipoPieza = tipo;
             colorPieza = color;
@@ -37,7 +37,7 @@ namespace Ajedrez.Core
             colorPieza = ObtenerColor(simbolo);
         }
 
-        public Tipo TipoPieza
+        public Type TipoPieza
         {
             get
             {
@@ -57,40 +57,40 @@ namespace Ajedrez.Core
         {
             char simbolo = tipoPieza switch
             {
-                Tipo.Torre => 'R',
-                Tipo.Caballo => 'N',
-                Tipo.Alfil => 'B',
-                Tipo.Reina => 'Q',
-                Tipo.Rey => 'K',
-                Tipo.Peon => 'P',
+                Type.Rook => 'R',
+                Type.Knight => 'N',
+                Type.Bishop => 'B',
+                Type.Queen => 'Q',
+                Type.King => 'K',
+                Type.Pawn => 'P',
                 _ => ' '
             };
 
             if (siempreMayuscula)
                 return simbolo;
 
-            return colorPieza == Color.Negras ? char.ToLower(simbolo) : simbolo;
+            return colorPieza == Color.Black ? char.ToLower(simbolo) : simbolo;
         }
 
-        public static Tipo ObtenerTipo(char simbolo)
+        public static Type ObtenerTipo(char simbolo)
         {
             simbolo = char.ToUpper(simbolo);
 
             return simbolo switch
             {
-                'R' => Tipo.Torre,
-                'N' => Tipo.Caballo,
-                'B' => Tipo.Alfil,
-                'Q' => Tipo.Reina,
-                'K' => Tipo.Rey,
-                'P' => Tipo.Peon,
-                _ => Tipo.Nada
+                'R' => Type.Rook,
+                'N' => Type.Knight,
+                'B' => Type.Bishop,
+                'Q' => Type.Queen,
+                'K' => Type.King,
+                'P' => Type.Pawn,
+                _ => Type.None
             };
         }
         
         public static Color ObtenerColor(char simbolo)
         {
-            return char.IsUpper(simbolo) ? Color.Blancas : Color.Negras;
+            return char.IsUpper(simbolo) ? Color.White : Color.Black;
         }
     }
 }

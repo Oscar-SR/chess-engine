@@ -33,7 +33,7 @@ namespace Ajedrez.UI
         {
             callbackSeleccion = onSeleccion;
 
-            if (AjedrezUtils.MismoColor(color, Piece.Color.Blancas))
+            if (AjedrezUtils.MismoColor(color, Piece.Color.White))
             {
                 panelPromocionActual = panelPromocionBlancas;
             }

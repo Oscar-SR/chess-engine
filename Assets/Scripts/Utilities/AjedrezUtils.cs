@@ -142,7 +142,7 @@ namespace Ajedrez.Utilities
         /// <returns>Color opuesto al color de entrada</returns>
         public static Piece.Color InversoColor(Piece.Color color)
         {
-            return color == Piece.Color.Blancas ? Piece.Color.Negras : Piece.Color.Blancas;
+            return color == Piece.Color.White ? Piece.Color.Black : Piece.Color.White;
         }
 
         /// <summary>
@@ -238,12 +238,12 @@ namespace Ajedrez.Utilities
         /// Halla si el tipo de pieza es deslizante o no
         /// </summary>
         /// <returns>Verdadero si el tipo de pieza es deslizante, y falso si no lo es</returns>
-        public static bool EsDeslizante(this Piece.Tipo tipo)
+        public static bool EsDeslizante(this Piece.Type tipo)
         {
-            return tipo == Piece.Tipo.Reina || tipo == Piece.Tipo.Torre || tipo == Piece.Tipo.Alfil;
+            return tipo == Piece.Type.Queen || tipo == Piece.Type.Rook || tipo == Piece.Type.Bishop;
         }
 
-        public static int ObtenerIndicePieza(Piece.Tipo tipoPieza, Piece.Color color)
+        public static int ObtenerIndicePieza(Piece.Type tipoPieza, Piece.Color color)
         {
             return (int) tipoPieza + (int) color;
         }

@@ -138,8 +138,8 @@ namespace Ajedrez.Debugging.Enfrentamiento
                 enfrentamientoUI.EstablecerNombreBlancas(partida.JugadorBlancas.Nombre);
                 enfrentamientoUI.EstablecerNombreNegras(partida.JugadorNegras.Nombre);
 
-                string mensajeBlancas = MensajeEnfrentamiento.CrearMensajeNuevaPartida(partida.FenInicioPartida, Piece.Color.Blancas, maxTiempoPensar).ToJsonString();
-                string mensajeNegras = MensajeEnfrentamiento.CrearMensajeNuevaPartida(partida.FenInicioPartida, Piece.Color.Negras, maxTiempoPensar).ToJsonString();
+                string mensajeBlancas = MensajeEnfrentamiento.CrearMensajeNuevaPartida(partida.FenInicioPartida, Piece.Color.White, maxTiempoPensar).ToJsonString();
+                string mensajeNegras = MensajeEnfrentamiento.CrearMensajeNuevaPartida(partida.FenInicioPartida, Piece.Color.Black, maxTiempoPensar).ToJsonString();
 
                 EnviarMensajeAlCliente(((JugadorRemoto)partida.JugadorBlancas).Cliente, mensajeBlancas);
                 EnviarMensajeAlCliente(((JugadorRemoto)partida.JugadorNegras).Cliente, mensajeNegras);
@@ -174,12 +174,12 @@ namespace Ajedrez.Debugging.Enfrentamiento
 
             if (jugador1 == null)
             {
-                jugador1 = new JugadorRemoto(nombreJugador, Piece.Color.Blancas, cliente);
+                jugador1 = new JugadorRemoto(nombreJugador, Piece.Color.White, cliente);
                 partida.JugadorBlancas = jugador1;
 			}
             else if (jugador2 == null)
             {
-                jugador2 = new JugadorRemoto(nombreJugador, Piece.Color.Negras, cliente);
+                jugador2 = new JugadorRemoto(nombreJugador, Piece.Color.Black, cliente);
                 partida.JugadorNegras = jugador2;
 
                 // Ambos jugadores han sido registrados
@@ -198,7 +198,7 @@ namespace Ajedrez.Debugging.Enfrentamiento
         {
             enfrentamientoUI.EscribirDebug("Movimiento: " + movimientoLAN + "\n");
 
-            JugadorRemoto jugadorActual = AjedrezUtils.MismoColor(partida.Tablero.Turno, Piece.Color.Blancas) ? (JugadorRemoto)partida.JugadorBlancas : (JugadorRemoto)partida.JugadorNegras;
+            JugadorRemoto jugadorActual = AjedrezUtils.MismoColor(partida.Tablero.Turno, Piece.Color.White) ? (JugadorRemoto)partida.JugadorBlancas : (JugadorRemoto)partida.JugadorNegras;
             jugadorActual.NumMovimientos++;
             jugadorActual.TotalProfundidadBuscada += Mathf.Min(profundidadBusquedaIterativa, 15);
 
@@ -214,7 +214,7 @@ namespace Ajedrez.Debugging.Enfrentamiento
 
             if (partida.Situacion == SituacionPartida.Tipo.EnCurso)
             {
-				JugadorRemoto siguienteJugador = AjedrezUtils.MismoColor(partida.Tablero.Turno, Piece.Color.Blancas) ? (JugadorRemoto)partida.JugadorBlancas : (JugadorRemoto)partida.JugadorNegras;
+				JugadorRemoto siguienteJugador = AjedrezUtils.MismoColor(partida.Tablero.Turno, Piece.Color.White) ? (JugadorRemoto)partida.JugadorBlancas : (JugadorRemoto)partida.JugadorNegras;
 				string json = MensajeEnfrentamiento.CrearMensajeMovimiento(movimientoLAN).ToJsonString();
 				EnviarMensajeAlCliente(siguienteJugador.Cliente, json);
             }

@@ -29,7 +29,7 @@ namespace Ajedrez.UI
         private LayerMask capaPiezas;
         private int casilla;
 
-        private Piece.Color colorInteractuable = Piece.Color.Nada;
+        private Piece.Color colorInteractuable = Piece.Color.None;
         private bool piezaSeleccionada = false;
         private bool promocionEnCurso = false;
         private Vector2 offsetCursorPieza;
@@ -63,7 +63,7 @@ namespace Ajedrez.UI
         // Update is called once per frame
         void Update()
         {
-            if (colorInteractuable != Piece.Color.Nada)
+            if (colorInteractuable != Piece.Color.None)
             {
                 if (piezaSeleccionada)
                 {
@@ -135,7 +135,7 @@ namespace Ajedrez.UI
             if (partidaManager.ObtenerCasillaDeCoordenada(clickPosition, out casilla))
             {
                 Piece pieza = partidaManager.ObtenerPieza(casilla);
-                if (pieza.TipoPieza != Piece.Tipo.Nada && AjedrezUtils.MismoColor(pieza.ColorPieza, colorInteractuable))
+                if (pieza.TipoPieza != Piece.Type.None && AjedrezUtils.MismoColor(pieza.ColorPieza, colorInteractuable))
                 {
                     piezaSeleccionada = true;
                     partidaManager.DibujarPiezaPorEncima(casilla);
@@ -186,7 +186,7 @@ namespace Ajedrez.UI
         private IEnumerator HacerMovimientoTrasPromocion(Movimiento movimiento)
         {
             // Desactivar la interacción con las piezas
-            colorInteractuable = Piece.Color.Nada;
+            colorInteractuable = Piece.Color.None;
             piezaSeleccionada = false;
 
             if (movimiento.EsPromocion())
@@ -214,7 +214,7 @@ namespace Ajedrez.UI
             {
                 colorInteractuable = value;
 
-                if (value == Piece.Color.Nada && piezaSeleccionada)
+                if (value == Piece.Color.None && piezaSeleccionada)
                 {
                     // Soltar la pieza si se termina la partida y hay una pieza seleccionada
                     DeseleccionarPieza();

@@ -58,7 +58,7 @@ namespace Ajedrez.IA
         {
             get
             {
-                if (colorPiezas == Piece.Color.Blancas)
+                if (colorPiezas == Piece.Color.White)
                 {
                     return reloj.TiempoRestanteBlancas;
                 }

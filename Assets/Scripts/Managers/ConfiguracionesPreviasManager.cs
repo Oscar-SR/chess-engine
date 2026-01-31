@@ -23,7 +23,7 @@ namespace Ajedrez.Managers
         void Start()
         {
             libroAperturas = Resources.Load<TextAsset>("Aperturas");
-            partida = new Partida(new Tablero(), new JugadorHumano("Jugador 1", Piece.Color.Blancas), new JugadorHumano("Jugador 2", Piece.Color.Negras), new Reloj(60f, 0f));
+            partida = new Partida(new Tablero(), new JugadorHumano("Jugador 1", Piece.Color.White), new JugadorHumano("Jugador 2", Piece.Color.Black), new Reloj(60f, 0f));
             tableroUI.Init(partida.Tablero);
         }
 
@@ -65,10 +65,10 @@ namespace Ajedrez.Managers
 
         public void CargarJugadorHumano1()
         {
-            Piece.Color color = blancasAbajo ? Piece.Color.Blancas : Piece.Color.Negras;
+            Piece.Color color = blancasAbajo ? Piece.Color.White : Piece.Color.Black;
             JugadorHumano jugador = new JugadorHumano("Jugador 1", color);
 
-            if (color == Piece.Color.Blancas)
+            if (color == Piece.Color.White)
             {
                 partida.JugadorBlancas = jugador;
             }
@@ -80,10 +80,10 @@ namespace Ajedrez.Managers
         
         public void CargarJugadorIA1()
         {
-            Piece.Color color = blancasAbajo ? Piece.Color.Blancas : Piece.Color.Negras;
+            Piece.Color color = blancasAbajo ? Piece.Color.White : Piece.Color.Black;
             JugadorIA jugador = new JugadorIA(color, partida.Tablero, partida.Reloj, ConfiguracionIA.CrearFacil(libroAperturas));
 
-            if (color == Piece.Color.Blancas)
+            if (color == Piece.Color.White)
             {
                 partida.JugadorBlancas = jugador;
             }
@@ -95,10 +95,10 @@ namespace Ajedrez.Managers
 
         public void CargarJugadorHumano2()
         {
-            Piece.Color color = blancasAbajo ? Piece.Color.Negras : Piece.Color.Blancas;
+            Piece.Color color = blancasAbajo ? Piece.Color.Black : Piece.Color.White;
             JugadorHumano jugador = new JugadorHumano("Jugador 2", color);
 
-            if (color == Piece.Color.Blancas)
+            if (color == Piece.Color.White)
             {
                 partida.JugadorBlancas = jugador;
             }
@@ -110,10 +110,10 @@ namespace Ajedrez.Managers
         
         public void CargarJugadorIA2()
         {
-            Piece.Color color = blancasAbajo ? Piece.Color.Negras : Piece.Color.Blancas;
+            Piece.Color color = blancasAbajo ? Piece.Color.Black : Piece.Color.White;
             JugadorIA jugador = new JugadorIA(color, partida.Tablero, partida.Reloj, ConfiguracionIA.CrearFacil(libroAperturas));
 
-            if (color == Piece.Color.Blancas)
+            if (color == Piece.Color.White)
             {
                 partida.JugadorBlancas = jugador;
             }

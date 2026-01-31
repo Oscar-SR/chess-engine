@@ -177,12 +177,12 @@ namespace Ajedrez.Core
 
                 if (jugadorBlancas is JugadorIA jugadorIABlancas)
                 {
-                    jugadorIABlancas.GestorTiempo = new GestorTiempo(value, Piece.Color.Blancas);
+                    jugadorIABlancas.GestorTiempo = new GestorTiempo(value, Piece.Color.White);
                 }
 
                 if (jugadorNegras is JugadorIA jugadorIANegras)
                 {
-                    jugadorIANegras.GestorTiempo = new GestorTiempo(value, Piece.Color.Negras);
+                    jugadorIANegras.GestorTiempo = new GestorTiempo(value, Piece.Color.Black);
                 }
             }
         }

@@ -52,8 +52,8 @@ namespace Ajedrez.Managers
 
             // Crear las instancias de los jugadores
             //JugadorHumano jugadorBlancas = new JugadorHumano("Jugador 1");
-            JugadorIA jugadorBlancas = new JugadorIA(JugadorIA.TipoDificultad.Dificil, tablero, libroAperturas, reloj, Piece.Color.Blancas);
-            JugadorIA jugadorNegras = new JugadorIA(JugadorIA.TipoDificultad.Dificil, tablero, libroAperturas, reloj, Piece.Color.Negras);
+            JugadorIA jugadorBlancas = new JugadorIA(JugadorIA.TipoDificultad.Dificil, tablero, libroAperturas, reloj, Piece.Color.White);
+            JugadorIA jugadorNegras = new JugadorIA(JugadorIA.TipoDificultad.Dificil, tablero, libroAperturas, reloj, Piece.Color.Black);
 
             // Crear la instancia de la partida
             partida = new Partida(tablero, jugadorBlancas, jugadorNegras, reloj);
@@ -75,7 +75,7 @@ namespace Ajedrez.Managers
             if (!partidaActiva)
                 return;
 
-            if (turno == Piece.Color.Blancas)
+            if (turno == Piece.Color.White)
             {
                 partida.Reloj.ConsumirTiempoBlancas(Time.deltaTime);
                 partidaUI.FormatearTiempoJugadorBlancas(partida.Reloj.TiempoRestanteBlancas);
@@ -104,7 +104,7 @@ namespace Ajedrez.Managers
             // Añadir el incremento de tiempo al jugador correspondiente
             if (partidaActiva)
             {
-                if (turno == Piece.Color.Negras)
+                if (turno == Piece.Color.Black)
                 {
                     partida.Reloj.AplicarIncrementoBlancas();
                     partidaUI.FormatearTiempoJugadorBlancas(partida.Reloj.TiempoRestanteBlancas);
@@ -116,7 +116,7 @@ namespace Ajedrez.Managers
                 }
             }
 
-            if (AjedrezUtils.MismoColor(turno, Piece.Color.Blancas))
+            if (AjedrezUtils.MismoColor(turno, Piece.Color.White))
             {
                 // Poner el cronómetro de las negras más transparente
                 partidaUI.TransparentarTiempoJugadorNegras();
@@ -140,13 +140,13 @@ namespace Ajedrez.Managers
         private void FinalizarPartida()
         {
             partidaActiva = false;
-            InputManager.Instancia.ColorInteractuable = Piece.Color.Nada;
+            InputManager.Instancia.ColorInteractuable = Piece.Color.None;
             partidaUI.FinalizarPartida(partida.Situacion);
         }
 
         private async void IniciarTurno()
         {
-            jugadorActual = turno == Piece.Color.Blancas ? partida.JugadorBlancas : partida.JugadorNegras;
+            jugadorActual = turno == Piece.Color.White ? partida.JugadorBlancas : partida.JugadorNegras;
 
             if (jugadorActual is JugadorIA jugadorIA)
             {

@@ -57,7 +57,7 @@ namespace Ajedrez.Utilities
             for (int square = 0; square < 64; square++)
             {
                 Piece pieza = tablero.ObtenerPieza(square);
-                if (pieza.TipoPieza != Piece.Tipo.Nada)
+                if (pieza.TipoPieza != Piece.Type.None)
                 {
                     hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(pieza), square];
                 }
@@ -75,7 +75,7 @@ namespace Ajedrez.Utilities
             }
 
             // Turno
-            if (AjedrezUtils.MismoColor(tablero.Turno, Piece.Color.Negras))
+            if (AjedrezUtils.MismoColor(tablero.Turno, Piece.Color.Black))
             {
                 hash ^= HashTurno;
             }
@@ -114,25 +114,25 @@ namespace Ajedrez.Utilities
             {
                 case Movimiento.PROMOVER_A_REINA:
                     {
-                        hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Reina, pieza.ColorPieza), movimiento.Destino];
+                        hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(Piece.Type.Reina, pieza.ColorPieza), movimiento.Destino];
                         break;
                     }
 
                 case Movimiento.PROMOVER_A_TORRE:
                     {
-                        hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Torre, pieza.ColorPieza), movimiento.Destino];
+                        hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(Piece.Type.Torre, pieza.ColorPieza), movimiento.Destino];
                         break;
                     }
 
                 case Movimiento.PROMOVER_A_ALFIL:
                     {
-                        hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Alfil, pieza.ColorPieza), movimiento.Destino];
+                        hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(Piece.Type.Alfil, pieza.ColorPieza), movimiento.Destino];
                         break;
                     }
 
                 case Movimiento.PROMOVER_A_CABALLO:
                     {
-                        hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Caballo, pieza.ColorPieza), movimiento.Destino];
+                        hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(Piece.Type.Caballo, pieza.ColorPieza), movimiento.Destino];
                         break;
                     }
 
@@ -166,8 +166,8 @@ namespace Ajedrez.Utilities
         public static ulong ActualizarZobristHashEnroque(ulong hash, Movimiento movimientoTorre, Piece.Color turno, int enroquesDisponiblesAntiguos, int enroquesDisponiblesNuevos)
         {
             // Actualizar movimiento de la torre
-            hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Torre, turno), movimientoTorre.Origen];
-            hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(Piece.Tipo.Torre, turno), movimientoTorre.Destino];
+            hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(Piece.Type.Torre, turno), movimientoTorre.Origen];
+            hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(Piece.Type.Torre, turno), movimientoTorre.Destino];
 
             // Eliminar los derechos de enroque antiguos y poner los nuevos
             hash ^= HashesEnroquesDisponibles[enroquesDisponiblesAntiguos];

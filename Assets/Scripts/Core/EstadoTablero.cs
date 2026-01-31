@@ -19,11 +19,11 @@ namespace Ajedrez.Core
         {
             get
             {
-                return (this.estado & 0b0000000000000001) == 0 ? Piece.Color.Blancas : Piece.Color.Negras;
+                return (this.estado & 0b0000000000000001) == 0 ? Piece.Color.White : Piece.Color.Black;
             }
             set
             {
-                if (AjedrezUtils.MismoColor(value, Piece.Color.Negras))
+                if (AjedrezUtils.MismoColor(value, Piece.Color.Black))
                     this.estado |= 0b0000000000000001;
                 else
                     this.estado &= 0b1111111111111110;
