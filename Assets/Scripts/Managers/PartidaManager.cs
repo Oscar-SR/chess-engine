@@ -62,7 +62,7 @@ namespace Ajedrez.Managers
             bool blancasAbajo = true;
             */
 
-            partidaUI.Init(partida.JugadorBlancas.Nombre, partida.JugadorNegras.Nombre, partida.Reloj.DuracionInicial, blancasAbajo);
+            partidaUI.Init(partida.JugadorBlancas.Nombre, partida.JugadorNegras.Nombre, partida.Reloj.InitialDuration, blancasAbajo);
             tableroUI.Init(partida.Tablero, blancasAbajo);
             promocionUI.Init(blancasAbajo);
             BitboardDebugger.Instancia.Init(partida.Tablero);
@@ -77,10 +77,10 @@ namespace Ajedrez.Managers
 
             if (turno == Piece.Color.White)
             {
-                partida.Reloj.ConsumirTiempoBlancas(Time.deltaTime);
-                partidaUI.FormatearTiempoJugadorBlancas(partida.Reloj.TiempoRestanteBlancas);
+                partida.Reloj.ConsumeTimeWhite(Time.deltaTime);
+                partidaUI.FormatearTiempoJugadorBlancas(partida.Reloj.RemainingTimeWhite);
 
-                if (partida.Reloj.TiempoAgotadoBlancas)
+                if (partida.Reloj.TimeOutWhite)
                 {
                     partida.Situacion = SituacionPartida.Tipo.TiempoAgotadoBlancas;
                     FinalizarPartida();
@@ -88,10 +88,10 @@ namespace Ajedrez.Managers
             }
             else
             {
-                partida.Reloj.ConsumirTiempoNegras(Time.deltaTime);
-                partidaUI.FormatearTiempoJugadorNegras(partida.Reloj.TiempoRestanteNegras);
+                partida.Reloj.ConsumeTimeBlack(Time.deltaTime);
+                partidaUI.FormatearTiempoJugadorNegras(partida.Reloj.RemainingTimeBlack);
 
-                if (partida.Reloj.TiempoAgotadoNegras)
+                if (partida.Reloj.TimeOutBlack)
                 {
                     partida.Situacion = SituacionPartida.Tipo.TiempoAgotadoNegras;
                     FinalizarPartida();
@@ -106,13 +106,13 @@ namespace Ajedrez.Managers
             {
                 if (turno == Piece.Color.Black)
                 {
-                    partida.Reloj.AplicarIncrementoBlancas();
-                    partidaUI.FormatearTiempoJugadorBlancas(partida.Reloj.TiempoRestanteBlancas);
+                    partida.Reloj.ApplyIncrementWhite();
+                    partidaUI.FormatearTiempoJugadorBlancas(partida.Reloj.RemainingTimeWhite);
                 }
                 else
                 {
-                    partida.Reloj.AplicarIncrementoNegras();
-                    partidaUI.FormatearTiempoJugadorNegras(partida.Reloj.TiempoRestanteNegras);
+                    partida.Reloj.ApplyIncrementBlack();
+                    partidaUI.FormatearTiempoJugadorNegras(partida.Reloj.RemainingTimeBlack);
                 }
             }
 

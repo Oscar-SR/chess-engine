@@ -17,7 +17,7 @@ namespace Ajedrez.Core
         private LibroAperturas libroAperturas;
         private GestorTiempo gestorTiempo;
 
-        public JugadorIA(string nombre, Piece.Color colorPiezas, Tablero tablero, Reloj reloj, AIConfiguration configuracionIA)
+        public JugadorIA(string nombre, Piece.Color colorPiezas, Tablero tablero, Timer reloj, AIConfiguration configuracionIA)
             : base(nombre, colorPiezas)
         {
             this.tablero = tablero;
@@ -29,7 +29,7 @@ namespace Ajedrez.Core
             ConfigurarIA();
         }
 
-        public JugadorIA(Piece.Color colorPiezas, Tablero tablero, Reloj reloj, AIConfiguration configuracionIA)
+        public JugadorIA(Piece.Color colorPiezas, Tablero tablero, Timer reloj, AIConfiguration configuracionIA)
             : base("IA " + configuracionIA.Difficulty, colorPiezas)
         {
             this.tablero = tablero;

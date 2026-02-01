@@ -23,7 +23,7 @@ namespace Ajedrez.Managers
         void Start()
         {
             libroAperturas = Resources.Load<TextAsset>("Aperturas");
-            partida = new Partida(new Tablero(), new JugadorHumano("Jugador 1", Piece.Color.White), new JugadorHumano("Jugador 2", Piece.Color.Black), new Reloj(60f, 0f));
+            partida = new Partida(new Tablero(), new JugadorHumano("Jugador 1", Piece.Color.White), new JugadorHumano("Jugador 2", Piece.Color.Black), new Timer(60f, 0f));
             tableroUI.Init(partida.Tablero);
         }
 
@@ -132,12 +132,12 @@ namespace Ajedrez.Managers
 
         public void CambiarDuracion(float duracion)
         {
-            partida.Reloj = new Reloj(duracion, partida.Reloj.IncrementoPorMovimiento);
+            partida.Reloj = new Timer(duracion, partida.Reloj.IncrementPerMove);
         }
 
         public void CambiarIncremento(float incremento)
         {
-            partida.Reloj = new Reloj(partida.Reloj.DuracionInicial, incremento);
+            partida.Reloj = new Timer(partida.Reloj.InitialDuration, incremento);
         }
 
         public void CambiarNombreJugador1(string nombre)

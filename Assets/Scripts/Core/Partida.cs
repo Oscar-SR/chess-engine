@@ -12,7 +12,7 @@ namespace Ajedrez.Core
         private Jugador jugadorBlancas;
         private Jugador jugadorNegras;
         private bool conTiempo;
-        private Reloj reloj;
+        private Timer reloj;
         private List<Movimiento> movimientosRealizados;
         private string fenInicioPartida;
         private SituacionPartida.Tipo situacion;
@@ -29,7 +29,7 @@ namespace Ajedrez.Core
             ultimosMovimientosLegales = new List<Movimiento>();
         }
 
-        public Partida(Tablero tablero, Jugador jugadorBlancas, Jugador jugadorNegras, Reloj reloj)
+        public Partida(Tablero tablero, Jugador jugadorBlancas, Jugador jugadorNegras, Timer reloj)
         {
             conTiempo = true;
             this.tablero = tablero;
@@ -42,7 +42,7 @@ namespace Ajedrez.Core
             EvaluarSituacionActual();
         }
 
-        public Partida(string fen, Jugador jugadorBlancas, Jugador jugadorNegras, Reloj reloj)
+        public Partida(string fen, Jugador jugadorBlancas, Jugador jugadorNegras, Timer reloj)
         {
             conTiempo = true;
             tablero = new Tablero(fen);
@@ -61,7 +61,7 @@ namespace Ajedrez.Core
             this.tablero = tablero;
             this.jugadorBlancas = jugadorBlancas;
             this.jugadorNegras = jugadorNegras;
-            reloj = new Reloj(duracion, incremento);
+            reloj = new Timer(duracion, incremento);
             fenInicioPartida = tablero.ToFEN();
             movimientosRealizados = new List<Movimiento>();
             ultimosMovimientosLegales = new List<Movimiento>();
@@ -74,7 +74,7 @@ namespace Ajedrez.Core
             tablero = new Tablero(fen);
             this.jugadorBlancas = jugadorBlancas;
             this.jugadorNegras = jugadorNegras;
-            reloj = new Reloj(duracion, incremento);
+            reloj = new Timer(duracion, incremento);
             fenInicioPartida = fen;
             movimientosRealizados = new List<Movimiento>();
             ultimosMovimientosLegales = new List<Movimiento>();
@@ -159,7 +159,7 @@ namespace Ajedrez.Core
             }
         }
 
-        public Reloj Reloj
+        public Timer Reloj
         {
             get
             {

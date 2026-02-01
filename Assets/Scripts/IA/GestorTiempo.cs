@@ -6,15 +6,15 @@ namespace Ajedrez.IA
     public class GestorTiempo
     {
         public const float FACTOR_INCREMENTO = 0.6f;
-        private Reloj reloj;
+        private Timer reloj;
         private Piece.Color colorPiezas;
         private readonly float incrementoEmpleado;
 
-        public GestorTiempo(Reloj reloj, Piece.Color colorPiezas)
+        public GestorTiempo(Timer reloj, Piece.Color colorPiezas)
         {
             this.reloj = reloj;
             this.colorPiezas = colorPiezas;
-            incrementoEmpleado = reloj.IncrementoPorMovimiento * FACTOR_INCREMENTO;
+            incrementoEmpleado = reloj.IncrementPerMove * FACTOR_INCREMENTO;
         }
 
         public Piece.Color ColorPiezas
@@ -60,11 +60,11 @@ namespace Ajedrez.IA
             {
                 if (colorPiezas == Piece.Color.White)
                 {
-                    return reloj.TiempoRestanteBlancas;
+                    return reloj.RemainingTimeWhite;
                 }
                 else
                 {
-                    return reloj.TiempoRestanteNegras;
+                    return reloj.RemainingTimeBlack;
                 }
             }
         }
