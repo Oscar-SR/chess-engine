@@ -11,8 +11,8 @@ namespace Ajedrez.Core
 
         private ulong[] bitboards;
         private Stack<(Piece, int)> piezasMuertas;
-        private EstadoTablero estadoActual;
-        private Stack<EstadoTablero> historialEstados;
+        private BoardState estadoActual;
+        private Stack<BoardState> historialEstados;
         private PilaRepeticiones historialPosicionesRepetidas; // Mantiene un historial de las últimas posiciones hasheadas, hasta el último movimiento irreversible
         private uint numMovimientosTotales;
 
@@ -68,21 +68,21 @@ namespace Ajedrez.Core
             }
 
             // 2 Turno
-            fen += estadoActual.Turno == Piece.Color.White ? " w " : " b ";
+            fen += estadoActual.Turn == Piece.Color.White ? " w " : " b ";
 
             // 3 Enroques
             string enroques = "";
-            if (estadoActual.EnroqueDisponible(EstadoTablero.ENROQUE_CORTO_BLANCAS)) enroques += "K";
-            if (estadoActual.EnroqueDisponible(EstadoTablero.ENROQUE_LARGO_BLANCAS)) enroques += "Q";
-            if (estadoActual.EnroqueDisponible(EstadoTablero.ENROQUE_CORTO_NEGRAS)) enroques += "k";
-            if (estadoActual.EnroqueDisponible(EstadoTablero.ENROQUE_LARGO_NEGRAS)) enroques += "q";
+            if (estadoActual.IsCastlingAvailable(BoardState.WHITE_KINGSIDE_CASTLING)) enroques += "K";
+            if (estadoActual.IsCastlingAvailable(BoardState.WHITE_QUEENSIDE_CASTLING)) enroques += "Q";
+            if (estadoActual.IsCastlingAvailable(BoardState.BLACK_KINGSIDE_CASTLING)) enroques += "k";
+            if (estadoActual.IsCastlingAvailable(BoardState.BLACK_QUEENSIDE_CASTLING)) enroques += "q";
             fen += string.IsNullOrEmpty(enroques) ? "-" : enroques;
             fen += " ";
 
             // 4 Peón al paso
-            if (incluirPeonAlPaso && estadoActual.HayPeonVulnerable)
+            if (incluirPeonAlPaso && estadoActual.HasVulnerablePawn)
             {
-                (int fila, int columna) = AjedrezUtils.IndiceACoordenadas(estadoActual.CasillaPeonVulnerable);
+                (int fila, int columna) = AjedrezUtils.IndiceACoordenadas(estadoActual.VulnerablePawnSquare);
                 char colCaracter = AjedrezUtils.ColumnaANombre(columna);
                 if (fila == 3)
                 {
@@ -101,7 +101,7 @@ namespace Ajedrez.Core
             }
 
             // 5 Número de plys inactivo
-            fen += $" {estadoActual.NumPlysInactivo}";
+            fen += $" {estadoActual.InactivePlyCount}";
 
             // 6 Número total de jugadas
             fen += $" {numMovimientosTotales}";
@@ -121,7 +121,7 @@ namespace Ajedrez.Core
             // Inicializar estructuras de datos
             bitboards = new ulong[12];
             piezasMuertas = new Stack<(Piece, int)>();
-            historialEstados = new Stack<EstadoTablero>(capacity: 64);
+            historialEstados = new Stack<BoardState>(capacity: 64);
             historialPosicionesRepetidas = new PilaRepeticiones();
 
             string piezasFEN = partes[0];
@@ -167,16 +167,16 @@ namespace Ajedrez.Core
             if (turnoFEN != "w" && turnoFEN != "b")
                 throw new ArgumentException($"Valor de turno inválido: '{turnoFEN}'. Debe ser 'w' o 'b'.", nameof(fen));
 
-            estadoActual.Turno = turnoFEN == "w" ? Piece.Color.White : Piece.Color.Black;
+            estadoActual.Turn = turnoFEN == "w" ? Piece.Color.White : Piece.Color.Black;
 
             // 3. Enroques disponibles
             if (!System.Text.RegularExpressions.Regex.IsMatch(enroquesFEN, "^(K?Q?k?q?|\\-)$"))
                 throw new ArgumentException($"Formato de enroques inválido: '{enroquesFEN}'.", nameof(fen));
 
-            if (enroquesFEN.Contains("K")) estadoActual.InicializarEnroquesDisponibles(EstadoTablero.ENROQUE_CORTO_BLANCAS);
-            if (enroquesFEN.Contains("Q")) estadoActual.InicializarEnroquesDisponibles(EstadoTablero.ENROQUE_LARGO_BLANCAS);
-            if (enroquesFEN.Contains("k")) estadoActual.InicializarEnroquesDisponibles(EstadoTablero.ENROQUE_CORTO_NEGRAS);
-            if (enroquesFEN.Contains("q")) estadoActual.InicializarEnroquesDisponibles(EstadoTablero.ENROQUE_LARGO_NEGRAS);
+            if (enroquesFEN.Contains("K")) estadoActual.InitializeCastlingRights(BoardState.WHITE_KINGSIDE_CASTLING);
+            if (enroquesFEN.Contains("Q")) estadoActual.InitializeCastlingRights(BoardState.WHITE_QUEENSIDE_CASTLING);
+            if (enroquesFEN.Contains("k")) estadoActual.InitializeCastlingRights(BoardState.BLACK_KINGSIDE_CASTLING);
+            if (enroquesFEN.Contains("q")) estadoActual.InitializeCastlingRights(BoardState.BLACK_QUEENSIDE_CASTLING);
 
             // 4. Peón al paso
             if (peonAlPasoFEN != "-")
@@ -186,22 +186,22 @@ namespace Ajedrez.Core
 
                 int col = AjedrezUtils.NombreAColumna(peonAlPasoFEN[0]);
                 int fila = AjedrezUtils.NombreAFila(peonAlPasoFEN[1]);
-                //estadoActual.CasillaPeonVulnerable = AjedrezUtils.CoordenadasAIndice(fila, col);
+                //estadoActual.VulnerablePawnSquare = AjedrezUtils.CoordenadasAIndice(fila, col);
                 if (fila == 2)
-                    estadoActual.CasillaPeonVulnerable = (24 + col);
+                    estadoActual.VulnerablePawnSquare = (24 + col);
                 else
-                    estadoActual.CasillaPeonVulnerable = (32 + col);
+                    estadoActual.VulnerablePawnSquare = (32 + col);
             }
             else
             {
-                estadoActual.HayPeonVulnerable = false;
+                estadoActual.HasVulnerablePawn = false;
             }
 
             // 5. Número de plys inactivo
             if (!byte.TryParse(plysFEN, out byte plys))
                 throw new ArgumentException($"Número de medio movimientos inválido: '{plysFEN}'.", nameof(fen));
 
-            estadoActual.NumPlysInactivo = plys;
+            estadoActual.InactivePlyCount = plys;
 
             // 6. Número de movimientos totales
             if (!uint.TryParse(movimientosFEN, out uint movimientos))
@@ -214,7 +214,7 @@ namespace Ajedrez.Core
             historialPosicionesRepetidas.Push(estadoActual.ZobristHash, true);
         }
 
-        public EstadoTablero EstadoActual
+        public BoardState EstadoActual
         {
             get
             {
@@ -234,7 +234,7 @@ namespace Ajedrez.Core
         {
             get
             {
-                return estadoActual.Turno;
+                return estadoActual.Turn;
             }
         }
 
@@ -242,7 +242,7 @@ namespace Ajedrez.Core
         {
             get
             {
-                return estadoActual.CasillaPeonVulnerable;
+                return estadoActual.VulnerablePawnSquare;
             }
         }
 
@@ -360,16 +360,16 @@ namespace Ajedrez.Core
 
         private void CambiarTurno()
         {
-            estadoActual.Turno = AjedrezUtils.InversoColor(estadoActual.Turno);
+            estadoActual.Turn = AjedrezUtils.InversoColor(estadoActual.Turn);
             estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashTurno(estadoActual.ZobristHash);
 
             // Anular el peón vulnerable si es que lo hay
-            if (estadoActual.HayPeonVulnerable)
+            if (estadoActual.HasVulnerablePawn)
             {
                 if (AjedrezUtils.MismoColor(ObtenerPieza(PeonVulnerable).PieceColor, Turno))
                 {
                     estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashColumnasAlPaso(estadoActual.ZobristHash, PeonVulnerable); // Cuidado con mover esta línea hacia abajo, PeonVulnerable ya no devolverá la casilla
-                    estadoActual.HayPeonVulnerable = false;
+                    estadoActual.HasVulnerablePawn = false;
                 }
             }
         }
@@ -380,7 +380,7 @@ namespace Ajedrez.Core
             historialEstados.Push(estadoActual);
 
             // Anulamos la captura
-            estadoActual.HayCaptura = false;
+            estadoActual.HasCapture = false;
 
             // Obtenemos el índice de la pieza que se quiere mover
             Piece piezaEnOrigen = ObtenerPieza(movimiento.Origen);
@@ -396,11 +396,11 @@ namespace Ajedrez.Core
 
             if (piezaCapturada.PieceType != Piece.Type.None)
             {
-                if (estadoActual.HayPeonVulnerable && (movimiento.Destino == PeonVulnerable))
+                if (estadoActual.HasVulnerablePawn && (movimiento.Destino == PeonVulnerable))
                 {
                     // La pieza capturada era el peon vulnerable, se anula
                     estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashColumnasAlPaso(estadoActual.ZobristHash, PeonVulnerable); // Cuidado con mover esta línea hacia abajo, PeonVulnerable ya no devolverá la casilla
-                    estadoActual.HayPeonVulnerable = false;
+                    estadoActual.HasVulnerablePawn = false;
                 }
                 else if (piezaCapturada.PieceType == Piece.Type.Rook)
                 {
@@ -410,35 +410,35 @@ namespace Ajedrez.Core
                         case 0:
                             {
                                 // Actualizar los derechos disponibles del estado
-                                estadoActual.CancelarEnroque(EstadoTablero.ENROQUE_LARGO_BLANCAS);
+                                estadoActual.CancelCastling(BoardState.WHITE_QUEENSIDE_CASTLING);
                                 break;
                             }
 
                         case 7:
                             {
                                 // Actualizar los derechos disponibles del estado
-                                estadoActual.CancelarEnroque(EstadoTablero.ENROQUE_CORTO_BLANCAS);
+                                estadoActual.CancelCastling(BoardState.WHITE_KINGSIDE_CASTLING);
                                 break;
                             }
 
                         case 56:
                             {
                                 // Actualizar los derechos disponibles del estado
-                                estadoActual.CancelarEnroque(EstadoTablero.ENROQUE_LARGO_NEGRAS);
+                                estadoActual.CancelCastling(BoardState.BLACK_QUEENSIDE_CASTLING);
                                 break;
                             }
 
                         case 63:
                             {
                                 // Actualizar los derechos disponibles del estado
-                                estadoActual.CancelarEnroque(EstadoTablero.ENROQUE_CORTO_NEGRAS);
+                                estadoActual.CancelCastling(BoardState.BLACK_KINGSIDE_CASTLING);
                                 break;
                             }
                     }
 
                     // Actualizar Zobrist hash enroques disponibles
-                    estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashEnroquesDisponibles(estadoActual.ZobristHash, historialEstados.Peek().EnroquesDisponibles); // Eliminar los enroques disponibles antiguos
-                    estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashEnroquesDisponibles(estadoActual.ZobristHash, estadoActual.EnroquesDisponibles); // Añadir los enroques disponibles nuevos
+                    estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashEnroquesDisponibles(estadoActual.ZobristHash, historialEstados.Peek().CastlingRights); // Eliminar los enroques disponibles antiguos
+                    estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashEnroquesDisponibles(estadoActual.ZobristHash, estadoActual.CastlingRights); // Añadir los enroques disponibles nuevos
                 }
 
                 // Hay captura
@@ -451,7 +451,7 @@ namespace Ajedrez.Core
                 case Movimiento.CAPTURA_AL_PASO:
                     {
                         EliminarPieza(new Piece(Piece.Type.Pawn, AjedrezUtils.InversoColor(Turno)), PeonVulnerable);
-                        estadoActual.HayPeonVulnerable = false; ;
+                        estadoActual.HasVulnerablePawn = false; ;
                         break;
                     }
 
@@ -465,7 +465,7 @@ namespace Ajedrez.Core
                                 {
                                     // Enroque largo blancas
                                     ActualizarBitboardsMovimiento(torre, 0, 3);
-                                    estadoActual.CancelarEnroque(EstadoTablero.ENROQUE_CORTO_BLANCAS | EstadoTablero.ENROQUE_LARGO_BLANCAS);
+                                    estadoActual.CancelCastling(BoardState.WHITE_KINGSIDE_CASTLING | BoardState.WHITE_QUEENSIDE_CASTLING);
 
                                     // Actualizar Zobrist hash movimiento
                                     estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashCasilla(estadoActual.ZobristHash, torre, 0);
@@ -477,7 +477,7 @@ namespace Ajedrez.Core
                                 {
                                     // Enroque corto blancas
                                     ActualizarBitboardsMovimiento(torre, 7, 5);
-                                    estadoActual.CancelarEnroque(EstadoTablero.ENROQUE_CORTO_BLANCAS | EstadoTablero.ENROQUE_LARGO_BLANCAS);
+                                    estadoActual.CancelCastling(BoardState.WHITE_KINGSIDE_CASTLING | BoardState.WHITE_QUEENSIDE_CASTLING);
 
                                     // Actualizar Zobrist hash movimiento
                                     estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashCasilla(estadoActual.ZobristHash, torre, 7);
@@ -489,7 +489,7 @@ namespace Ajedrez.Core
                                 {
                                     // Enroque largo negras
                                     ActualizarBitboardsMovimiento(torre, 56, 59);
-                                    estadoActual.CancelarEnroque(EstadoTablero.ENROQUE_CORTO_NEGRAS | EstadoTablero.ENROQUE_LARGO_NEGRAS);
+                                    estadoActual.CancelCastling(BoardState.BLACK_KINGSIDE_CASTLING | BoardState.BLACK_QUEENSIDE_CASTLING);
 
                                     // Actualizar Zobrist hash movimiento
                                     estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashCasilla(estadoActual.ZobristHash, torre, 56);
@@ -501,7 +501,7 @@ namespace Ajedrez.Core
                                 {
                                     // Enroque corto negras
                                     ActualizarBitboardsMovimiento(torre, 63, 61);
-                                    estadoActual.CancelarEnroque(EstadoTablero.ENROQUE_CORTO_NEGRAS | EstadoTablero.ENROQUE_LARGO_NEGRAS);
+                                    estadoActual.CancelCastling(BoardState.BLACK_KINGSIDE_CASTLING | BoardState.BLACK_QUEENSIDE_CASTLING);
 
                                     // Actualizar Zobrist hash movimiento
                                     estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashCasilla(estadoActual.ZobristHash, torre, 63);
@@ -511,16 +511,16 @@ namespace Ajedrez.Core
                         }
 
                         // Actualizar Zobrist hash enroques disponibles
-                        estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashEnroquesDisponibles(estadoActual.ZobristHash, historialEstados.Peek().EnroquesDisponibles); // Eliminar los enroques disponibles antiguos
-                        estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashEnroquesDisponibles(estadoActual.ZobristHash, estadoActual.EnroquesDisponibles); // Añadir los enroques disponibles nuevos
+                        estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashEnroquesDisponibles(estadoActual.ZobristHash, historialEstados.Peek().CastlingRights); // Eliminar los enroques disponibles antiguos
+                        estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashEnroquesDisponibles(estadoActual.ZobristHash, estadoActual.CastlingRights); // Añadir los enroques disponibles nuevos
 
                         break;
                     }
 
                 case Movimiento.PEON_MUEVE_DOS:
                     {
-                        estadoActual.CasillaPeonVulnerable = movimiento.Destino;
-                        estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashColumnasAlPaso(estadoActual.ZobristHash, estadoActual.CasillaPeonVulnerable);
+                        estadoActual.VulnerablePawnSquare = movimiento.Destino;
+                        estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashColumnasAlPaso(estadoActual.ZobristHash, estadoActual.VulnerablePawnSquare);
                         break;
                     }
 
@@ -557,37 +557,37 @@ namespace Ajedrez.Core
             {
                 if (AjedrezUtils.MismoColor(piezaEnOrigen.PieceColor, Piece.Color.White))
                 {
-                    estadoActual.CancelarEnroque(EstadoTablero.ENROQUE_CORTO_BLANCAS | EstadoTablero.ENROQUE_LARGO_BLANCAS);
+                    estadoActual.CancelCastling(BoardState.WHITE_KINGSIDE_CASTLING | BoardState.WHITE_QUEENSIDE_CASTLING);
                 }
                 else
                 {
-                    estadoActual.CancelarEnroque(EstadoTablero.ENROQUE_CORTO_NEGRAS | EstadoTablero.ENROQUE_LARGO_NEGRAS);
+                    estadoActual.CancelCastling(BoardState.BLACK_KINGSIDE_CASTLING | BoardState.BLACK_QUEENSIDE_CASTLING);
                 }
 
                 // Actualizar Zobrist hash enroques disponibles
-                estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashEnroquesDisponibles(estadoActual.ZobristHash, historialEstados.Peek().EnroquesDisponibles); // Eliminar los enroques disponibles antiguos
-                estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashEnroquesDisponibles(estadoActual.ZobristHash, estadoActual.EnroquesDisponibles); // Añadir los enroques disponibles nuevos
+                estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashEnroquesDisponibles(estadoActual.ZobristHash, historialEstados.Peek().CastlingRights); // Eliminar los enroques disponibles antiguos
+                estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashEnroquesDisponibles(estadoActual.ZobristHash, estadoActual.CastlingRights); // Añadir los enroques disponibles nuevos
             }
             else if (piezaEnOrigen.PieceType == Piece.Type.Rook)
             {
                 if (AjedrezUtils.MismoColor(piezaEnOrigen.PieceColor, Piece.Color.White))
                 {
                     if (movimiento.Origen == 0)
-                        estadoActual.CancelarEnroque(EstadoTablero.ENROQUE_LARGO_BLANCAS);
+                        estadoActual.CancelCastling(BoardState.WHITE_QUEENSIDE_CASTLING);
                     else if (movimiento.Origen == 7)
-                        estadoActual.CancelarEnroque(EstadoTablero.ENROQUE_CORTO_BLANCAS);
+                        estadoActual.CancelCastling(BoardState.WHITE_KINGSIDE_CASTLING);
                 }
                 else
                 {
                     if (movimiento.Origen == 56)
-                        estadoActual.CancelarEnroque(EstadoTablero.ENROQUE_LARGO_NEGRAS);
+                        estadoActual.CancelCastling(BoardState.BLACK_QUEENSIDE_CASTLING);
                     else if (movimiento.Origen == 63)
-                        estadoActual.CancelarEnroque(EstadoTablero.ENROQUE_CORTO_NEGRAS);
+                        estadoActual.CancelCastling(BoardState.BLACK_KINGSIDE_CASTLING);
                 }
 
                 // Actualizar Zobrist hash enroques disponibles
-                estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashEnroquesDisponibles(estadoActual.ZobristHash, historialEstados.Peek().EnroquesDisponibles); // Eliminar los enroques disponibles antiguos
-                estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashEnroquesDisponibles(estadoActual.ZobristHash, estadoActual.EnroquesDisponibles); // Añadir los enroques disponibles nuevos
+                estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashEnroquesDisponibles(estadoActual.ZobristHash, historialEstados.Peek().CastlingRights); // Eliminar los enroques disponibles antiguos
+                estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashEnroquesDisponibles(estadoActual.ZobristHash, estadoActual.CastlingRights); // Añadir los enroques disponibles nuevos
             }
 
             // Incrementar movimientos totales
@@ -599,18 +599,18 @@ namespace Ajedrez.Core
             // Cambiamos el turno
             CambiarTurno(); // Cuidado con mover esto más abajo, afectará al Zobrist hash
 
-            if (!estadoActual.HayCaptura && piezaEnOrigen.PieceType != Piece.Type.Pawn)
+            if (!estadoActual.HasCapture && piezaEnOrigen.PieceType != Piece.Type.Pawn)
             {
                 // Movimiento no irreversible
                 // Incrementar el contador de la regla de los 50 movimientos
-                estadoActual.NumPlysInactivo++;
+                estadoActual.InactivePlyCount++;
                 // Añadir posición a la pila de repeticiones
                 historialPosicionesRepetidas.Push(estadoActual.ZobristHash, false);
             }
             else
             {
                 // Movimiento irreversible
-                estadoActual.NumPlysInactivo = 0;
+                estadoActual.InactivePlyCount = 0;
 
                 if (enBusqueda)
                 {
@@ -697,7 +697,7 @@ namespace Ajedrez.Core
                     }
             }
 
-            if (estadoActual.HayCaptura)
+            if (estadoActual.HasCapture)
             {
                 (Piece piezaCapturada, int casilla) = piezasMuertas.Pop();
                 bitboards[AjedrezUtils.ObtenerIndicePieza(piezaCapturada.PieceType, piezaCapturada.PieceColor)] |= BitboardUtils.SetBit(casilla);
@@ -733,7 +733,7 @@ namespace Ajedrez.Core
 
             if (acortarGeneracion)
             {
-                if (estadoActual.NumPlysInactivo >= MAX_PLYS_INACTIVO)
+                if (estadoActual.InactivePlyCount >= MAX_PLYS_INACTIVO)
                 {
                     // Se cumple la regla de los 50 movimientos
                     return (movimientosLegales, false);
@@ -840,13 +840,13 @@ namespace Ajedrez.Core
                 if (Turno == Piece.Color.White)
                 {
                     // Enroque largo blancas
-                    if (estadoActual.EnroqueDisponible(EstadoTablero.ENROQUE_LARGO_BLANCAS) && !CasillaAtacada(casillasOcupadas, casilla, AjedrezUtils.InversoColor(Turno)) && CasillaVacia(casillasOcupadas, 1) && CasillaVacia(casillasOcupadas, 2) && !CasillaAtacada(casillasOcupadas, 2, AjedrezUtils.InversoColor(Turno)) && CasillaVacia(casillasOcupadas, 3) && !CasillaAtacada(casillasOcupadas, 3, AjedrezUtils.InversoColor(Turno)))
+                    if (estadoActual.IsCastlingAvailable(BoardState.WHITE_QUEENSIDE_CASTLING) && !CasillaAtacada(casillasOcupadas, casilla, AjedrezUtils.InversoColor(Turno)) && CasillaVacia(casillasOcupadas, 1) && CasillaVacia(casillasOcupadas, 2) && !CasillaAtacada(casillasOcupadas, 2, AjedrezUtils.InversoColor(Turno)) && CasillaVacia(casillasOcupadas, 3) && !CasillaAtacada(casillasOcupadas, 3, AjedrezUtils.InversoColor(Turno)))
                     {
                         movimientosLegales.Add(new Movimiento(casilla, 2, Movimiento.ENROQUE));
                     }
 
                     // Enroque corto blancas
-                    if (estadoActual.EnroqueDisponible(EstadoTablero.ENROQUE_CORTO_BLANCAS) && !CasillaAtacada(casillasOcupadas, casilla, AjedrezUtils.InversoColor(Turno)) && CasillaVacia(casillasOcupadas, 5) && !CasillaAtacada(casillasOcupadas, 5, AjedrezUtils.InversoColor(Turno)) && CasillaVacia(casillasOcupadas, 6) && !CasillaAtacada(casillasOcupadas, 6, AjedrezUtils.InversoColor(Turno)))
+                    if (estadoActual.IsCastlingAvailable(BoardState.WHITE_KINGSIDE_CASTLING) && !CasillaAtacada(casillasOcupadas, casilla, AjedrezUtils.InversoColor(Turno)) && CasillaVacia(casillasOcupadas, 5) && !CasillaAtacada(casillasOcupadas, 5, AjedrezUtils.InversoColor(Turno)) && CasillaVacia(casillasOcupadas, 6) && !CasillaAtacada(casillasOcupadas, 6, AjedrezUtils.InversoColor(Turno)))
                     {
                         movimientosLegales.Add(new Movimiento(casilla, 6, Movimiento.ENROQUE));
                     }
@@ -854,13 +854,13 @@ namespace Ajedrez.Core
                 else
                 {
                     // Enroque largo negras
-                    if (estadoActual.EnroqueDisponible(EstadoTablero.ENROQUE_LARGO_NEGRAS) && !CasillaAtacada(casillasOcupadas, casilla, AjedrezUtils.InversoColor(Turno)) && CasillaVacia(casillasOcupadas, 57) && CasillaVacia(casillasOcupadas, 58) && !CasillaAtacada(casillasOcupadas, 58, AjedrezUtils.InversoColor(Turno)) && CasillaVacia(casillasOcupadas, 59) && !CasillaAtacada(casillasOcupadas, 59, AjedrezUtils.InversoColor(Turno)))
+                    if (estadoActual.IsCastlingAvailable(BoardState.BLACK_QUEENSIDE_CASTLING) && !CasillaAtacada(casillasOcupadas, casilla, AjedrezUtils.InversoColor(Turno)) && CasillaVacia(casillasOcupadas, 57) && CasillaVacia(casillasOcupadas, 58) && !CasillaAtacada(casillasOcupadas, 58, AjedrezUtils.InversoColor(Turno)) && CasillaVacia(casillasOcupadas, 59) && !CasillaAtacada(casillasOcupadas, 59, AjedrezUtils.InversoColor(Turno)))
                     {
                         movimientosLegales.Add(new Movimiento(casilla, 58, Movimiento.ENROQUE));
                     }
 
                     // Enroque corto negras
-                    if (estadoActual.EnroqueDisponible(EstadoTablero.ENROQUE_CORTO_NEGRAS) && !CasillaAtacada(casillasOcupadas, casilla, AjedrezUtils.InversoColor(Turno)) && CasillaVacia(casillasOcupadas, 61) && !CasillaAtacada(casillasOcupadas, 61, AjedrezUtils.InversoColor(Turno)) && CasillaVacia(casillasOcupadas, 62) && !CasillaAtacada(casillasOcupadas, 62, AjedrezUtils.InversoColor(Turno)))
+                    if (estadoActual.IsCastlingAvailable(BoardState.BLACK_KINGSIDE_CASTLING) && !CasillaAtacada(casillasOcupadas, casilla, AjedrezUtils.InversoColor(Turno)) && CasillaVacia(casillasOcupadas, 61) && !CasillaAtacada(casillasOcupadas, 61, AjedrezUtils.InversoColor(Turno)) && CasillaVacia(casillasOcupadas, 62) && !CasillaAtacada(casillasOcupadas, 62, AjedrezUtils.InversoColor(Turno)))
                     {
                         movimientosLegales.Add(new Movimiento(casilla, 62, Movimiento.ENROQUE));
                     }
@@ -1065,7 +1065,7 @@ namespace Ajedrez.Core
                 }
 
                 // Hay un peon vulnerable
-                if (estadoActual.HayPeonVulnerable)
+                if (estadoActual.HasVulnerablePawn)
                 {
                     // Hay captura al paso para este peón, el movimiento no salta los límites del tablero y el capturar a esa pieza no pone en jaque al rey
                     if ((AjedrezUtils.NumCasillasHastaBorde[casilla][AjedrezUtils.NOROESTE] > 0) && (PeonVulnerable == casilla - 1) && BitboardUtils.EstaCasillaActiva(casilla - 1, movimientosValidos) && !CapturaAlPasoExponeAlRey(casilla, casillasOcupadas, casillaRey, Turno))
@@ -1183,7 +1183,7 @@ namespace Ajedrez.Core
             EliminarPiezaDeBitboard(pieza.PieceType, pieza.PieceColor, casilla);
 
             // Marcamos que hay captura
-            estadoActual.HayCaptura = true;
+            estadoActual.HasCapture = true;
 
             // Actualizar Zobrist hash captura
             estadoActual.ZobristHash = ZobristHashing.ActualizarZobristHashCasilla(estadoActual.ZobristHash, pieza, casilla);

@@ -22,7 +22,7 @@ namespace Ajedrez.Core
         {
             Tipo situacionPartida = Tipo.EnCurso;
 
-            if (tablero.EstadoActual.NumPlysInactivo >= Tablero.MAX_PLYS_INACTIVO)
+            if (tablero.EstadoActual.InactivePlyCount >= Tablero.MAX_PLYS_INACTIVO)
             {
                 // Regla de los 50 movimientos
                 situacionPartida = Tipo.Regla50Movimientos;

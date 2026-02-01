@@ -64,13 +64,13 @@ namespace Ajedrez.Utilities
             }
 
             // Enroque
-            int enroquesDisponibles = tablero.EstadoActual.EnroquesDisponibles; // valor 0-15 según derechos
+            int enroquesDisponibles = tablero.EstadoActual.CastlingRights; // valor 0-15 según derechos
             hash ^= HashesEnroquesDisponibles[enroquesDisponibles];
 
             // Peón al paso
-            if (tablero.EstadoActual.HayPeonVulnerable)
+            if (tablero.EstadoActual.HasVulnerablePawn)
             {
-                int columnaPeonAlPaso = AjedrezUtils.ObtenerColumna(tablero.EstadoActual.CasillaPeonVulnerable);
+                int columnaPeonAlPaso = AjedrezUtils.ObtenerColumna(tablero.EstadoActual.VulnerablePawnSquare);
                 hash ^= HashesColumnasAlPaso[columnaPeonAlPaso];
             }
 
