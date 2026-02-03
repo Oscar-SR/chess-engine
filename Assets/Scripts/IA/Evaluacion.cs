@@ -114,10 +114,10 @@ namespace Ajedrez.IA
         {
             return flagPromocion switch
             {
-                Movimiento.PROMOVER_A_CABALLO => VALOR_CABALLO,
-                Movimiento.PROMOVER_A_ALFIL => VALOR_ALFIL,
-                Movimiento.PROMOVER_A_TORRE => VALOR_TORRE,
-                Movimiento.PROMOVER_A_REINA => VALOR_REINA,
+                Move.PROMOTE_TO_KNIGHT => VALOR_CABALLO,
+                Move.PROMOTE_TO_BISHOP => VALOR_ALFIL,
+                Move.PROMOTE_TO_ROOK => VALOR_TORRE,
+                Move.PROMOTE_TO_QUEEN => VALOR_REINA,
                 _ => 0
             };
         }

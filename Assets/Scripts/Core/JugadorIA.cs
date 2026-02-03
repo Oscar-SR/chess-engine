@@ -100,13 +100,13 @@ namespace Ajedrez.Core
             }
         }
 
-        public async Task<Movimiento> HallarMejorMovimiento(List<Movimiento> movimientosLegales = null)
+        public async Task<Move> HallarMejorMovimiento(List<Move> movimientosLegales = null)
         {
-            Movimiento mejorMovimiento;
+            Move mejorMovimiento;
 
             if (configuracionIA.UseOpeningBook && tablero.NumMovimientosTotales <= configuracionIA.MaxBookMovement && libroAperturas.TryGetValue(tablero.ToFEN(incluirPeonAlPaso: false), out string movimientoLAN))
             {
-                mejorMovimiento = new Movimiento(movimientoLAN, tablero);
+                mejorMovimiento = new Move(movimientoLAN, tablero);
             }
             else
             {

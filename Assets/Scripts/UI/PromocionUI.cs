@@ -13,10 +13,10 @@ namespace Ajedrez.UI
         private GameObject panelPromocionActual;
         private Action<int> callbackSeleccion;
         
-        public void SeleccionarReina() => Seleccionar(Movimiento.PROMOVER_A_REINA);
-        public void SeleccionarCaballo() => Seleccionar(Movimiento.PROMOVER_A_CABALLO);
-        public void SeleccionarTorre() => Seleccionar(Movimiento.PROMOVER_A_TORRE);
-        public void SeleccionarAlfil() => Seleccionar(Movimiento.PROMOVER_A_ALFIL);
+        public void SeleccionarReina() => Seleccionar(Move.PROMOTE_TO_QUEEN);
+        public void SeleccionarCaballo() => Seleccionar(Move.PROMOTE_TO_KNIGHT);
+        public void SeleccionarTorre() => Seleccionar(Move.PROMOTE_TO_ROOK);
+        public void SeleccionarAlfil() => Seleccionar(Move.PROMOTE_TO_BISHOP);
 
         public void Init(bool blancasAbajo = true)
         {

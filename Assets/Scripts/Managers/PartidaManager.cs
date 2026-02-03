@@ -26,7 +26,7 @@ namespace Ajedrez.Managers
         private Piece.Color turno;
         private bool partidaActiva = false;
         private bool primerTurno = true;
-        private List<Movimiento> movimientosLegalesDePieza;
+        private List<Move> movimientosLegalesDePieza;
 
         // Start is called before the first frame update
         void Start()
@@ -150,7 +150,7 @@ namespace Ajedrez.Managers
 
             if (jugadorActual is JugadorIA jugadorIA)
             {
-                Movimiento movimiento = await jugadorIA.HallarMejorMovimiento(movimientosLegales : partida.UltimosMovimientosLegales);
+                Move movimiento = await jugadorIA.HallarMejorMovimiento(movimientosLegales : partida.UltimosMovimientosLegales);
                 StartCoroutine(HacerMovimiento(movimiento, esIA: true));
             }
             else if (jugadorActual is JugadorHumano jugadorHumano)
@@ -163,11 +163,11 @@ namespace Ajedrez.Managers
         /*
         private async void IniciarTurnoIA(JugadorIA jugadorIA)
         {
-            Movimiento mejorMovimiento;
+            Move mejorMovimiento;
 
             if (partida.Tablero.NumMovimientosTotales <= LibroAperturas.MAX_MOVIMIENTOS_LIBRO && jugadorIA.BuscarMovimientoLibro(partida.Tablero.ToFEN(incluirPeonAlPaso : false), out string movimientoLAN))
             {
-                mejorMovimiento = new Movimiento(movimientoLAN, partida.Tablero);
+                mejorMovimiento = new Move(movimientoLAN, partida.Tablero);
             }
             else
             {
@@ -225,12 +225,12 @@ namespace Ajedrez.Managers
             BitboardDebugger.Instancia.ActualizarModoDebugBitboard();
         }
 
-        private void MovimientoElegido(Movimiento movimiento)
+        private void MovimientoElegido(Move movimiento)
         {
             StartCoroutine(HacerMovimiento(movimiento, jugadorActual is JugadorIA));
         }
 
-        public IEnumerator HacerMovimiento(Movimiento movimiento, bool esIA = false)
+        public IEnumerator HacerMovimiento(Move movimiento, bool esIA = false)
         {
             if (!partidaActiva)
                 yield break;
@@ -259,7 +259,7 @@ namespace Ajedrez.Managers
 
         public void MostrarMovimientosLegalesDePieza(int casilla)
         {
-            movimientosLegalesDePieza = partida.UltimosMovimientosLegales.FindAll(m => m.Origen == casilla);
+            movimientosLegalesDePieza = partida.UltimosMovimientosLegales.FindAll(m => m.From == casilla);
             tableroUI.MostrarMovimientosLegales(movimientosLegalesDePieza);
         }
 
@@ -269,17 +269,17 @@ namespace Ajedrez.Managers
             movimientosLegalesDePieza.Clear();
         }
 
-        public Movimiento ObtenerMovimientoLegal(int destino)
+        public Move ObtenerMovimientoLegal(int destino)
         {
-            foreach (Movimiento movimiento in movimientosLegalesDePieza)
+            foreach (Move movimiento in movimientosLegalesDePieza)
             {
-                if (movimiento.Destino == destino)
+                if (movimiento.To == destino)
                 {
                     return movimiento;
                 }
             }
 
-            return Movimiento.Nulo;
+            return Move.Null;
         }
 
         public void ArrastrarPieza(int casillaPieza, Vector2 cursor)

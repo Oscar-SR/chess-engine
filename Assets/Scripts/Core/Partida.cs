@@ -13,10 +13,10 @@ namespace Ajedrez.Core
         private Jugador jugadorNegras;
         private bool conTiempo;
         private Timer reloj;
-        private List<Movimiento> movimientosRealizados;
+        private List<Move> movimientosRealizados;
         private string fenInicioPartida;
         private SituacionPartida.Tipo situacion;
-        private List<Movimiento> ultimosMovimientosLegales;
+        private List<Move> ultimosMovimientosLegales;
         private bool jaque;
         /*
         private uint numeroJaques;
@@ -25,8 +25,8 @@ namespace Ajedrez.Core
         public Partida()
         {
             conTiempo = false;
-            movimientosRealizados = new List<Movimiento>();
-            ultimosMovimientosLegales = new List<Movimiento>();
+            movimientosRealizados = new List<Move>();
+            ultimosMovimientosLegales = new List<Move>();
         }
 
         public Partida(Tablero tablero, Jugador jugadorBlancas, Jugador jugadorNegras, Timer reloj)
@@ -37,8 +37,8 @@ namespace Ajedrez.Core
             this.jugadorNegras = jugadorNegras;
             this.reloj = reloj;
             fenInicioPartida = tablero.ToFEN();
-            movimientosRealizados = new List<Movimiento>();
-            ultimosMovimientosLegales = new List<Movimiento>();
+            movimientosRealizados = new List<Move>();
+            ultimosMovimientosLegales = new List<Move>();
             EvaluarSituacionActual();
         }
 
@@ -50,8 +50,8 @@ namespace Ajedrez.Core
             this.jugadorNegras = jugadorNegras;
             this.reloj = reloj;
             fenInicioPartida = fen;
-            movimientosRealizados = new List<Movimiento>();
-            ultimosMovimientosLegales = new List<Movimiento>();
+            movimientosRealizados = new List<Move>();
+            ultimosMovimientosLegales = new List<Move>();
             EvaluarSituacionActual();
         }
 
@@ -63,8 +63,8 @@ namespace Ajedrez.Core
             this.jugadorNegras = jugadorNegras;
             reloj = new Timer(duracion, incremento);
             fenInicioPartida = tablero.ToFEN();
-            movimientosRealizados = new List<Movimiento>();
-            ultimosMovimientosLegales = new List<Movimiento>();
+            movimientosRealizados = new List<Move>();
+            ultimosMovimientosLegales = new List<Move>();
             EvaluarSituacionActual();
         }
 
@@ -76,8 +76,8 @@ namespace Ajedrez.Core
             this.jugadorNegras = jugadorNegras;
             reloj = new Timer(duracion, incremento);
             fenInicioPartida = fen;
-            movimientosRealizados = new List<Movimiento>();
-            ultimosMovimientosLegales = new List<Movimiento>();
+            movimientosRealizados = new List<Move>();
+            ultimosMovimientosLegales = new List<Move>();
             EvaluarSituacionActual();
         }
 
@@ -88,8 +88,8 @@ namespace Ajedrez.Core
             this.jugadorBlancas = jugadorBlancas;
             this.jugadorNegras = jugadorNegras;
             fenInicioPartida = tablero.ToFEN();
-            movimientosRealizados = new List<Movimiento>();
-            ultimosMovimientosLegales = new List<Movimiento>();
+            movimientosRealizados = new List<Move>();
+            ultimosMovimientosLegales = new List<Move>();
             EvaluarSituacionActual();
         }
 
@@ -100,8 +100,8 @@ namespace Ajedrez.Core
             this.jugadorBlancas = jugadorBlancas;
             this.jugadorNegras = jugadorNegras;
             fenInicioPartida = fen;
-            movimientosRealizados = new List<Movimiento>();
-            ultimosMovimientosLegales = new List<Movimiento>();
+            movimientosRealizados = new List<Move>();
+            ultimosMovimientosLegales = new List<Move>();
             EvaluarSituacionActual();
         }
 
@@ -187,7 +187,7 @@ namespace Ajedrez.Core
             }
         }
 
-        public List<Movimiento> MovimientosRealizados
+        public List<Move> MovimientosRealizados
         {
             get
             {
@@ -215,7 +215,7 @@ namespace Ajedrez.Core
             }
         }
 
-        public List<Movimiento> UltimosMovimientosLegales
+        public List<Move> UltimosMovimientosLegales
         {
             get
             {
@@ -231,7 +231,7 @@ namespace Ajedrez.Core
             }
         }
 
-        public void HacerMovimiento(Movimiento movimiento)
+        public void HacerMovimiento(Move movimiento)
         {
             tablero.HacerMovimiento(movimiento);
             movimientosRealizados.Add(movimiento);

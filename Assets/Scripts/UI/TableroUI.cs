@@ -23,7 +23,7 @@ namespace Ajedrez.UI
 
         private GameObject[] casillas;
         private Dictionary<int, Transform> casillaAPieza;
-        private Movimiento ultimoMovimiento = Movimiento.Nulo;
+        private Move ultimoMovimiento = Move.Null;
         private int ultimaCasillaReyJaque = SIN_CASILLA;
         private bool blancasAbajo = true;
 
@@ -415,13 +415,13 @@ namespace Ajedrez.UI
             return AjedrezUtils.EnTablero(rank, file);
         }
 
-        private void ManejarFlagsHacerMovimiento(Movimiento movimiento)
+        private void ManejarFlagsHacerMovimiento(Move movimiento)
         {
             switch (movimiento.Flag)
             {
-                case Movimiento.ENROQUE:
+                case Move.CASTLE:
                     {
-                        switch (movimiento.Destino)
+                        switch (movimiento.To)
                         {
                             case AjedrezUtils.ENROQUE_LARGO_BLANCAS:
                                 {
@@ -458,20 +458,20 @@ namespace Ajedrez.UI
                         break;
                     }
 
-                case Movimiento.CAPTURA_AL_PASO:
+                case Move.EN_PASSANT_CAPTURE:
                     {
                         // Destruir el peón al paso
-                        EliminarPieza(movimiento.Destino + (AjedrezUtils.ObtenerFila(movimiento.Destino) == 5 ? -8 : 8));
+                        EliminarPieza(movimiento.To + (AjedrezUtils.ObtenerFila(movimiento.To) == 5 ? -8 : 8));
                         AudioSystem.Instancia?.ReproducirSonido(AudioSystem.TipoSonido.Captura);
                         break;
                     }
 
-                case Movimiento.PROMOVER_A_REINA:
-                case Movimiento.PROMOVER_A_TORRE:
-                case Movimiento.PROMOVER_A_CABALLO:
-                case Movimiento.PROMOVER_A_ALFIL:
+                case Move.PROMOTE_TO_QUEEN:
+                case Move.PROMOTE_TO_ROOK:
+                case Move.PROMOTE_TO_KNIGHT:
+                case Move.PROMOTE_TO_BISHOP:
                     {
-                        PromoverPeon(casillaAPieza[movimiento.Destino].GetComponent<SpriteRenderer>(), movimiento.Flag, AjedrezUtils.ObtenerFila(movimiento.Destino) == 7 ? Piece.Color.White : Piece.Color.Black);
+                        PromoverPeon(casillaAPieza[movimiento.To].GetComponent<SpriteRenderer>(), movimiento.Flag, AjedrezUtils.ObtenerFila(movimiento.To) == 7 ? Piece.Color.White : Piece.Color.Black);
                         break;
                     }
             }
@@ -481,7 +481,7 @@ namespace Ajedrez.UI
         {
             switch (flagPromocion)
             {
-                case Movimiento.PROMOVER_A_REINA:
+                case Move.PROMOTE_TO_QUEEN:
                     if (AjedrezUtils.MismoColor(color, Piece.Color.White))
                     {
                         sr.sprite = piezasSet.reinaBlanca;
@@ -492,7 +492,7 @@ namespace Ajedrez.UI
                     }
                     break;
 
-                case Movimiento.PROMOVER_A_CABALLO:
+                case Move.PROMOTE_TO_KNIGHT:
                     if (AjedrezUtils.MismoColor(color, Piece.Color.White))
                     {
                         sr.sprite = piezasSet.caballoBlanco;
@@ -503,7 +503,7 @@ namespace Ajedrez.UI
                     }
                     break;
 
-                case Movimiento.PROMOVER_A_TORRE:
+                case Move.PROMOTE_TO_ROOK:
                     if (AjedrezUtils.MismoColor(color, Piece.Color.White))
                     {
                         sr.sprite = piezasSet.torreBlanca;
@@ -514,7 +514,7 @@ namespace Ajedrez.UI
                     }
                     break;
 
-                case Movimiento.PROMOVER_A_ALFIL:
+                case Move.PROMOTE_TO_BISHOP:
                     if (AjedrezUtils.MismoColor(color, Piece.Color.White))
                     {
                         sr.sprite = piezasSet.alfilBlanco;
@@ -529,16 +529,16 @@ namespace Ajedrez.UI
             AudioSystem.Instancia?.ReproducirSonido(AudioSystem.TipoSonido.Promocion);
         }
 
-        public IEnumerator HacerMovimiento(Movimiento movimiento, bool animar = true)
+        public IEnumerator HacerMovimiento(Move movimiento, bool animar = true)
         {
-            Vector3 origenPos = casillas[movimiento.Origen].transform.position;
-            Vector3 destinoPos = casillas[movimiento.Destino].transform.position;
-            Transform piezaTransform = casillaAPieza[movimiento.Origen];
+            Vector3 origenPos = casillas[movimiento.From].transform.position;
+            Vector3 destinoPos = casillas[movimiento.To].transform.position;
+            Transform piezaTransform = casillaAPieza[movimiento.From];
             SpriteRenderer sr = piezaTransform.GetComponent<SpriteRenderer>();
 
             float tiempo = 0f;
             sr.sortingOrder = 1;
-            ColorearCasillaUltimoMovimiento(movimiento.Origen);
+            ColorearCasillaUltimoMovimiento(movimiento.From);
 
             while (animar && (tiempo < DURACION_ANIMACION_MOVIMIENTO))
             {
@@ -547,18 +547,18 @@ namespace Ajedrez.UI
                 yield return null;
             }
 
-            PosicionarPieza(piezaTransform, movimiento.Origen, movimiento.Destino, movimiento.Flag);
+            PosicionarPieza(piezaTransform, movimiento.From, movimiento.To, movimiento.Flag);
             sr.sortingOrder = 0;
 
             DevolverColoresCasillasUltimoMovimiento();
-            ColorearCasillaUltimoMovimiento(movimiento.Destino);
+            ColorearCasillaUltimoMovimiento(movimiento.To);
             ManejarFlagsHacerMovimiento(movimiento);
 
             // Guardamos el último movimiento
             ultimoMovimiento = movimiento;
         }
 
-        public void ActualizarTablero(Movimiento movimiento)
+        public void ActualizarTablero(Move movimiento)
         {
             // Se actualiza la representación de la interfaz en casos especiales
             ManejarFlagsHacerMovimiento(movimiento);
@@ -577,7 +577,7 @@ namespace Ajedrez.UI
                 EliminarPieza(destino);
                 AudioSystem.Instancia?.ReproducirSonido(AudioSystem.TipoSonido.Captura);
             }
-            else if (flagMovimiento != Movimiento.ENROQUE && flagMovimiento != Movimiento.CAPTURA_AL_PASO)
+            else if (flagMovimiento != Move.CASTLE && flagMovimiento != Move.EN_PASSANT_CAPTURE)
             {
                 // Si es un movimiento normal o promoción
                 AudioSystem.Instancia?.ReproducirSonidoConPitchAleatorio(AudioSystem.TipoSonido.Movimiento);
@@ -598,11 +598,11 @@ namespace Ajedrez.UI
 
         public void DevolverColoresCasillasUltimoMovimiento()
         {
-            if (ultimoMovimiento != Movimiento.Nulo)
+            if (ultimoMovimiento != Move.Null)
             {
                 // Devolvemos los colores originales a las casillas del último movimiento
-                ColorearCasillaOriginal(ultimoMovimiento.Origen);
-                ColorearCasillaOriginal(ultimoMovimiento.Destino);
+                ColorearCasillaOriginal(ultimoMovimiento.From);
+                ColorearCasillaOriginal(ultimoMovimiento.To);
             }
         }
 
@@ -663,28 +663,28 @@ namespace Ajedrez.UI
             ColorearCasilla(casilla, AjedrezUtils.EsCasillaOscura(casilla) ? coloresTablero.colorCasillaOscura : coloresTablero.colorCasillaClara);
         }
 
-        public void MostrarMovimientosLegales(List<Movimiento> movimientosLegales)
+        public void MostrarMovimientosLegales(List<Move> movimientosLegales)
         {
-            foreach (Movimiento movimiento in movimientosLegales)
+            foreach (Move movimiento in movimientosLegales)
             {
                 // Cambiamos la tonalidad de la casilla de destino a rojo
-                ColorearCasillaConTransparencia(movimiento.Destino, coloresTablero.colorCasillaMovimientos);
+                ColorearCasillaConTransparencia(movimiento.To, coloresTablero.colorCasillaMovimientos);
             }
         }
 
-        public void OcultarMovimientosLegales(List<Movimiento> movimientosLegales)
+        public void OcultarMovimientosLegales(List<Move> movimientosLegales)
         {
-            foreach (Movimiento movimiento in movimientosLegales)
+            foreach (Move movimiento in movimientosLegales)
             {
                 // Cambiamos la tonalidad de la casilla de destino a la original
-                ColorearCasillaOriginal(movimiento.Destino);
+                ColorearCasillaOriginal(movimiento.To);
             }
 
-            if (ultimoMovimiento != Movimiento.Nulo)
+            if (ultimoMovimiento != Move.Null)
             {
                 // Nos aseguramos de volver a colorear las casillas del último movimiento
-                ColorearCasillaUltimoMovimiento(ultimoMovimiento.Origen);
-                ColorearCasillaUltimoMovimiento(ultimoMovimiento.Destino);
+                ColorearCasillaUltimoMovimiento(ultimoMovimiento.From);
+                ColorearCasillaUltimoMovimiento(ultimoMovimiento.To);
             }
 
             if (ultimaCasillaReyJaque != SIN_CASILLA)

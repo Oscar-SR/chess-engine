@@ -30,7 +30,7 @@ namespace Ajedrez.IA
         private Evaluacion evaluacion;
         private OrdenadorMovimientos ordenadorMovimientos;
         private TablaTransposicion tablaTransposicion;
-        private Movimiento mejorMovimientoEstaIteracion;
+        private Move mejorMovimientoEstaIteracion;
         private int mejorEvaluacionEstaIteracion;
         private bool busquedaCancelada;
         //private bool haBuscadoUnMovimiento;
@@ -42,7 +42,7 @@ namespace Ajedrez.IA
             private float tiempoBusqueda;
             private int maxProfundidad;
             private int mejorEvaluacion;
-            private Movimiento mejorMovimiento;
+            private Move mejorMovimiento;
             private float porcentajeOcupacionTablaTransposicion;
 
             public float TiempoBusqueda
@@ -63,7 +63,7 @@ namespace Ajedrez.IA
                 set { mejorEvaluacion = value; }
             }
 
-            public Movimiento MejorMovimiento
+            public Move MejorMovimiento
             {
                 get { return mejorMovimiento; }
                 set { mejorMovimiento = value; }
@@ -85,7 +85,7 @@ namespace Ajedrez.IA
 
                 return $"Profundidad buscada: <color={ROJO_OSCURO}>{maxProfundidad}</color>\n" +
                         $"Evaluación: <color={NARANJA}>{(EsJaqueMate(mejorEvaluacion) ? "#" + ObtenerNumPlysJaqueMate(mejorEvaluacion) : mejorEvaluacion)}</color>\n" +
-                        $"Movimiento: <color={LILA}>{(mejorMovimiento == Movimiento.Nulo ? "N/A" : mejorMovimiento.ToLAN())}</color>\n" +
+                        $"Movimiento: <color={LILA}>{(mejorMovimiento == Move.Null ? "N/A" : mejorMovimiento.ToLAN())}</color>\n" +
                         $"Tiempo: <color={AZUL_PASTEL}>{tiempoBusqueda} ms</color>\n" +
                         $"Tabla de transposición: <color={VERDE}>{porcentajeOcupacionTablaTransposicion.ToString("F2")} %</color>\n";
             }
@@ -109,7 +109,7 @@ namespace Ajedrez.IA
             tablaTransposicion = new TablaTransposicion(TAM_TABLA_TRANSPOSICION_MB);
         }
 
-        public Movimiento EmpezarBusqueda(List<Movimiento> movimientosIniciales = null)
+        public Move EmpezarBusqueda(List<Move> movimientosIniciales = null)
         {
             // Inicializar datos de diagnóstico
             diagnostico = new DiagnosticoBusqueda();
@@ -119,7 +119,7 @@ namespace Ajedrez.IA
 
             // Generar los movimientos iniciales si no los hay
             movimientosIniciales ??= tablero.GenerarMovimientosLegales(acortarGeneracion: true).movimientosLegales;
-            int mejorEvaluacion; Movimiento mejorMovimiento;
+            int mejorEvaluacion; Move mejorMovimiento;
 
             switch (tipoBusqueda)
             {
@@ -142,12 +142,12 @@ namespace Ajedrez.IA
                 default:
                     {
                         mejorEvaluacion = 0;
-                        mejorMovimiento = Movimiento.Nulo;
+                        mejorMovimiento = Move.Null;
                         break;
                     }
             }
 
-            if (mejorMovimiento == Movimiento.Nulo)
+            if (mejorMovimiento == Move.Null)
             {
                 mejorMovimiento = movimientosIniciales[0];
             }
@@ -168,10 +168,10 @@ namespace Ajedrez.IA
             busquedaCancelada = true;
         }
 
-        private (int mejorEvaluacion, Movimiento mejorMovimiento) BusquedaIterativa(List<Movimiento> movimientos)
+        private (int mejorEvaluacion, Move mejorMovimiento) BusquedaIterativa(List<Move> movimientos)
         {
             int mejorEvaluacion = -INFINITO;
-            Movimiento mejorMovimiento = Movimiento.Nulo;
+            Move mejorMovimiento = Move.Null;
 
             /// LIMPIAR LA TABLA DE TRANSPOSICIONES, ANTES DE UNA BÚSQUEDA, NO ES CORRECTO. SIN EMBARGO, HAY ALGÚN ERROR
             /// EN ALGUNA PARTE DEL CÓDIGO Y ESTO HACE QUE MEJORE EN EL FINAL DE PARTIDA
@@ -182,7 +182,7 @@ namespace Ajedrez.IA
                 BusquedaDebugger.Instancia?.Log("Empezando iteración: " + profundidadBusqueda + "\n");
 
                 mejorEvaluacionEstaIteracion = -INFINITO;
-                mejorMovimientoEstaIteracion = Movimiento.Nulo;
+                mejorMovimientoEstaIteracion = Move.Null;
                 //haBuscadoUnMovimiento = false;
 
                 AlfabetaRaiz(movimientos, profundidadBusqueda);
@@ -214,7 +214,7 @@ namespace Ajedrez.IA
             return (mejorEvaluacion, mejorMovimiento);
         }
 
-        private (int mejorEvaluacion, Movimiento mejorMovimiento) BusquedaFija(List<Movimiento> movimientos, int profundidadBusqueda)
+        private (int mejorEvaluacion, Move mejorMovimiento) BusquedaFija(List<Move> movimientos, int profundidadBusqueda)
         {
             AlfabetaRaiz(movimientos, profundidadBusqueda);
             diagnostico.MaxProfundidad = profundidadBusqueda;
@@ -223,7 +223,7 @@ namespace Ajedrez.IA
 
         //Hacer una búsqueda por número de nodos
 
-        private void AlfabetaRaiz(List<Movimiento> movimientos, int profundidadBusqueda)
+        private void AlfabetaRaiz(List<Move> movimientos, int profundidadBusqueda)
         {
             if (busquedaCancelada)
                 return;
@@ -241,7 +241,7 @@ namespace Ajedrez.IA
             TablaTransposicion.TipoEvaluacion tipoEvaluacion = TablaTransposicion.TipoEvaluacion.CotaSuperior;
 
             OrdenarMovimientos(movimientos);
-            foreach (Movimiento movimiento in movimientos)
+            foreach (Move movimiento in movimientos)
             {
                 tablero.HacerMovimiento(movimiento, enBusqueda: true);
                 evaluacion = -Alfabeta(profundidadBusqueda - 1, 1, -beta, -alfa);
@@ -282,7 +282,7 @@ namespace Ajedrez.IA
                 return evaluacion;
             }
 
-            (List<Movimiento> movimientos, bool jaque) = tablero.GenerarMovimientosLegales(acortarGeneracion: true);
+            (List<Move> movimientos, bool jaque) = tablero.GenerarMovimientosLegales(acortarGeneracion: true);
             if (movimientos.Count == 0)
             {
                 if (jaque)
@@ -296,10 +296,10 @@ namespace Ajedrez.IA
             }
 
             TablaTransposicion.TipoEvaluacion tipoEvaluacion = TablaTransposicion.TipoEvaluacion.CotaSuperior;
-            Movimiento mejorMovimientoEstaPosicion = Movimiento.Nulo;
+            Move mejorMovimientoEstaPosicion = Move.Null;
 
             OrdenarMovimientos(movimientos);
-            foreach (Movimiento movimiento in movimientos)
+            foreach (Move movimiento in movimientos)
             {
                 tablero.HacerMovimiento(movimiento, enBusqueda: true);
                 evaluacion = -Alfabeta(profundidadRestante - 1, profundidadDesdeRaiz + 1, -beta, -alfa);
@@ -350,10 +350,10 @@ namespace Ajedrez.IA
                 return beta;
             alfa = Max(alfa, valorEvaluacion);
 
-            (List<Movimiento> movimientosDeCaptura, _) = tablero.GenerarMovimientosLegales(acortarGeneracion: true, soloGenerarCapturas: true);
+            (List<Move> movimientosDeCaptura, _) = tablero.GenerarMovimientosLegales(acortarGeneracion: true, soloGenerarCapturas: true);
             OrdenarMovimientos(movimientosDeCaptura);
 
-            foreach (Movimiento movimiento in movimientosDeCaptura)
+            foreach (Move movimiento in movimientosDeCaptura)
             {
                 tablero.HacerMovimiento(movimiento, enBusqueda : true);
                 valorEvaluacion = -BuscarCapturas(-beta, -alfa);
@@ -384,7 +384,7 @@ namespace Ajedrez.IA
 
 		}
 
-        private void OrdenarMovimientos(List<Movimiento> movimientos)
+        private void OrdenarMovimientos(List<Move> movimientos)
         {
             int count = movimientos.Count;
             int[] puntuaciones = new int[count];
@@ -392,10 +392,10 @@ namespace Ajedrez.IA
             // Calcular puntuaciones
             for (int i = 0; i < count; i++)
             {
-                Movimiento movimiento = movimientos[i];
+                Move movimiento = movimientos[i];
                 int puntuacion = 0;
-                Piece piezaOrigen = tablero.ObtenerPieza(movimiento.Origen);
-                Piece piezaCapturada = tablero.ObtenerPieza(movimiento.Destino);
+                Piece piezaOrigen = tablero.ObtenerPieza(movimiento.From);
+                Piece piezaCapturada = tablero.ObtenerPieza(movimiento.To);
 
                 // Priorizar la captura de piezas más valiosas que la que se mueve
                 if (piezaOrigen.PieceType != Piece.Type.None)
@@ -404,13 +404,13 @@ namespace Ajedrez.IA
                 }
 
                 // Priorizar las promociones
-                if (movimiento.EsPromocion())
+                if (movimiento.IsPromotion())
                 {
                     puntuacion += Evaluacion.ObtenerValorPromocion(movimiento.Flag);
                 }
 
                 // Penalizar el mover hacia una casilla atacada por un peón rival
-                if (tablero.CasillaAtacadaPorPeonRival(movimiento.Destino))
+                if (tablero.CasillaAtacadaPorPeonRival(movimiento.To))
                 {
                     puntuacion -= Evaluacion.ObtenerValorPieza(piezaOrigen.PieceType);
                 }
@@ -424,7 +424,7 @@ namespace Ajedrez.IA
             Array.Sort(indices, (a, b) => puntuaciones[b].CompareTo(puntuaciones[a]));
 
             // Reordenar lista original en base al array de puntuaciones
-            List<Movimiento> movimientosOrdenados = new List<Movimiento>(count);
+            List<Move> movimientosOrdenados = new List<Move>(count);
             for (int i = 0; i < count; i++)
             {
                 movimientosOrdenados.Add(movimientos[indices[i]]);

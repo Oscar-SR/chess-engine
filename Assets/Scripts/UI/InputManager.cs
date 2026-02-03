@@ -154,10 +154,10 @@ namespace Ajedrez.UI
             {
                 if (nuevaCasilla != casilla)
                 {
-                    Movimiento movimiento = partidaManager.ObtenerMovimientoLegal(nuevaCasilla);
+                    Move movimiento = partidaManager.ObtenerMovimientoLegal(nuevaCasilla);
 
                     // Comprobar si se puede hacer el movimiento
-                    if (movimiento != Movimiento.Nulo)
+                    if (movimiento != Move.Null)
                     {
                         // Sí se puede hacer el movimiento
                         partidaManager.PosicionarPieza(casilla, nuevaCasilla, movimiento.Flag);
@@ -183,16 +183,16 @@ namespace Ajedrez.UI
             piezaSeleccionada = false;
         }
 
-        private IEnumerator HacerMovimientoTrasPromocion(Movimiento movimiento)
+        private IEnumerator HacerMovimientoTrasPromocion(Move movimiento)
         {
             // Desactivar la interacción con las piezas
             colorInteractuable = Piece.Color.None;
             piezaSeleccionada = false;
 
-            if (movimiento.EsPromocion())
+            if (movimiento.IsPromotion())
             {
                 promocionEnCurso = true;
-                int tipoPromocion = Movimiento.PROMOVER_A_REINA;
+                int tipoPromocion = Move.PROMOTE_TO_QUEEN;
 
                 promocionUI.Mostrar(partidaManager.ObtenerPieza(casilla).PieceColor, tipo =>
                 {
@@ -202,7 +202,7 @@ namespace Ajedrez.UI
 
                 yield return new WaitUntil(() => !promocionEnCurso);
 
-                movimiento = new Movimiento(movimiento.Origen, movimiento.Destino, tipoPromocion);
+                movimiento = new Move(movimiento.From, movimiento.To, tipoPromocion);
             }
 
             StartCoroutine(partidaManager.HacerMovimiento(movimiento));

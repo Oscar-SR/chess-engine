@@ -160,10 +160,10 @@ namespace Ajedrez.Managers
             if (profundidad == 0)
                 return 1;
 
-            (List<Movimiento> movimientos, _) = tablero.GenerarMovimientosLegales();
+            (List<Move> movimientos, _) = tablero.GenerarMovimientosLegales();
             int numPosiciones = 0;
 
-            foreach (Movimiento movimiento in movimientos)
+            foreach (Move movimiento in movimientos)
             {                
                 tablero.HacerMovimiento(movimiento);
                 numPosiciones += Perft(profundidad - 1);
@@ -178,11 +178,11 @@ namespace Ajedrez.Managers
 
         private async Task TareaDivide(CancellationToken token, int limiteProfundidad)
         {
-            (List<Movimiento> movimientos, _) = tablero.GenerarMovimientosLegales();
+            (List<Move> movimientos, _) = tablero.GenerarMovimientosLegales();
             int totalNodos = 0;
             VaciarTextPerft();
 
-            foreach (Movimiento movimiento in movimientos)
+            foreach (Move movimiento in movimientos)
             {
                 tablero.HacerMovimiento(movimiento);
                 int nodos = Perft(limiteProfundidad - 1);

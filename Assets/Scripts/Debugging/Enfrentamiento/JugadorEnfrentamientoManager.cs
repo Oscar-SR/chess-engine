@@ -105,14 +105,14 @@ namespace Ajedrez.Debugging.Enfrentamiento
 		private void MovimientoRivalRecibido(string nombreMovimiento)
 		{
 			jugadorEnfrentamientoUI.MostrarMovimientoRecibido(nombreMovimiento);
-			Movimiento movimiento = new Movimiento(nombreMovimiento, tablero);
+			Move movimiento = new Move(nombreMovimiento, tablero);
 			tablero.HacerMovimiento(movimiento);
 			ElegirMovimiento();
 		}
 
 		private async void ElegirMovimiento()
 		{
-			Movimiento movimiento = await jugador.HallarMejorMovimiento();
+			Move movimiento = await jugador.HallarMejorMovimiento();
 			tablero.HacerMovimiento(movimiento);
 			string movimientoLAN = movimiento.ToLAN();
 			MensajeEnfrentamiento mensajeEnfrentamiento = MensajeEnfrentamiento.CrearMensajeMovimiento(movimientoLAN);

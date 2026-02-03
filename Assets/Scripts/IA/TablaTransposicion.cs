@@ -25,9 +25,9 @@ namespace Ajedrez.IA
             private int valor;
             private byte profundidad;
             private TipoEvaluacion tipoNodo;
-            private Movimiento movimiento;
+            private Move movimiento;
 
-            public Entrada(ulong clave, int valor, byte profundidad, TipoEvaluacion tipoNodo, Movimiento movimiento)
+            public Entrada(ulong clave, int valor, byte profundidad, TipoEvaluacion tipoNodo, Move movimiento)
             {
                 this.clave = clave;
                 this.valor = valor;
@@ -40,7 +40,7 @@ namespace Ajedrez.IA
             public int Valor => valor;
             public byte Profundidad => profundidad;
             public TipoEvaluacion TipoNodo => tipoNodo;
-            public Movimiento Movimiento => movimiento;
+            public Move Movimiento => movimiento;
         }
 
         public TablaTransposicion(int tamMB)
@@ -91,7 +91,7 @@ namespace Ajedrez.IA
             return BUSQUEDA_FALLIDA;
         }
 
-        public void GuardarEvaluacion(ulong hash, int profundidadRestante, int profundidadDesdeRaiz, int evaluacion, TipoEvaluacion tipoEvaluacion, Movimiento movimiento)
+        public void GuardarEvaluacion(ulong hash, int profundidadRestante, int profundidadDesdeRaiz, int evaluacion, TipoEvaluacion tipoEvaluacion, Move movimiento)
         {
             ulong indice = ObtenerIndice(hash);
 
@@ -101,7 +101,7 @@ namespace Ajedrez.IA
             //}
         }
 
-        public Movimiento ObtenerMovimientoGuardado(ulong hash)
+        public Move ObtenerMovimientoGuardado(ulong hash)
         {
             return entradas[ObtenerIndice(hash)].Movimiento;
         }

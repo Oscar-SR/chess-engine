@@ -4,87 +4,87 @@ using Ajedrez.Utilities;
 
 namespace Ajedrez.Core
 {
-    public readonly struct Movimiento
+    public readonly struct Move
     {
         // Flags
-        public const int SIN_FLAG = 0b0000;
-        public const int CAPTURA_AL_PASO = 0b0001;
-        public const int ENROQUE = 0b0010;
-        public const int PEON_MUEVE_DOS = 0b0011;
-        public const int PROMOVER_A_REINA = 0b0100;
-        public const int PROMOVER_A_CABALLO = 0b0101;
-        public const int PROMOVER_A_TORRE = 0b0110;
-        public const int PROMOVER_A_ALFIL = 0b0111;
+        public const int NO_FLAG = 0b0000;
+        public const int EN_PASSANT_CAPTURE = 0b0001;
+        public const int CASTLE = 0b0010;
+        public const int PAWN_TWO_UP = 0b0011;
+        public const int PROMOTE_TO_QUEEN = 0b0100;
+        public const int PROMOTE_TO_KNIGHT = 0b0101;
+        public const int PROMOTE_TO_ROOK = 0b0110;
+        public const int PROMOTE_TO_BISHOP = 0b0111;
 
-        private readonly ushort valor; // FFFFDDDDDDOOOOOO
+        private readonly ushort moveValue; // FFFFDDDDDDOOOOOO
 
-        public Movimiento(int origen, int destino, int flag)
+        public Move(int from, int to, int flag)
         {
-            this.valor = (ushort)(origen | destino << 6 | flag << 12);
+            this.moveValue = (ushort)(from | to << 6 | flag << 12);
         }
 
-        public Movimiento(ushort valor)
+        public Move(ushort valor)
         {
-            this.valor = valor;
+            this.moveValue = valor;
         }
 
-        public Movimiento(string LAN, Tablero tablero)
+        public Move(string LAN, Tablero board)
         {
             if (string.IsNullOrEmpty(LAN) || (LAN.Length != 4 && LAN.Length != 5))
-                throw new ArgumentException("LAN inválida");
+                throw new ArgumentException("Invalid LAN");
 
-            int origen = NotacionAlgebraicaACasilla(LAN.Substring(0, 2));
-            int destino = NotacionAlgebraicaACasilla(LAN.Substring(2, 2));
-            Piece.Type tipoPieza = tablero.ObtenerPieza(origen).PieceType;
-            int flag = SIN_FLAG;
+            int fromSquare = NotacionAlgebraicaACasilla(LAN.Substring(0, 2));
+            int toSquare = NotacionAlgebraicaACasilla(LAN.Substring(2, 2));
+            Piece.Type pieceType = board.ObtenerPieza(fromSquare).PieceType;
+            int flag = NO_FLAG;
 
-            if (tipoPieza == Piece.Type.Pawn)
+            if (pieceType == Piece.Type.Pawn)
             {
                 if (LAN.Length == 5)
                 {
-                    // Promoción
+                    // Promotion
                     flag = LAN[4] switch
                     {
-                        'q' => PROMOVER_A_REINA,
-                        'n' => PROMOVER_A_CABALLO,
-                        'r' => PROMOVER_A_TORRE,
-                        'b' => PROMOVER_A_ALFIL,
-                        _ => throw new ArgumentException("Promoción inválida en LAN")
+                        'q' => PROMOTE_TO_QUEEN,
+                        'n' => PROMOTE_TO_KNIGHT,
+                        'r' => PROMOTE_TO_ROOK,
+                        'b' => PROMOTE_TO_BISHOP,
+                        _ => throw new ArgumentException("Invalid LAN promotion")
                     };
                 }
-                else if (Math.Abs(AjedrezUtils.ObtenerFila(origen) - AjedrezUtils.ObtenerFila(destino)) == 2)
+                else if (Math.Abs(AjedrezUtils.ObtenerFila(fromSquare) - AjedrezUtils.ObtenerFila(toSquare)) == 2)
                 {
-                    flag = PEON_MUEVE_DOS;
+                    flag = PAWN_TWO_UP;
                 }
-                else if ((AjedrezUtils.ObtenerColumna(origen) != AjedrezUtils.ObtenerColumna(destino)) && (tablero.ObtenerPieza(destino).PieceType == Piece.Type.None))
+                else if ((AjedrezUtils.ObtenerColumna(fromSquare) != AjedrezUtils.ObtenerColumna(toSquare)) && (board.ObtenerPieza(toSquare).PieceType == Piece.Type.None))
                 {
-                    flag = CAPTURA_AL_PASO;
+                    flag = EN_PASSANT_CAPTURE;
                 }
             }
-            else if ((tipoPieza == Piece.Type.King) && (Math.Abs(AjedrezUtils.ObtenerColumna(origen) - AjedrezUtils.ObtenerColumna(destino)) > 1))
+            else if ((pieceType == Piece.Type.King) && (Math.Abs(AjedrezUtils.ObtenerColumna(fromSquare) - AjedrezUtils.ObtenerColumna(toSquare)) > 1))
             {
-                // Enroque
-                flag = ENROQUE;
+                // Castling
+                flag = CASTLE;
             }
 
-            valor = (ushort)(origen | (destino << 6) | (flag << 12));
+            moveValue = (ushort)(fromSquare | (toSquare << 6) | (flag << 12));
         }
 
-        public static Movimiento Nulo => new Movimiento(0);
+        public static Move Null => new Move(0);
 
-        public int Origen
+        public int From
         {
             get
             {
-                return this.valor & 0b0000000000111111;
+                return this.moveValue & 0b0000000000111111;
             }
         }
 
-        public int Destino
+        public int To
         {
             get
             {
-                return (this.valor & 0b0000111111000000) >> 6;
+                return (this.moveValue & 0b0000111111000000) >> 6;
             }
         }
 
@@ -92,120 +92,120 @@ namespace Ajedrez.Core
         {
             get
             {
-                return this.valor >> 12;
+                return this.moveValue >> 12;
             }
         }
 
-        public bool EsPromocion()
+        public bool IsPromotion()
         {
-            return Flag == PROMOVER_A_REINA || Flag == PROMOVER_A_CABALLO
-                || Flag == PROMOVER_A_TORRE || Flag == PROMOVER_A_ALFIL;
+            return Flag == PROMOTE_TO_QUEEN || Flag == PROMOTE_TO_KNIGHT
+                || Flag == PROMOTE_TO_ROOK || Flag == PROMOTE_TO_BISHOP;
         }
 
         public string ToLAN()
         {
-            string origenLAN = CasillaANotacionAlgebraica(Origen);
-            string destinoLAN = CasillaANotacionAlgebraica(Destino);
-            string sufijo = "";
+            string fromLAN = CasillaANotacionAlgebraica(From);
+            string toLAN = CasillaANotacionAlgebraica(To);
+            string suffix = "";
 
-            if (EsPromocion())
+            if (IsPromotion())
             {
-                sufijo = Flag switch
+                suffix = Flag switch
                 {
-                    PROMOVER_A_REINA => "q",
-                    PROMOVER_A_CABALLO => "n",
-                    PROMOVER_A_TORRE => "r",
-                    PROMOVER_A_ALFIL => "b",
+                    PROMOTE_TO_QUEEN => "q",
+                    PROMOTE_TO_KNIGHT => "n",
+                    PROMOTE_TO_ROOK => "r",
+                    PROMOTE_TO_BISHOP => "b",
                     _ => ""
                 };
             }
 
-            return origenLAN + destinoLAN + sufijo;
+            return fromLAN + toLAN + suffix;
         }
 
-        public string ToSAN(Tablero tablero)
+        public string ToSAN(Tablero board)
         {
-            Piece pieza = tablero.ObtenerPieza(Origen);
+            Piece piece = board.ObtenerPieza(From);
             string san = "";
 
-            bool esCaptura = tablero.ObtenerPieza(Destino).PieceType != Piece.Type.None || Flag == CAPTURA_AL_PASO;
+            bool isCapture = board.ObtenerPieza(To).PieceType != Piece.Type.None || Flag == EN_PASSANT_CAPTURE;
 
-            // Enroques
-            if (Flag == ENROQUE)
+            // Castling
+            if (Flag == CASTLE)
             {
-                return Destino > Origen ? "O-O" : "O-O-O";
+                return To > From ? "O-O" : "O-O-O";
             }
 
-            // Nombre de pieza (omitido para peones)
-            bool esPeon = pieza.PieceType == Piece.Type.Pawn;
-            if (esPeon)
-                san += pieza.GetSymbol(uppercase: true);
+            // Piece letter (omitted for pawns)
+            bool isPawn = piece.PieceType == Piece.Type.Pawn;
+            if (!isPawn)
+                san += piece.GetSymbol(uppercase: true);
 
-            // Arreglar desambiguación si hay ambigüedad (p. ej. Nbd2 o R1a3)
-            if (!esPeon && pieza.PieceType != Piece.Type.King)
+            // Disambiguation if ambiguous (e.g. Nbd2 or R1a3)
+            if (!isPawn && piece.PieceType != Piece.Type.King)
             {
-                (List<Movimiento> movimientos, _) = tablero.GenerarMovimientosLegales();
-                (int filaOrigen, int columnaOrigen) = AjedrezUtils.IndiceACoordenadas(Origen);
-                bool hayOtroMismaFila = false;
-                bool hayOtroMismaColumna = false;
+                (List<Move> moves, _) = board.GenerarMovimientosLegales();
+                (int fromRank, int fromFile) = AjedrezUtils.IndiceACoordenadas(From);
+                bool anotherSameRank = false;
+                bool anotherSameFile = false;
 
-                foreach (Movimiento movimiento in movimientos)
+                foreach (Move move in moves)
                 {
-                    if (movimiento.Destino == Destino && movimiento.Origen != Origen)
+                    if (move.To == To && move.From != From)
                     {
-                        Piece.Type otroTipoPieza = tablero.ObtenerPieza(movimiento.Origen).PieceType;
-                        if (otroTipoPieza == pieza.PieceType)
+                        Piece.Type otroTipoPieza = board.ObtenerPieza(move.From).PieceType;
+                        if (otroTipoPieza == piece.PieceType)
                         {
-                            (int otroFilaOrigen, int otroColumnaOrigen) = AjedrezUtils.IndiceACoordenadas(movimiento.Origen);
+                            (int otherFromRank, int otherFromFile) = AjedrezUtils.IndiceACoordenadas(move.From);
 
-                            if (filaOrigen == otroFilaOrigen)
-                                hayOtroMismaFila = true;
-                            if (columnaOrigen == otroColumnaOrigen)
-                                hayOtroMismaColumna = true;
+                            if (fromRank == otherFromRank)
+                                anotherSameRank = true;
+                            if (fromFile == otherFromFile)
+                                anotherSameFile = true;
                         }
                     }
                 }
 
-                if (hayOtroMismaFila)
-                    san += AjedrezUtils.ColumnaANombre(columnaOrigen);
+                if (anotherSameRank)
+                    san += AjedrezUtils.ColumnaANombre(fromFile);
 
-                if (hayOtroMismaColumna)
-                    san += AjedrezUtils.FilaANombre(filaOrigen);
+                if (anotherSameFile)
+                    san += AjedrezUtils.FilaANombre(fromRank);
             }
 
-            // Captura
-            if (esCaptura)
+            // Capture
+            if (isCapture)
             {
-                if (esPeon)
-                    san += AjedrezUtils.ColumnaANombre(AjedrezUtils.ObtenerColumna(Origen)); // Columna del peón
+                if (isPawn)
+                    san += AjedrezUtils.ColumnaANombre(AjedrezUtils.ObtenerColumna(From)); // File of the pawn
                 san += "x";
             }
 
-            // Casilla destino
-            san += CasillaANotacionAlgebraica(Destino);
+            // From square
+            san += CasillaANotacionAlgebraica(To);
 
-            // Promoción
-            if (EsPromocion())
+            // Promotion
+            if (IsPromotion())
             {
                 string promocion = Flag switch
                 {
-                    PROMOVER_A_REINA => "Q",
-                    PROMOVER_A_CABALLO => "N",
-                    PROMOVER_A_TORRE => "R",
-                    PROMOVER_A_ALFIL => "B",
+                    PROMOTE_TO_QUEEN => "Q",
+                    PROMOTE_TO_KNIGHT => "N",
+                    PROMOTE_TO_ROOK => "R",
+                    PROMOTE_TO_BISHOP => "B",
                     _ => ""
                 };
                 san += "=" + promocion;
             }
 
-            // Jaque o jaque mate
-            tablero.HacerMovimiento(this, enBusqueda : true);
-            (List<Movimiento> respuestas, bool jaque) = tablero.GenerarMovimientosLegales();
+            // Check or check mate
+            board.HacerMovimiento(this, enBusqueda : true);
+            (List<Move> respuestas, bool jaque) = board.GenerarMovimientosLegales();
             if (jaque)
             {
                 san += respuestas.Count == 0 ? "#" : "+";
             }
-            tablero.DeshacerMovimiento(this);
+            board.DeshacerMovimiento(this);
 
             return san;
         }
@@ -227,24 +227,24 @@ namespace Ajedrez.Core
             return $"{columnaCaracter}{filaCaracter}";
         }
 
-        public static bool operator ==(Movimiento a, Movimiento b)
+        public static bool operator ==(Move a, Move b)
         {
-            return a.valor == b.valor;
+            return a.moveValue == b.moveValue;
         }
 
-        public static bool operator !=(Movimiento a, Movimiento b)
+        public static bool operator !=(Move a, Move b)
         {
-            return a.valor != b.valor;
+            return a.moveValue != b.moveValue;
         }
 
         public override bool Equals(object obj)
         {
-            return obj is Movimiento otro && this.valor == otro.valor;
+            return obj is Move otro && this.moveValue == otro.moveValue;
         }
 
         public override int GetHashCode()
         {
-            return valor.GetHashCode();
+            return moveValue.GetHashCode();
         }
     }
 }

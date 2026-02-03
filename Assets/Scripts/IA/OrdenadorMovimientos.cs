@@ -18,17 +18,17 @@ namespace Ajedrez.IA
             puntuacionesMovimientos = new int[MAX_NUM_MOVIMIENTOS];
         }
 
-        public void OrdenarMovimientos(List<Movimiento> movimientos)
+        public void OrdenarMovimientos(List<Move> movimientos)
         {
             int count = movimientos.Count;
 
             // Calcular puntuaciones
             for (int i = 0; i < count; i++)
             {
-                Movimiento movimiento = movimientos[i];
+                Move movimiento = movimientos[i];
                 int puntuacion = 0;
-                Piece piezaOrigen = tablero.ObtenerPieza(movimiento.Origen);
-                Piece piezaCapturada = tablero.ObtenerPieza(movimiento.Destino);
+                Piece piezaOrigen = tablero.ObtenerPieza(movimiento.From);
+                Piece piezaCapturada = tablero.ObtenerPieza(movimiento.To);
 
                 // Priorizar la captura de piezas más valiosas que la que se mueve
                 if (piezaOrigen.PieceType != Piece.Type.None)
@@ -37,13 +37,13 @@ namespace Ajedrez.IA
                 }
 
                 // Priorizar las promociones
-                if (movimiento.EsPromocion())
+                if (movimiento.IsPromotion())
                 {
                     puntuacion += Evaluacion.ObtenerValorPromocion(movimiento.Flag);
                 }
 
                 // Penalizar el mover hacia una casilla atacada por un peón rival
-                if (tablero.CasillaAtacadaPorPeonRival(movimiento.Destino))
+                if (tablero.CasillaAtacadaPorPeonRival(movimiento.To))
                 {
                     puntuacion -= Evaluacion.ObtenerValorPieza(piezaOrigen.PieceType);
                 }
@@ -54,7 +54,7 @@ namespace Ajedrez.IA
             Ordenar(movimientos, count);
         }
 
-        private void Ordenar(List<Movimiento> movimientos, int count)
+        private void Ordenar(List<Move> movimientos, int count)
         {
             puntuacionesMovimientos = puntuacionesMovimientos.Take(count).ToArray();
             // Ordenar el array de puntuaciones
@@ -63,7 +63,7 @@ namespace Ajedrez.IA
             Array.Sort(indices, (a, b) => puntuacionesMovimientos[b].CompareTo(puntuacionesMovimientos[a]));
 
             // Reordenar lista original en base al array de puntuaciones
-            List<Movimiento> movimientosOrdenados = new List<Movimiento>(count);
+            List<Move> movimientosOrdenados = new List<Move>(count);
             for (int i = 0; i < count; i++)
             {
                 movimientosOrdenados.Add(movimientos[indices[i]]);

@@ -203,7 +203,7 @@ namespace Ajedrez.Debugging.Enfrentamiento
             jugadorActual.TotalProfundidadBuscada += Mathf.Min(profundidadBusquedaIterativa, 15);
 
             // Efectuar el movimiento
-            Movimiento movimiento = new Movimiento(movimientoLAN, partida.Tablero);
+            Move movimiento = new Move(movimientoLAN, partida.Tablero);
             partida.HacerMovimiento(movimiento);
             StartCoroutine(tableroUI.HacerMovimiento(movimiento, animar: false));
             
