@@ -13,7 +13,7 @@ namespace Ajedrez.Core
         private Stack<(Piece, int)> piezasMuertas;
         private BoardState estadoActual;
         private Stack<BoardState> historialEstados;
-        private PilaRepeticiones historialPosicionesRepetidas; // Mantiene un historial de las últimas posiciones hasheadas, hasta el último movimiento irreversible
+        private RepetitionStack historialPosicionesRepetidas; // Mantiene un historial de las últimas posiciones hasheadas, hasta el último movimiento irreversible
         private uint numMovimientosTotales;
 
         public Tablero()
@@ -122,7 +122,7 @@ namespace Ajedrez.Core
             bitboards = new ulong[12];
             piezasMuertas = new Stack<(Piece, int)>();
             historialEstados = new Stack<BoardState>(capacity: 64);
-            historialPosicionesRepetidas = new PilaRepeticiones();
+            historialPosicionesRepetidas = new RepetitionStack();
 
             string piezasFEN = partes[0];
             string turnoFEN = partes[1];
@@ -222,7 +222,7 @@ namespace Ajedrez.Core
             }
         }
 
-        public PilaRepeticiones HistorialPosicionesRepetidas
+        public RepetitionStack HistorialPosicionesRepetidas
         {
             get
             {
@@ -745,7 +745,7 @@ namespace Ajedrez.Core
                     return (movimientosLegales, false);
                 }
 
-                if (historialPosicionesRepetidas.TripleRepeticion(estadoActual.ZobristHash))
+                if (historialPosicionesRepetidas.IsThreefoldRepetition(estadoActual.ZobristHash))
                 {
                     // El último movimiento realizado supuso una triple repetición
                     return (movimientosLegales, false);

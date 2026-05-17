@@ -32,7 +32,7 @@ namespace Ajedrez.Core
                 // Material insuficiente
                 situacionPartida = Tipo.MaterialInsuficiente;
             }
-            else if (tablero.HistorialPosicionesRepetidas.TripleRepeticion(tablero.EstadoActual.ZobristHash))
+            else if (tablero.HistorialPosicionesRepetidas.IsThreefoldRepetition(tablero.EstadoActual.ZobristHash))
             {
                 // El último movimiento realizado supuso una triple repetición
                 situacionPartida = Tipo.TriplePosicionRepetida;
