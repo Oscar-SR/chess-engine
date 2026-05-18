@@ -51,7 +51,7 @@ namespace Ajedrez.Managers
             Reloj reloj = new Reloj(duracion, incremento);
 
             // Crear las instancias de los jugadores
-            //JugadorHumano jugadorBlancas = new JugadorHumano("Jugador 1");
+            //HumanPlayer jugadorBlancas = new HumanPlayer("Jugador 1");
             JugadorIA jugadorBlancas = new JugadorIA(JugadorIA.TipoDificultad.Dificil, tablero, libroAperturas, reloj, Piece.Color.White);
             JugadorIA jugadorNegras = new JugadorIA(JugadorIA.TipoDificultad.Dificil, tablero, libroAperturas, reloj, Piece.Color.Black);
 
@@ -153,7 +153,7 @@ namespace Ajedrez.Managers
                 Move movimiento = await jugadorIA.HallarMejorMovimiento(movimientosLegales : partida.UltimosMovimientosLegales);
                 StartCoroutine(HacerMovimiento(movimiento, esIA: true));
             }
-            else if (jugadorActual is JugadorHumano jugadorHumano)
+            else if (jugadorActual is HumanPlayer jugadorHumano)
             {
                 // Activar la interacción con las piezas del jugador correspondiente
                 InputManager.Instancia.ColorInteractuable = turno;
