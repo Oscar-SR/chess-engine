@@ -209,10 +209,10 @@ namespace Ajedrez.Debugging.Enfrentamiento
             
 			if (partida.MovimientosRealizados.Count / 2 >= maxMovimientosPartida)
             {
-                partida.Situacion = SituacionPartida.Tipo.TablasPorArbitro;
+                partida.Situacion = GameStatus.Type.DrawByArbiter;
             }
 
-            if (partida.Situacion == SituacionPartida.Tipo.EnCurso)
+            if (partida.Situacion == GameStatus.Type.InProgress)
             {
 				JugadorRemoto siguienteJugador = AjedrezUtils.MismoColor(partida.Tablero.Turno, Piece.Color.White) ? (JugadorRemoto)partida.JugadorBlancas : (JugadorRemoto)partida.JugadorNegras;
 				string json = MensajeEnfrentamiento.CrearMensajeMovimiento(movimientoLAN).ToJsonString();
@@ -241,8 +241,8 @@ namespace Ajedrez.Debugging.Enfrentamiento
 
                 string subcarpetaResultado = partida.Situacion switch
                 {
-                    SituacionPartida.Tipo.JaqueMateBlancas => partida.JugadorBlancas == jugador1 ? "Derrota" : "Victoria",
-                    SituacionPartida.Tipo.JaqueMateNegras => partida.JugadorBlancas == jugador1 ? "Victoria" : "Derrota",
+                    GameStatus.Type.WhiteCheckmate => partida.JugadorBlancas == jugador1 ? "Derrota" : "Victoria",
+                    GameStatus.Type.BlackCheckmate => partida.JugadorBlancas == jugador1 ? "Victoria" : "Derrota",
                     _ => "Tablas"
                 };
                 string directorioGuardado = Path.Combine(rutaDeGuardado, subcarpetaResultado);
@@ -257,12 +257,12 @@ namespace Ajedrez.Debugging.Enfrentamiento
 
             void ActualizarEstadisticas()
 			{
-                if (partida.Situacion == SituacionPartida.Tipo.JaqueMateBlancas)
+                if (partida.Situacion == GameStatus.Type.WhiteCheckmate)
                 {
                     ((JugadorRemoto)partida.JugadorNegras).NumVictorias++;
                     ((JugadorRemoto)partida.JugadorBlancas).NumDerrotas++;
                 }
-                else if (partida.Situacion == SituacionPartida.Tipo.JaqueMateNegras)
+                else if (partida.Situacion == GameStatus.Type.BlackCheckmate)
                 {
                     ((JugadorRemoto)partida.JugadorBlancas).NumVictorias++;
                     ((JugadorRemoto)partida.JugadorNegras).NumDerrotas++;

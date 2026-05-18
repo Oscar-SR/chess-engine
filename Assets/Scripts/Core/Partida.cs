@@ -15,7 +15,7 @@ namespace Ajedrez.Core
         private Timer reloj;
         private List<Move> movimientosRealizados;
         private string fenInicioPartida;
-        private SituacionPartida.Tipo situacion;
+        private GameStatus.Type situacion;
         private List<Move> ultimosMovimientosLegales;
         private bool jaque;
         /*
@@ -203,7 +203,7 @@ namespace Ajedrez.Core
             }
         }
 
-        public SituacionPartida.Tipo Situacion
+        public GameStatus.Type Situacion
         {
             get
             {
@@ -242,10 +242,10 @@ namespace Ajedrez.Core
         private void EvaluarSituacionActual()
         {
             (ultimosMovimientosLegales, jaque) = tablero.GenerarMovimientosLegales();
-            situacion = SituacionPartida.ObtenerSituacionPartida(tablero, ultimosMovimientosLegales.Count, jaque);
+            situacion = GameStatus.GetGameStatus(tablero, ultimosMovimientosLegales.Count, jaque);
         }
 
-        public string ToPGN(/*SituacionPartida.Tipo situacion*/)
+        public string ToPGN(/*GameStatus.Type situacion*/)
         {
             //fenInicio = fenInicio.Replace("\n", "").Replace("\r", "");
 
@@ -261,7 +261,7 @@ namespace Ajedrez.Core
                 pgn.AppendLine($"[FEN \"{fenInicioPartida}\"]");
             }
 
-            if (situacion is not SituacionPartida.Tipo.EnCurso)
+            if (situacion is not GameStatus.Type.InProgress)
             {
                 pgn.AppendLine($"[Result \"{situacion}\"]");
             }

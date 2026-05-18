@@ -112,18 +112,18 @@ namespace Ajedrez.UI
             textoTiempoJugadorNegras.color = new Color(textoTiempoJugadorNegras.color.r, textoTiempoJugadorNegras.color.g, textoTiempoJugadorNegras.color.b, 0.5f);
         }
 
-        public void FinalizarPartida(SituacionPartida.Tipo resultado)
+        public void FinalizarPartida(GameStatus.Type resultado)
         {
             lineaDivisoria.enabled = false;
-            textoSituacionTablero.text = resultado.ObtenerDescripcion();
+            textoSituacionTablero.text = resultado.GetDescription();
             StartCoroutine(MostrarResultadoTrasRetraso(resultado));
         }
 
-        private IEnumerator MostrarResultadoTrasRetraso(SituacionPartida.Tipo resultado)
+        private IEnumerator MostrarResultadoTrasRetraso(GameStatus.Type resultado)
         {
             yield return new WaitForSeconds(TIEMPO_ESPERA_RESULTADO);
 
-            Piece.Color ganador = SituacionPartida.ObtenerGanador(resultado);
+            Piece.Color ganador = GameStatus.GetWinner(resultado);
             if (ganador == Piece.Color.None)
             {
                 textoTipoResultado.text = "Tablas";

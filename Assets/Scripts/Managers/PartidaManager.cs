@@ -82,7 +82,7 @@ namespace Ajedrez.Managers
 
                 if (partida.Reloj.TimeOutWhite)
                 {
-                    partida.Situacion = SituacionPartida.Tipo.TiempoAgotadoBlancas;
+                    partida.Situacion = GameStatus.Type.WhiteTimeout;
                     FinalizarPartida();
                 }
             }
@@ -93,7 +93,7 @@ namespace Ajedrez.Managers
 
                 if (partida.Reloj.TimeOutBlack)
                 {
-                    partida.Situacion = SituacionPartida.Tipo.TiempoAgotadoNegras;
+                    partida.Situacion = GameStatus.Type.BlackTimeout;
                     FinalizarPartida();
                 }
             }
@@ -207,7 +207,7 @@ namespace Ajedrez.Managers
             tableroUI.ColorearCasillaJaque(partida.Jaque, partida.Tablero.ObtenerCasillaRey(turno));
 
             // Analizar situacion tablero
-            if (partida.Situacion == SituacionPartida.Tipo.EnCurso)
+            if (partida.Situacion == GameStatus.Type.InProgress)
             {
                 // Comunicar el cambio de turno
                 ActualizarEstadoPartida();

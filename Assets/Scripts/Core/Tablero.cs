@@ -739,7 +739,7 @@ namespace Ajedrez.Core
                     return (movimientosLegales, false);
                 }
 
-                if (SituacionPartida.MaterialInsuficiente(this))
+                if (GameStatus.IsInsufficientMaterial(this))
                 {
                     // El material es insuficiente
                     return (movimientosLegales, false);
