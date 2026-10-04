@@ -17,6 +17,12 @@ namespace Ajedrez.Utilities
             InicializarZobristHashes();
         }
 
+        public static void Initialize()
+        {
+            // Empty method for lazy initialization
+            // Call this method to force initialization
+        }
+
         private static void InicializarZobristHashes()
         {
             const int semilla = 123456;
