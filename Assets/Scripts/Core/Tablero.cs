@@ -114,9 +114,9 @@ namespace Ajedrez.Core
             if (string.IsNullOrWhiteSpace(fen))
                 throw new ArgumentException("La cadena FEN está vacía o es nula.", nameof(fen));
 
-            string[] partes = fen.Trim().Split(' ');
-            if (partes.Length != 6)
-                throw new ArgumentException($"La cadena FEN debe tener 6 partes separadas por espacios. Tiene {partes.Length}.", nameof(fen));
+            string[] partes = fen.Trim().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (partes.Length < 4 || partes.Length > 6)
+                throw new ArgumentException($"La cadena FEN debe tener entre 4 y 6 partes separadas por espacios. Tiene {partes.Length}.", nameof(fen));
 
             // Inicializar estructuras de datos
             bitboards = new ulong[12];
@@ -128,8 +128,8 @@ namespace Ajedrez.Core
             string turnoFEN = partes[1];
             string enroquesFEN = partes[2];
             string peonAlPasoFEN = partes[3];
-            string plysFEN = partes[4];
-            string movimientosFEN = partes[5];
+            string plysFEN = partes.Length > 4 ? partes[4] : "0";
+            string movimientosFEN = partes.Length > 5 ? partes[5] : "1";
 
             // 1. Piezas en el tablero
             string[] filas = piezasFEN.Split('/');

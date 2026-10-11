@@ -25,6 +25,7 @@ namespace Ajedrez.Managers
         [SerializeField] private Button botonDivide;
         [SerializeField] private Button botonDetenerEjecucion;
         [SerializeField] private RectTransform contenidoScrollView;
+        [SerializeField] private TextAsset suite;
 
         private Tablero tablero;
         private CancellationTokenSource cancellationTokenSource;
@@ -58,19 +59,26 @@ namespace Ajedrez.Managers
 
             int limiteProfundidad = (int.TryParse(entradaLimiteProfundidad.text, out int resultado) && resultado > 0) ? resultado : int.MaxValue;
 
-            tablero = new Tablero(fen);
-
             switch(tarea)
             {
                 case "TareaPerft":
                 {
+                    tablero = new Tablero(fen);
                     Task.Run(() => TareaPerft(cancellationToken, limiteProfundidad));
                     break;
                 }
 
                 case "TareaDivide":
                 {
+                    tablero = new Tablero(fen);
                     Task.Run(() => TareaDivide(cancellationToken, limiteProfundidad));
+                    break;
+                }
+
+                case "TareaSuite":
+                {
+                    string suiteText = suite != null ? suite.text : null;
+                    Task.Run(() => TareaSuite(cancellationToken, suiteText));
                     break;
                 }
 
@@ -185,6 +193,23 @@ namespace Ajedrez.Managers
 
             EscribirTextPerft($"\nTotal de nodos: <color={CIAN}>{totalNodos}</color>\n<color={VERDE}>Test finalizado</color>");
             unityContext.Post(_ => ActivarBotonesEjecucion(), null); // Activar desde el hilo principal
+        }
+
+        private Task TareaSuite(CancellationToken token, string suiteText)
+        {
+            VaciarTextPerft();
+
+            if (suiteText == null)
+            {
+                EscribirTextPerft($"<color={ROJO}>No hay suite asignada</color>");
+                unityContext.Post(_ => ActivarBotonesEjecucion(), null);
+                return Task.CompletedTask;
+            }
+
+            PerftSuiteRunner.RunSuite(suiteText, token, EscribirTextPerft);
+
+            unityContext.Post(_ => ActivarBotonesEjecucion(), null);
+            return Task.CompletedTask;
         }
     }
 }
