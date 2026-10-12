@@ -30,6 +30,12 @@ namespace Ajedrez.Utilities
             PrecalcularCasillasEntre();
         }
 
+        public static void Initialize()
+        {
+            // Empty method for lazy initialization
+            // Call this method to force initialization
+        }
+
         /// <summary>
         /// Activa el bit correspondiente a la casilla dada.
         /// </summary>

@@ -39,6 +39,12 @@ namespace Ajedrez.Utilities
             PrecalcularDistanciaManhattanAlCentro();
         }
 
+        public static void Initialize()
+        {
+            // Empty method for lazy initialization
+            // Call this method to force initialization
+        }
+
         // FUNCIONES AUXILIARES
 
         /// <summary>

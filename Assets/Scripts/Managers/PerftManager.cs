@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ajedrez.Core;
 using Ajedrez.Utilities;
+using Ajedrez.Testing;
 
 namespace Ajedrez.Managers
 {
@@ -24,6 +25,7 @@ namespace Ajedrez.Managers
         [SerializeField] private Button botonDivide;
         [SerializeField] private Button botonDetenerEjecucion;
         [SerializeField] private RectTransform contenidoScrollView;
+        [SerializeField] private TextAsset suite;
 
         private Tablero tablero;
         private CancellationTokenSource cancellationTokenSource;
@@ -34,6 +36,9 @@ namespace Ajedrez.Managers
         {
             // Capturar el contexto del hilo principal
             unityContext = SynchronizationContext.Current;
+
+            // Warm-up
+            Perft.Run(1, new Tablero(), CancellationToken.None);
         }
 
         public void EjecutarTarea(string tarea)
@@ -54,19 +59,26 @@ namespace Ajedrez.Managers
 
             int limiteProfundidad = (int.TryParse(entradaLimiteProfundidad.text, out int resultado) && resultado > 0) ? resultado : int.MaxValue;
 
-            tablero = new Tablero(fen);
-
             switch(tarea)
             {
                 case "TareaPerft":
                 {
+                    tablero = new Tablero(fen);
                     Task.Run(() => TareaPerft(cancellationToken, limiteProfundidad));
                     break;
                 }
 
                 case "TareaDivide":
                 {
+                    tablero = new Tablero(fen);
                     Task.Run(() => TareaDivide(cancellationToken, limiteProfundidad));
+                    break;
+                }
+
+                case "TareaSuite":
+                {
+                    string suiteText = suite != null ? suite.text : null;
+                    Task.Run(() => TareaSuite(cancellationToken, suiteText));
                     break;
                 }
 
@@ -132,7 +144,7 @@ namespace Ajedrez.Managers
                 Stopwatch cronometro = new Stopwatch();
 
                 cronometro.Start();
-                int numPosiciones = Perft(profundidad);
+                int numPosiciones = Perft.Run(profundidad, tablero, cancellationToken);
                 cronometro.Stop();
 
                 EscribirTextPerft(
@@ -155,27 +167,6 @@ namespace Ajedrez.Managers
             unityContext.Post(_ => ActivarBotonesEjecucion(), null); // Activar desde el hilo principal
         }
 
-        private int Perft(int profundidad)
-        {
-            if (profundidad == 0)
-                return 1;
-
-            (List<Move> movimientos, _) = tablero.GenerarMovimientosLegales();
-            int numPosiciones = 0;
-
-            foreach (Move movimiento in movimientos)
-            {                
-                tablero.HacerMovimiento(movimiento);
-                numPosiciones += Perft(profundidad - 1);
-                tablero.DeshacerMovimiento(movimiento);
-
-                if (cancellationToken.IsCancellationRequested)
-                    break;
-            }
-
-            return numPosiciones;
-        }
-
         private async Task TareaDivide(CancellationToken token, int limiteProfundidad)
         {
             (List<Move> movimientos, _) = tablero.GenerarMovimientosLegales();
@@ -185,7 +176,7 @@ namespace Ajedrez.Managers
             foreach (Move movimiento in movimientos)
             {
                 tablero.HacerMovimiento(movimiento);
-                int nodos = Perft(limiteProfundidad - 1);
+                int nodos = Perft.Run(limiteProfundidad - 1, tablero, cancellationToken);
                 tablero.DeshacerMovimiento(movimiento);
 
                 EscribirTextPerft($"{movimiento.ToLAN()}: <color={CIAN}>{nodos}</color>\n");
@@ -202,6 +193,23 @@ namespace Ajedrez.Managers
 
             EscribirTextPerft($"\nTotal de nodos: <color={CIAN}>{totalNodos}</color>\n<color={VERDE}>Test finalizado</color>");
             unityContext.Post(_ => ActivarBotonesEjecucion(), null); // Activar desde el hilo principal
+        }
+
+        private Task TareaSuite(CancellationToken token, string suiteText)
+        {
+            VaciarTextPerft();
+
+            if (suiteText == null)
+            {
+                EscribirTextPerft($"<color={ROJO}>No hay suite asignada</color>");
+                unityContext.Post(_ => ActivarBotonesEjecucion(), null);
+                return Task.CompletedTask;
+            }
+
+            PerftSuiteRunner.RunSuite(suiteText, token, EscribirTextPerft);
+
+            unityContext.Post(_ => ActivarBotonesEjecucion(), null);
+            return Task.CompletedTask;
         }
     }
 }

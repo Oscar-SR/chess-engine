@@ -114,9 +114,9 @@ namespace Ajedrez.Core
             if (string.IsNullOrWhiteSpace(fen))
                 throw new ArgumentException("La cadena FEN está vacía o es nula.", nameof(fen));
 
-            string[] partes = fen.Trim().Split(' ');
-            if (partes.Length != 6)
-                throw new ArgumentException($"La cadena FEN debe tener 6 partes separadas por espacios. Tiene {partes.Length}.", nameof(fen));
+            string[] partes = fen.Trim().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (partes.Length < 4 || partes.Length > 6)
+                throw new ArgumentException($"La cadena FEN debe tener entre 4 y 6 partes separadas por espacios. Tiene {partes.Length}.", nameof(fen));
 
             // Inicializar estructuras de datos
             bitboards = new ulong[12];
@@ -128,8 +128,8 @@ namespace Ajedrez.Core
             string turnoFEN = partes[1];
             string enroquesFEN = partes[2];
             string peonAlPasoFEN = partes[3];
-            string plysFEN = partes[4];
-            string movimientosFEN = partes[5];
+            string plysFEN = partes.Length > 4 ? partes[4] : "0";
+            string movimientosFEN = partes.Length > 5 ? partes[5] : "1";
 
             // 1. Piezas en el tablero
             string[] filas = piezasFEN.Split('/');
@@ -1067,16 +1067,23 @@ namespace Ajedrez.Core
                 // Hay un peon vulnerable
                 if (estadoActual.HasVulnerablePawn)
                 {
-                    // Hay captura al paso para este peón, el movimiento no salta los límites del tablero y el capturar a esa pieza no pone en jaque al rey
-                    if ((AjedrezUtils.NumCasillasHastaBorde[casilla][AjedrezUtils.NOROESTE] > 0) && (PeonVulnerable == casilla - 1) && BitboardUtils.EstaCasillaActiva(casilla - 1, movimientosValidos) && !CapturaAlPasoExponeAlRey(casilla, casillasOcupadas, casillaRey, Turno))
+                    int casillaDestinoOeste = casillaAvance - 1;
+                    int casillaDestinoEste = casillaAvance + 1;
+
+                    // Hay captura al paso hacia el oeste
+                    if ((AjedrezUtils.NumCasillasHastaBorde[casilla][AjedrezUtils.NOROESTE] > 0)
+                        && (PeonVulnerable == casilla - 1)
+                        && (BitboardUtils.EstaCasillaActiva(casillaDestinoOeste, movimientosValidos) || BitboardUtils.EstaCasillaActiva(PeonVulnerable, movimientosValidos))
+                        && !CapturaAlPasoExponeAlRey(casilla, casillaDestinoOeste, casillasOcupadas, casillaRey, Turno))
                     {
-                        // Al oeste
-                        movimientosLegales.Add(new Move(casilla, casillaAvance - 1, Move.EN_PASSANT_CAPTURE));
+                        movimientosLegales.Add(new Move(casilla, casillaDestinoOeste, Move.EN_PASSANT_CAPTURE));
                     }
-                    else if ((AjedrezUtils.NumCasillasHastaBorde[casilla][AjedrezUtils.NORDESTE] > 0) && (PeonVulnerable == casilla + 1) && BitboardUtils.EstaCasillaActiva(casilla + 1, movimientosValidos) && !CapturaAlPasoExponeAlRey(casilla, casillasOcupadas, casillaRey, Turno))
+                    else if ((AjedrezUtils.NumCasillasHastaBorde[casilla][AjedrezUtils.NORDESTE] > 0)
+                        && (PeonVulnerable == casilla + 1)
+                        && (BitboardUtils.EstaCasillaActiva(casillaDestinoEste, movimientosValidos) || BitboardUtils.EstaCasillaActiva(PeonVulnerable, movimientosValidos))
+                        && !CapturaAlPasoExponeAlRey(casilla, casillaDestinoEste, casillasOcupadas, casillaRey, Turno))
                     {
-                        // Al este
-                        movimientosLegales.Add(new Move(casilla, casillaAvance + 1, Move.EN_PASSANT_CAPTURE));
+                        movimientosLegales.Add(new Move(casilla, casillaDestinoEste, Move.EN_PASSANT_CAPTURE));
                     }
                 }
 
@@ -1159,19 +1166,35 @@ namespace Ajedrez.Core
             return movimientosValidos;
         }
 
-        private bool CapturaAlPasoExponeAlRey(int casillaPeon, ulong casillasOcupadas, int casillaRey, Piece.Color colorRey)
+        private bool CapturaAlPasoExponeAlRey(int casillaPeon, int casillaDestino, ulong casillasOcupadas, int casillaRey, Piece.Color colorRey)
         {
-            // Si el peon en cuestión es una pieza clavada quitando el peon vulnerable, delvolver true, si no, devolver false
-            (ulong clavadasSinPeonVulnerable, _) = ObtenerPiezasClavadas(casillasOcupadas & ~BitboardUtils.SetBit(PeonVulnerable), casillaRey, colorRey);
+            // Simular las casillas ocupadas tras la captura al paso
+            ulong ocupadasDespues = (casillasOcupadas ^ BitboardUtils.SetBit(casillaPeon) ^ BitboardUtils.SetBit(PeonVulnerable)) | BitboardUtils.SetBit(casillaDestino);
+            Piece.Color colorEnemigo = AjedrezUtils.InversoColor(colorRey);
 
-            if (BitboardUtils.EstaCasillaActiva(casillaPeon, clavadasSinPeonVulnerable))
-            {
+            // 1. Verificar si un peón rival ataca al rey (excluyendo el peón vulnerable capturado)
+            ulong peonesRivales = bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Type.Pawn, colorEnemigo)] & ~BitboardUtils.SetBit(PeonVulnerable);
+            if ((BitboardUtils.AtaquesPeon[AjedrezUtils.MismoColor(colorEnemigo, Piece.Color.White) ? 0 : 1, casillaRey] & peonesRivales) != 0)
                 return true;
-            }
-            else
-            {
-                return false;
-            }
+
+            // 2. Verificar si un caballo rival ataca al rey
+            ulong caballos = bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Type.Knight, colorEnemigo)];
+            if ((BitboardUtils.AtaquesCaballo[casillaRey] & caballos) != 0)
+                return true;
+
+            // 3. Verificar si una reina o un alfil rival atacan al rey
+            ulong reinasAlfiles = bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Type.Queen, colorEnemigo)]
+                                | bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Type.Bishop, colorEnemigo)];
+            if ((BitboardUtils.AtaquesAlfil(ocupadasDespues, casillaRey) & reinasAlfiles) != 0)
+                return true;
+
+            // 4. Verificar si una reina o una torre rival atacan al rey
+            ulong reinasTorres = bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Type.Queen, colorEnemigo)]
+                               | bitboards[AjedrezUtils.ObtenerIndicePieza(Piece.Type.Rook, colorEnemigo)];
+            if ((BitboardUtils.AtaquesTorre(ocupadasDespues, casillaRey) & reinasTorres) != 0)
+                return true;
+
+            return false;
         }
 
         private void EliminarPieza(Piece pieza, int casilla)
