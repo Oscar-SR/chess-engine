@@ -22,7 +22,7 @@ namespace Ajedrez.Managers
         // Start is called before the first frame update
         void Start()
         {
-            openingsBook = Resources.Load<TextAsset>("Aperturas");
+            openingsBook = Resources.Load<TextAsset>("Openings");
             game = new Game(new Board(), new HumanPlayer("Player 1", Piece.Color.White), new HumanPlayer("Player 2", Piece.Color.Black), new Timer(60f, 0f));
             boardUI.Init(game.Board);
         }
