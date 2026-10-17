@@ -6,7 +6,7 @@ public static class EngineBootstrap
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void InitializeEngine()
     {
-        AjedrezUtils.Initialize();
+        ChessUtils.Initialize();
         BitboardUtils.Initialize();
         ZobristHashing.Initialize();
         Debug.Log("Engine initialized.");
