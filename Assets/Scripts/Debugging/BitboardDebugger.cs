@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
@@ -11,295 +12,295 @@ using Ajedrez.UI;
 
 namespace Ajedrez.Debugging
 {
-    public enum ModoDebugBitboard : byte
+    public enum BitboardDebugMode : byte
     {
-        Apagado,
-        ReyBlanco,
-        ReinasBlancas,
-        TorresBlancas,
-        AlfilesBlancos,
-        CaballosBlancos,
-        PeonesBlancos,
-        ReyNegro,
-        ReinasNegras,
-        TorresNegras,
-        AlfilesNegros,
-        CaballosNegros,
-        PeonesNegros,
-        PiezasClavadas,
-        AtacantesRey,
+        Off,
+        WhiteKing,
+        WhiteQueens,
+        WhiteRooks,
+        WhiteBishops,
+        WhiteKnights,
+        WhitePawns,
+        BlackKing,
+        BlackQueens,
+        BlackRooks,
+        BlackBishops,
+        BlackKnights,
+        BlackPawns,
+        PinnedPieces,
+        KingAttackers,
         Pinners
     }
 
     public class BitboardDebugger : MonoBehaviour
     {
-        public static BitboardDebugger Instancia { get; private set; }
+        public static BitboardDebugger Instance { get; private set; }
 
-        private const string ROJO_CLARO = "#00FFFF80";
-        private const string CIAN = "#FF000080";
+        private const string LIGHT_RED = "#00FFFF80";
+        private const string CYAN = "#FF000080";
 
-        [SerializeField] private Transform tableroTransform;
-        [SerializeField] private Sprite spriteMarcaDebug;
-        [SerializeField] private TextMeshProUGUI textoModoDebug;
+        [SerializeField] [FormerlySerializedAs("tableroTransform")] private Transform boardTransform;
+        [SerializeField] [FormerlySerializedAs("spriteMarcaDebug")] private Sprite debugMarkSprite;
+        [SerializeField] [FormerlySerializedAs("textoModoDebug")] private TextMeshProUGUI debugModeText;
 
-        private bool iniciado = false;
-        private Color colorBitboard1;
-        private Color colorBitboard0;
-        private Vector2 posicionTablero;
-        private Tablero tablero;
-        private ModoDebugBitboard modoActual = ModoDebugBitboard.Apagado;
+        private bool isInitialized = false;
+        private Color bitboardColor1;
+        private Color bitboardColor0;
+        private Vector2 boardPosition;
+        private Board board;
+        private BitboardDebugMode currentMode = BitboardDebugMode.Off;
 
         private void Awake()
         {
-            if (Instancia != null && Instancia != this)
+            if (Instance != null && Instance != this)
             {
                 Destroy(this.gameObject);
             }
             else
             {
-                Instancia = this;
+                Instance = this;
             }
         }
 
         private void OnEnable()
         {
-            // Cuidado con el script execution order
-            if (InputManager.Instancia != null)
+            // Beware of script execution order
+            if (InputManager.Instance != null)
             {
-                InputManager.Instancia.OnTeclaDebugBitboard += CambiarModoDebugBitboard;
+                InputManager.Instance.OnDebugBitboardKey += ChangeDebugBitboardMode;
             }
         }
 
         private void OnDisable()
         {
-            if (InputManager.Instancia != null)
+            if (InputManager.Instance != null)
             {
-                InputManager.Instancia.OnTeclaDebugBitboard -= CambiarModoDebugBitboard;
+                InputManager.Instance.OnDebugBitboardKey -= ChangeDebugBitboardMode;
             }
         }
 
         void Start()
         {
-            // Inicializar la posición del tablero
-            posicionTablero = tableroTransform.position;
+            // Initialize board position
+            boardPosition = boardTransform.position;
 
-            // Cargar colores desde hex
-            if (!ColorUtility.TryParseHtmlString(ROJO_CLARO, out colorBitboard1))
-                Debug.LogError("Error al convertir ROJO_CLARO a Color.");
+            // Load colors from hex
+            if (!ColorUtility.TryParseHtmlString(LIGHT_RED, out bitboardColor1))
+                Debug.LogError("Error converting LIGHT_RED to Color.");
 
-            if (!ColorUtility.TryParseHtmlString(CIAN, out colorBitboard0))
-                Debug.LogError("Error al convertir CIAN a Color.");
+            if (!ColorUtility.TryParseHtmlString(CYAN, out bitboardColor0))
+                Debug.LogError("Error converting CYAN to Color.");
         }
 
-        public void Init(Tablero tablero)
+        public void Init(Board board)
         {
-            this.tablero = tablero;
-            iniciado = true;
+            this.board = board;
+            isInitialized = true;
         }
 
-        public void ActualizarModoDebugBitboard()
+        public void UpdateDebugBitboardMode()
         {
-            if (modoActual != ModoDebugBitboard.Apagado)
+            if (currentMode != BitboardDebugMode.Off)
             {
-                MostrarModoDebugBitboard(modoActual);
+                ShowDebugBitboardMode(currentMode);
             }
         }
 
-        private void MostrarModoDebugBitboard(ModoDebugBitboard modo)
+        private void ShowDebugBitboardMode(BitboardDebugMode mode)
         {
-            if (!iniciado)
+            if (!isInitialized)
                 return;
-            
-            switch (modo)
+
+            switch (mode)
             {
-                case ModoDebugBitboard.Apagado:
+                case BitboardDebugMode.Off:
                     {
-                        BorrarDebug();
-                        textoModoDebug.text = "";
+                        ClearDebug();
+                        debugModeText.text = "";
                         break;
                     }
 
-                    case ModoDebugBitboard.ReyBlanco:
+                case BitboardDebugMode.WhiteKing:
                     {
-                        MostrarDebugBitboard(tablero.BitboardReyBlanco);
+                        ShowDebugBitboard(board.WhiteKingBitboard);
                         break;
                     }
 
-                    case ModoDebugBitboard.ReinasBlancas:
+                case BitboardDebugMode.WhiteQueens:
                     {
-                        MostrarDebugBitboard(tablero.BitboardReinasBlancas);
+                        ShowDebugBitboard(board.WhiteQueensBitboard);
                         break;
                     }
 
-                    case ModoDebugBitboard.TorresBlancas:
+                case BitboardDebugMode.WhiteRooks:
                     {
-                        MostrarDebugBitboard(tablero.BitboardTorresBlancas);
+                        ShowDebugBitboard(board.WhiteRooksBitboard);
                         break;
                     }
 
-                    case ModoDebugBitboard.AlfilesBlancos:
+                case BitboardDebugMode.WhiteBishops:
                     {
-                        MostrarDebugBitboard(tablero.BitboardAlfilesBlancos);
+                        ShowDebugBitboard(board.WhiteBishopsBitboard);
                         break;
                     }
 
-                    case ModoDebugBitboard.CaballosBlancos:
+                case BitboardDebugMode.WhiteKnights:
                     {
-                        MostrarDebugBitboard(tablero.BitboardCaballosBlancos);
+                        ShowDebugBitboard(board.WhiteKnightsBitboard);
                         break;
                     }
 
-                    case ModoDebugBitboard.PeonesBlancos:
+                case BitboardDebugMode.WhitePawns:
                     {
-                        MostrarDebugBitboard(tablero.BitboardPeonesBlancos);
+                        ShowDebugBitboard(board.WhitePawnsBitboard);
                         break;
                     }
 
-                    case ModoDebugBitboard.ReyNegro:
+                case BitboardDebugMode.BlackKing:
                     {
-                        MostrarDebugBitboard(tablero.BitboardReyNegro);
+                        ShowDebugBitboard(board.BlackKingBitboard);
                         break;
                     }
 
-                    case ModoDebugBitboard.ReinasNegras:
+                case BitboardDebugMode.BlackQueens:
                     {
-                        MostrarDebugBitboard(tablero.BitboardReinasNegras);
+                        ShowDebugBitboard(board.BlackQueensBitboard);
                         break;
                     }
 
-                    case ModoDebugBitboard.TorresNegras:
+                case BitboardDebugMode.BlackRooks:
                     {
-                        MostrarDebugBitboard(tablero.BitboardTorresNegras);
+                        ShowDebugBitboard(board.BlackRooksBitboard);
                         break;
                     }
 
-                    case ModoDebugBitboard.AlfilesNegros:
+                case BitboardDebugMode.BlackBishops:
                     {
-                        MostrarDebugBitboard(tablero.BitboardAlfilesNegros);
+                        ShowDebugBitboard(board.BlackBishopsBitboard);
                         break;
                     }
 
-                    case ModoDebugBitboard.CaballosNegros:
+                case BitboardDebugMode.BlackKnights:
                     {
-                        MostrarDebugBitboard(tablero.BitboardCaballosNegros);
+                        ShowDebugBitboard(board.BlackKnightsBitboard);
                         break;
                     }
 
-                    case ModoDebugBitboard.PeonesNegros:
+                case BitboardDebugMode.BlackPawns:
                     {
-                        MostrarDebugBitboard(tablero.BitboardPeonesNegros);
+                        ShowDebugBitboard(board.BlackPawnsBitboard);
                         break;
                     }
 
-                    case ModoDebugBitboard.PiezasClavadas:
+                case BitboardDebugMode.PinnedPieces:
                     {
-                        MostrarDebugBitboard(tablero.ObtenerPiezasClavadasDebug());
+                        ShowDebugBitboard(board.GetPinnedPiecesDebug());
                         break;
                     }
 
-                    case ModoDebugBitboard.AtacantesRey:
+                case BitboardDebugMode.KingAttackers:
                     {
-                        MostrarDebugBitboard(tablero.ObtenerPiezasAtacandoReyDebug());
+                        ShowDebugBitboard(board.GetKingAttackersDebug());
                         break;
                     }
 
-                    case ModoDebugBitboard.Pinners:
+                case BitboardDebugMode.Pinners:
                     {
-                        MostrarDebugBitboard(tablero.ObtenerPinnersDebug());
+                        ShowDebugBitboard(board.GetPinnersDebug());
                         break;
                     }
             }
         }
 
-        private void CambiarModoDebugBitboard(ModoDebugBitboard nuevoModo)
+        private void ChangeDebugBitboardMode(BitboardDebugMode newMode)
         {
-            if(modoActual != nuevoModo)
+            if (currentMode != newMode)
             {
-                modoActual = nuevoModo;
-                MostrarModoDebugBitboard(nuevoModo);
+                currentMode = newMode;
+                ShowDebugBitboardMode(newMode);
             }
         }
 
-        private void BorrarDebug()
+        private void ClearDebug()
         {
-            GameObject[] objetosDebug = GameObject.FindGameObjectsWithTag("Debug");
+            GameObject[] debugObjects = GameObject.FindGameObjectsWithTag("Debug");
 
-            foreach (GameObject obj in objetosDebug)
+            foreach (GameObject obj in debugObjects)
             {
                 Destroy(obj);
             }
         }
 
-        private string FormatearBitboard(ulong bitboard)
+        private string FormatBitboard(ulong bitboard)
         {
-            var sb = new System.Text.StringBuilder(64 * 40); // más espacio por las etiquetas
+            var sb = new System.Text.StringBuilder(64 * 40); // more room for tags
             for (int i = 63; i >= 0; i--)
             {
                 bool bit = (bitboard & BitboardUtils.SetBit(i)) != 0;
-                string color = bit ? ROJO_CLARO : CIAN;
+                string color = bit ? LIGHT_RED : CYAN;
                 sb.Append($"<color={color}>{(bit ? '1' : '0')}</color>");
-                
-                // Opcional: para separar cada 8 bits visualmente
+
+                // Optional: visually separate every 8 bits
                 if (i % 8 == 0 && i != 0)
                     sb.Append(" ");
             }
             return sb.ToString();
         }
 
-        private void MostrarDebugBitboard(ulong bitboard)
+        private void ShowDebugBitboard(ulong bitboard)
         {
-            BorrarDebug();
-            textoModoDebug.text = $"{modoActual}\n{FormatearBitboard(bitboard)}";
+            ClearDebug();
+            debugModeText.text = $"{currentMode}\n{FormatBitboard(bitboard)}";
 
-            for (int casilla = 0; casilla < AjedrezUtils.MAX_INDICE; casilla++)
+            for (int square = 0; square < ChessUtils.BOARD_SQUARE_COUNT; square++)
             {
-                (int i, int j) = AjedrezUtils.IndiceACoordenadas(casilla);
-                Vector2 posicion = new Vector2(-3.5f + j, -3.5f + i);
+                (int i, int j) = ChessUtils.IndexToCoordinates(square);
+                Vector2 position = new Vector2(-3.5f + j, -3.5f + i);
 
-                // Verificamos si el bit está activo en esa casilla
-                if ((bitboard & BitboardUtils.SetBit(casilla)) != 0)
+                // Check if the bit is set on that square
+                if ((bitboard & BitboardUtils.SetBit(square)) != 0)
                 {
-                    InstanciarCasillaDebug(posicionTablero + posicion, 1, colorBitboard1);
+                    InstantiateDebugSquare(boardPosition + position, 1, bitboardColor1);
                 }
                 else
                 {
-                    InstanciarCasillaDebug(posicionTablero + posicion, 0, colorBitboard0);
+                    InstantiateDebugSquare(boardPosition + position, 0, bitboardColor0);
                 }
             }
         }
 
-        public void InstanciarCasillaDebug(Vector2 posicion, int numero, Color color)
+        public void InstantiateDebugSquare(Vector2 position, int number, Color color)
         {
-            GameObject marcaDebug = new GameObject("DebugBitboard");
+            GameObject debugMark = new GameObject("DebugBitboard");
 
-            // Le asignar el tag "Debug"
-            marcaDebug.tag = "Debug";
+            // Assign the "Debug" tag
+            debugMark.tag = "Debug";
 
-            // SpriteRenderer para la casilla
-            SpriteRenderer sr = marcaDebug.AddComponent<SpriteRenderer>();
-            sr.sprite = spriteMarcaDebug;
+            // SpriteRenderer for the square
+            SpriteRenderer sr = debugMark.AddComponent<SpriteRenderer>();
+            sr.sprite = debugMarkSprite;
             sr.color = color;
             sr.sortingLayerName = "Debug";
             sr.sortingOrder = 0;
-            marcaDebug.transform.position = posicion;
+            debugMark.transform.position = position;
 
-            // Crear el texto como hijo
-            GameObject texto = new GameObject("Numero");
-            texto.tag = "Debug";
-            texto.transform.SetParent(marcaDebug.transform);
-            texto.transform.localPosition = new Vector3(0, 0, -0.1f);
+            // Create the text as a child
+            GameObject text = new GameObject("Number");
+            text.tag = "Debug";
+            text.transform.SetParent(debugMark.transform);
+            text.transform.localPosition = new Vector3(0, 0, -0.1f);
 
-            // Componente TextMesh
-            TextMesh textMesh = texto.AddComponent<TextMesh>();
-            textMesh.text = numero.ToString();
+            // TextMesh component
+            TextMesh textMesh = text.AddComponent<TextMesh>();
+            textMesh.text = number.ToString();
             textMesh.fontSize = 100;
             textMesh.characterSize = 0.05f;
             textMesh.alignment = TextAlignment.Center;
             textMesh.anchor = TextAnchor.MiddleCenter;
             textMesh.color = Color.white;
 
-            // Para que se vea encima de la casilla
-            MeshRenderer renderer = texto.GetComponent<MeshRenderer>();
+            // Make it render on top of the square
+            MeshRenderer renderer = text.GetComponent<MeshRenderer>();
             renderer.sortingLayerName = "Debug";
             renderer.sortingOrder = 1;
         }
