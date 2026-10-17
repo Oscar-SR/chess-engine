@@ -5,16 +5,16 @@ namespace Ajedrez.Utilities
 {
     public class ZobristHashing
     {
-        private static readonly ulong[,] HashesPiezasEnCasilla = new ulong[12, 64];
-        private static readonly ulong[] HashesEnroquesDisponibles = new ulong[16];
-        private static readonly ulong[] HashesColumnasAlPaso = new ulong[8];
-        private static ulong HashTurno;
+        private static readonly ulong[,] PieceSquareHashes = new ulong[12, 64];
+        private static readonly ulong[] CastlingRightsHashes = new ulong[16];
+        private static readonly ulong[] EnPassantFileHashes = new ulong[8];
+        private static ulong TurnHash;
 
-        // Constructor estático
+        // Static constructor
         static ZobristHashing()
         {
-            // Precáculos
-            InicializarZobristHashes();
+            // Precomputations
+            InitializeZobristHashes();
         }
 
         public static void Initialize()
@@ -23,26 +23,26 @@ namespace Ajedrez.Utilities
             // Call this method to force initialization
         }
 
-        private static void InicializarZobristHashes()
+        private static void InitializeZobristHashes()
         {
-            const int semilla = 123456;
-            Random rng = new Random(semilla);
+            const int seed = 123456;
+            Random rng = new Random(seed);
 
             for (int piece = 0; piece < 12; piece++)
             {
                 for (int square = 0; square < 64; square++)
                 {
-                    HashesPiezasEnCasilla[piece, square] = RandomUlong(rng);
+                    PieceSquareHashes[piece, square] = RandomUlong(rng);
                 }
             }
 
             for (int i = 0; i < 16; i++)
-                HashesEnroquesDisponibles[i] = RandomUlong(rng);
+                CastlingRightsHashes[i] = RandomUlong(rng);
 
             for (int i = 0; i < 8; i++)
-                HashesColumnasAlPaso[i] = RandomUlong(rng);
+                EnPassantFileHashes[i] = RandomUlong(rng);
 
-            HashTurno = RandomUlong(rng);
+            TurnHash = RandomUlong(rng);
         }
 
         private static ulong RandomUlong(Random rng)
@@ -51,141 +51,141 @@ namespace Ajedrez.Utilities
 
             /*
             byte[] buffer = new byte[8];
-			rng.NextBytes(buffer);
-			return BitConverter.ToUInt64(buffer, 0);
+            rng.NextBytes(buffer);
+            return BitConverter.ToUInt64(buffer, 0);
             */
         }
 
-        public static ulong CrearZobristHash(Tablero tablero)
+        public static ulong CreateZobristHash(Board board)
         {
             ulong hash = 0;
 
             for (int square = 0; square < 64; square++)
             {
-                Piece pieza = tablero.ObtenerPieza(square);
-                if (pieza.PieceType != Piece.Type.None)
+                Piece piece = board.GetPiece(square);
+                if (piece.PieceType != Piece.Type.None)
                 {
-                    hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(pieza), square];
+                    hash ^= PieceSquareHashes[ChessUtils.GetPieceIndex(piece), square];
                 }
             }
 
-            // Enroque
-            int enroquesDisponibles = tablero.EstadoActual.CastlingRights; // valor 0-15 según derechos
-            hash ^= HashesEnroquesDisponibles[enroquesDisponibles];
+            // Castling rights
+            int castlingRights = board.CurrentState.CastlingRights; // value 0-15 according to rights
+            hash ^= CastlingRightsHashes[castlingRights];
 
-            // Peón al paso
-            if (tablero.EstadoActual.HasVulnerablePawn)
+            // En passant pawn
+            if (board.CurrentState.HasVulnerablePawn)
             {
-                int columnaPeonAlPaso = AjedrezUtils.ObtenerColumna(tablero.EstadoActual.VulnerablePawnSquare);
-                hash ^= HashesColumnasAlPaso[columnaPeonAlPaso];
+                int enPassantFile = ChessUtils.GetColumn(board.CurrentState.VulnerablePawnSquare);
+                hash ^= EnPassantFileHashes[enPassantFile];
             }
 
-            // Turno
-            if (AjedrezUtils.MismoColor(tablero.Turno, Piece.Color.Black))
+            // Side to move
+            if (ChessUtils.SameColor(board.Turn, Piece.Color.Black))
             {
-                hash ^= HashTurno;
+                hash ^= TurnHash;
             }
 
             return hash;
         }
 
-        public static ulong ActualizarZobristHashCasilla(ulong hash, Piece pieza, int casilla)
+        public static ulong UpdateZobristHashSquare(ulong hash, Piece piece, int square)
         {
-            return hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(pieza), casilla];
+            return hash ^= PieceSquareHashes[ChessUtils.GetPieceIndex(piece), square];
         }
 
-        public static ulong ActualizarZobristHashEnroquesDisponibles(ulong hash, int enroquesDisponibles)
+        public static ulong UpdateZobristHashCastlingRights(ulong hash, int castlingRights)
         {
-            return hash ^= HashesEnroquesDisponibles[enroquesDisponibles];
+            return hash ^= CastlingRightsHashes[castlingRights];
         }
 
-        public static ulong ActualizarZobristHashColumnasAlPaso(ulong hash, int peonAlPaso)
+        public static ulong UpdateZobristHashEnPassantFile(ulong hash, int enPassantSquare)
         {
-            return hash ^= HashesColumnasAlPaso[AjedrezUtils.ObtenerColumna(peonAlPaso)];
+            return hash ^= EnPassantFileHashes[ChessUtils.GetColumn(enPassantSquare)];
         }
 
-        public static ulong ActualizarZobristHashTurno(ulong hash)
+        public static ulong UpdateZobristHashTurn(ulong hash)
         {
-            return hash ^= HashTurno;
+            return hash ^= TurnHash;
         }
 
         /*
-        public static ulong ActualizarZobristHashMovimiento(ulong hash, Movimiento movimiento, Piece pieza, int? peonAlPasoAnterior)
+        public static ulong UpdateZobristHashMove(ulong hash, Move movement, Piece piece, int? previousEnPassant)
         {
-            // Elimina la pieza del origen
-            hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(pieza), movimiento.Origen];
+            // Remove the piece from its origin square
+            hash ^= PieceSquareHashes[ChessUtils.GetPieceIndex(piece), movement.From];
 
-            // Coloca la pieza en su nueva casilla
-            switch (movimiento.Flag)
+            // Place the piece on its new square
+            switch (movement.Flag)
             {
-                case Movimiento.PROMOVER_A_REINA:
+                case Move.PROMOTE_TO_QUEEN:
                     {
-                        hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(Piece.Type.Reina, pieza.ColorPieza), movimiento.Destino];
+                        hash ^= PieceSquareHashes[ChessUtils.GetPieceIndex(Piece.Type.Queen, piece.PieceColor), movement.To];
                         break;
                     }
 
-                case Movimiento.PROMOVER_A_TORRE:
+                case Move.PROMOTE_TO_ROOK:
                     {
-                        hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(Piece.Type.Torre, pieza.ColorPieza), movimiento.Destino];
+                        hash ^= PieceSquareHashes[ChessUtils.GetPieceIndex(Piece.Type.Rook, piece.PieceColor), movement.To];
                         break;
                     }
 
-                case Movimiento.PROMOVER_A_ALFIL:
+                case Move.PROMOTE_TO_BISHOP:
                     {
-                        hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(Piece.Type.Alfil, pieza.ColorPieza), movimiento.Destino];
+                        hash ^= PieceSquareHashes[ChessUtils.GetPieceIndex(Piece.Type.Bishop, piece.PieceColor), movement.To];
                         break;
                     }
 
-                case Movimiento.PROMOVER_A_CABALLO:
+                case Move.PROMOTE_TO_KNIGHT:
                     {
-                        hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(Piece.Type.Caballo, pieza.ColorPieza), movimiento.Destino];
+                        hash ^= PieceSquareHashes[ChessUtils.GetPieceIndex(Piece.Type.Knight, piece.PieceColor), movement.To];
                         break;
                     }
 
                 default:
                     {
-                        hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(pieza), movimiento.Destino];
+                        hash ^= PieceSquareHashes[ChessUtils.GetPieceIndex(piece), movement.To];
                         break;
                     }
             }
 
-            // Eliminar peon al paso anterior, si lo hubo
-            if (peonAlPasoAnterior.HasValue)
+            // Remove the previous en passant pawn, if any
+            if (previousEnPassant.HasValue)
             {
-                hash ^= HashesColumnasAlPaso[AjedrezUtils.ObtenerColumna(peonAlPasoAnterior.Value)];
+                hash ^= EnPassantFileHashes[ChessUtils.GetColumn(previousEnPassant.Value)];
             }
 
-            // Cambia el turno
-            hash ^= HashTurno;
+            // Change the side to move
+            hash ^= TurnHash;
 
             return hash;
         }
 
-        public static ulong ActualizarZobristHashCaptura(ulong hash, int casillaCaptura, Piece piezaCapturada)
+        public static ulong UpdateZobristHashCapture(ulong hash, int captureSquare, Piece capturedPiece)
         {
-            // Eliminar pieza capturada
-            hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(piezaCapturada), casillaCaptura];
+            // Remove the captured piece
+            hash ^= PieceSquareHashes[ChessUtils.GetPieceIndex(capturedPiece), captureSquare];
 
             return hash;
         }
 
-        public static ulong ActualizarZobristHashEnroque(ulong hash, Movimiento movimientoTorre, Piece.Color turno, int enroquesDisponiblesAntiguos, int enroquesDisponiblesNuevos)
+        public static ulong UpdateZobristHashCastling(ulong hash, Move rookMove, Piece.Color turn, int oldCastlingRights, int newCastlingRights)
         {
-            // Actualizar movimiento de la torre
-            hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(Piece.Type.Torre, turno), movimientoTorre.Origen];
-            hash ^= HashesPiezasEnCasilla[AjedrezUtils.ObtenerIndicePieza(Piece.Type.Torre, turno), movimientoTorre.Destino];
+            // Update the rook move
+            hash ^= PieceSquareHashes[ChessUtils.GetPieceIndex(Piece.Type.Rook, turn), rookMove.From];
+            hash ^= PieceSquareHashes[ChessUtils.GetPieceIndex(Piece.Type.Rook, turn), rookMove.To];
 
-            // Eliminar los derechos de enroque antiguos y poner los nuevos
-            hash ^= HashesEnroquesDisponibles[enroquesDisponiblesAntiguos];
-            hash ^= HashesEnroquesDisponibles[enroquesDisponiblesNuevos];
+            // Remove the old castling rights and set the new ones
+            hash ^= CastlingRightsHashes[oldCastlingRights];
+            hash ^= CastlingRightsHashes[newCastlingRights];
 
             return hash;
         }
 
-        public static ulong ActualizarZobristHashPeonAlPaso(ulong hash, int peonAlPaso)
+        public static ulong UpdateZobristHashEnPassant(ulong hash, int enPassantSquare)
         {
-            // Actualizar el peon al paso
-            hash ^= HashesColumnasAlPaso[AjedrezUtils.ObtenerColumna(peonAlPaso)];
+            // Update the en passant pawn
+            hash ^= EnPassantFileHashes[ChessUtils.GetColumn(enPassantSquare)];
 
             return hash;
         }
