@@ -139,7 +139,7 @@ namespace Ajedrez.UI
 
         public void ExitButton()
         {
-            SceneManager.LoadScene("MenuPrincipal");
+            SceneManager.LoadScene("MainMenu");
         }
     }
 }

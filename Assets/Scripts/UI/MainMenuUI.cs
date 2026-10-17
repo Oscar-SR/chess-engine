@@ -9,12 +9,12 @@ namespace Ajedrez.UI
     {
         public void PlayButton()
         {
-            SceneManager.LoadScene("ConfiguracionesPrevias");
+            SceneManager.LoadScene("GameSettings");
         }
 
         public void OptionsButton()
         {
-            SceneManager.LoadScene("Opciones");
+            SceneManager.LoadScene("Options");
         }
 
         public void ExitButton()

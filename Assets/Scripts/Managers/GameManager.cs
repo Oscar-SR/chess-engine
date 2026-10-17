@@ -33,7 +33,7 @@ namespace Ajedrez.Managers
         {
             if (!PersistenceSystem.Instance.HasGame())
             {
-                SceneManager.LoadScene("ConfiguracionesPrevias");
+                SceneManager.LoadScene("GameSettings");
             }
 
             game = PersistenceSystem.Instance.game;

@@ -22,7 +22,7 @@ namespace Ajedrez.UI
 
         public void BackToMainMenu()
         {
-            SceneManager.LoadScene("MenuPrincipal");
+            SceneManager.LoadScene("MainMenu");
         }
 
         public void ChangeGeneralVolume(float volume)

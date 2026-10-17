@@ -207,12 +207,12 @@ namespace Ajedrez.Managers
         {
             PersistenceSystem.Instance.game = game;
             PersistenceSystem.Instance.whiteOnBottom = whiteOnBottom;
-            SceneManager.LoadScene("Partida");
+            SceneManager.LoadScene("Game");
         }
 
         public void ReturnToMainMenu()
         {
-            SceneManager.LoadScene("MenuPrincipal");
+            SceneManager.LoadScene("MainMenu");
         }
     }
 }
