@@ -15,18 +15,18 @@ namespace Ajedrez.Testing
             public string FEN;
         }
 
-        public static void RunSuite(string suiteText, CancellationToken token, Action<string> escribir)
+        public static void RunSuite(string suiteText, CancellationToken token, Action<string> write)
         {
             string suiteName = ParseSuiteName(suiteText);
             List<PerftTestCase> testCases = ParseSuite(suiteText);
 
             if (testCases.Count == 0)
             {
-                escribir("No se encontraron tests en la suite.\n");
+                write("No tests found in the suite.\n");
                 return;
             }
 
-            escribir($"══ {suiteName} ══\n\n");
+            write($"══ {suiteName} ══\n\n");
 
             int passed = 0;
             int total = testCases.Count;
@@ -35,46 +35,46 @@ namespace Ajedrez.Testing
             {
                 if (token.IsCancellationRequested)
                 {
-                    escribir("<color=#B3472B>Ejecución cancelada</color>\n");
+                    write("<color=#B3472B>Execution cancelled</color>\n");
                     return;
                 }
 
                 PerftTestCase test = testCases[i];
-                Tablero tablero = new Tablero(test.FEN);
+                Board board = new Board(test.FEN);
 
-                Stopwatch cronometro = new Stopwatch();
-                cronometro.Start();
-                int resultado = Perft.Run(test.Depth, tablero, token);
-                cronometro.Stop();
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+                int result = Perft.Run(test.Depth, board, token);
+                stopwatch.Stop();
 
                 if (token.IsCancellationRequested)
                 {
-                    escribir("<color=#B3472B>Ejecución cancelada</color>\n");
+                    write("<color=#B3472B>Execution cancelled</color>\n");
                     return;
                 }
 
-                bool pass = resultado == test.ExpectedNodes;
+                bool pass = result == test.ExpectedNodes;
                 if (pass) passed++;
 
-                string fenCorto = test.FEN.Length > 36 ? test.FEN.Substring(0, 36) + "..." : test.FEN;
-                string estado = pass
+                string shortFen = test.FEN.Length > 36 ? test.FEN.Substring(0, 36) + "..." : test.FEN;
+                string status = pass
                     ? "<color=#79AD51>PASS</color>"
                     : "<color=#B3472B>FAIL</color>";
-                string detalle = pass
+                string detail = pass
                     ? ""
-                    : $"  <color=#B3472B>(obtenido: {resultado:N0})</color>";
+                    : $"  <color=#B3472B>(obtained: {result:N0})</color>";
 
-                escribir(
-                    $"<color=#808080>[{i + 1}/{total}]</color> {fenCorto}  " +
+                write(
+                    $"<color=#808080>[{i + 1}/{total}]</color> {shortFen}  " +
                     $"<color=#808080>depth:</color><color=#79AD51>{test.Depth}</color>  " +
-                    $"<color=#808080>esperado:</color><color=#6BCDAE>{test.ExpectedNodes:N0}</color>  " +
-                    $"{estado}{detalle}  " +
-                    $"<color=#808080>{cronometro.ElapsedMilliseconds:N0}ms</color>\n"
+                    $"<color=#808080>expected:</color><color=#6BCDAE>{test.ExpectedNodes:N0}</color>  " +
+                    $"{status}{detail}  " +
+                    $"<color=#808080>{stopwatch.ElapsedMilliseconds:N0}ms</color>\n"
                 );
             }
 
-            string colorResumen = passed == total ? "#79AD51" : "#B3472B";
-            escribir($"\n<color={colorResumen}>══ Resultado: {passed}/{total} tests pasados ══</color>\n");
+            string summaryColor = passed == total ? "#79AD51" : "#B3472B";
+            write($"\n<color={summaryColor}>══ Result: {passed}/{total} tests passed ══</color>\n");
         }
 
         private static string ParseSuiteName(string suiteText)

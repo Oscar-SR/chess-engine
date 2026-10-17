@@ -6,25 +6,25 @@ namespace Ajedrez.Testing
 {
     public static class Perft
     {
-        public static int Run(int profundidad, Tablero tablero, CancellationToken cancellationToken)
+        public static int Run(int depth, Board board, CancellationToken cancellationToken)
         {
-            if (profundidad == 0)
+            if (depth == 0)
                 return 1;
 
-            (List<Move> movimientos, _) = tablero.GenerarMovimientosLegales();
-            int numPosiciones = 0;
+            (List<Move> moves, _) = board.GenerateLegalMoves();
+            int positionCount = 0;
 
-            foreach (Move movimiento in movimientos)
+            foreach (Move move in moves)
             {                
-                tablero.HacerMovimiento(movimiento);
-                numPosiciones += Run(profundidad - 1, tablero, cancellationToken);
-                tablero.DeshacerMovimiento(movimiento);
+                board.MakeMove(move);
+                positionCount += Run(depth - 1, board, cancellationToken);
+                board.UndoMove(move);
 
                 if (cancellationToken.IsCancellationRequested)
                     break;
             }
 
-            return numPosiciones;
+            return positionCount;
         }
     }
 }
