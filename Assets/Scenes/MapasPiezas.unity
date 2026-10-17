@@ -12095,7 +12095,7 @@ GameObject:
   - component: {fileID: 1281570182}
   - component: {fileID: 1281570183}
   m_Layer: 0
-  m_Name: MapasPiezasManager
+  m_Name: PieceMapsManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

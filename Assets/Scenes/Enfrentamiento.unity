@@ -1173,9 +1173,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1908840992}
-        m_TargetAssemblyTypeName: Ajedrez.Debugging.Enfrentamiento.EnfrentamientoUI,
+        m_TargetAssemblyTypeName: Ajedrez.Debugging.Enfrentamiento.MultiplayerUI,
           Assembly-CSharp
-        m_MethodName: PulsarBotonEmpezar
+        m_MethodName: StartButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1803,7 +1803,7 @@ GameObject:
   - component: {fileID: 1237692900}
   - component: {fileID: 1237692899}
   m_Layer: 0
-  m_Name: TableroUI
+  m_Name: BoardUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2470,9 +2470,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1908840992}
-        m_TargetAssemblyTypeName: Ajedrez.Debugging.Enfrentamiento.EnfrentamientoUI,
+        m_TargetAssemblyTypeName: Ajedrez.Debugging.Enfrentamiento.MultiplayerUI,
           Assembly-CSharp
-        m_MethodName: ValidarMaxTiempoPensar
+        m_MethodName: ValidateMaxThinkingTime
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2658,9 +2658,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1908840992}
-        m_TargetAssemblyTypeName: Ajedrez.Debugging.Enfrentamiento.EnfrentamientoUI,
+        m_TargetAssemblyTypeName: Ajedrez.Debugging.Enfrentamiento.MultiplayerUI,
           Assembly-CSharp
-        m_MethodName: ValidarMaxMovimientosPartida
+        m_MethodName: ValidateMaxMovesPerGame
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

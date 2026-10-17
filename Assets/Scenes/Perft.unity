@@ -803,15 +803,15 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 33293740}
-        m_TargetAssemblyTypeName: Ajedrez.Debugging.PerftManager, Assembly-CSharp
-        m_MethodName: EjecutarTarea
+        m_TargetAssemblyTypeName: Ajedrez.Managers.PerftManager, Assembly-CSharp
+        m_MethodName: ExecuteTask
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: TareaSuite
+          m_StringArgument: SuiteTask
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &368868398
@@ -1673,15 +1673,15 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 33293740}
-        m_TargetAssemblyTypeName: Ajedrez.Debugging.PerftManager, Assembly-CSharp
-        m_MethodName: EjecutarTarea
+        m_TargetAssemblyTypeName: Ajedrez.Managers.PerftManager, Assembly-CSharp
+        m_MethodName: ExecuteTask
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: TareaPerft
+          m_StringArgument: PerftTask
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &908495956
@@ -2380,8 +2380,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 33293740}
-        m_TargetAssemblyTypeName: Ajedrez.Debugging.PerftManager, Assembly-CSharp
-        m_MethodName: DetenerEjecucion
+        m_TargetAssemblyTypeName: Ajedrez.Managers.PerftManager, Assembly-CSharp
+        m_MethodName: StopExecution
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3005,15 +3005,15 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 33293740}
-        m_TargetAssemblyTypeName: Ajedrez.Debugging.PerftManager, Assembly-CSharp
-        m_MethodName: EjecutarTarea
+        m_TargetAssemblyTypeName: Ajedrez.Managers.PerftManager, Assembly-CSharp
+        m_MethodName: ExecuteTask
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: TareaDivide
+          m_StringArgument: DivideTask
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1885777046

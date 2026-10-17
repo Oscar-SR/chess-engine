@@ -1825,8 +1825,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 744888011}
-        m_TargetAssemblyTypeName: Ajedrez.UI.ConfiguracionesPreviasUI, Assembly-CSharp
-        m_MethodName: CambiarColores
+        m_TargetAssemblyTypeName: Ajedrez.UI.GameSettingsUI, Assembly-CSharp
+        m_MethodName: SwapColors
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2225,8 +2225,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 744888011}
-        m_TargetAssemblyTypeName: Ajedrez.UI.ConfiguracionesPreviasUI, Assembly-CSharp
-        m_MethodName: BotonVolver
+        m_TargetAssemblyTypeName: Ajedrez.UI.GameSettingsUI, Assembly-CSharp
+        m_MethodName: BackButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3770,7 +3770,7 @@ GameObject:
   - component: {fileID: 615909049}
   - component: {fileID: 615909050}
   m_Layer: 0
-  m_Name: ConfiguracionesPreviasManager
+  m_Name: GameSettingsManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3803,8 +3803,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f31fb5dfa3cc4ad4f9830b7075c04cfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  configuracionesPreviasUI: {fileID: 744888011}
-  tableroUI: {fileID: 1201563269}
+  previousSettingsUI: {fileID: 744888011}
+  boardUI: {fileID: 1201563269}
 --- !u!1 &670921048
 GameObject:
   m_ObjectHideFlags: 0
@@ -4202,7 +4202,7 @@ GameObject:
   - component: {fileID: 744888012}
   - component: {fileID: 744888011}
   m_Layer: 0
-  m_Name: ConfiguracionesPreviasUI
+  m_Name: GameSettingsUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4233,7 +4233,7 @@ MonoBehaviour:
   textoJugador1: {fileID: 670921050}
   textoJugador2: {fileID: 1616816230}
   botonEmpezar: {fileID: 791675157}
-  configuracionesPreviasManager: {fileID: 615909050}
+  gameSettingsManager: {fileID: 615909050}
 --- !u!4 &744888012
 Transform:
   m_ObjectHideFlags: 0
@@ -4409,8 +4409,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 744888011}
-        m_TargetAssemblyTypeName: Ajedrez.UI.ConfiguracionesPreviasUI, Assembly-CSharp
-        m_MethodName: BotonEmpezar
+        m_TargetAssemblyTypeName: Ajedrez.UI.GameSettingsUI, Assembly-CSharp
+        m_MethodName: StartButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7012,7 +7012,7 @@ GameObject:
   - component: {fileID: 1201563270}
   - component: {fileID: 1201563269}
   m_Layer: 0
-  m_Name: TableroUI
+  m_Name: BoardUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -227,8 +227,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1501194365}
-        m_TargetAssemblyTypeName: Ajedrez.UI.MenuPrincipalUI, Assembly-CSharp
-        m_MethodName: BotonOpciones
+        m_TargetAssemblyTypeName: Ajedrez.UI.MainMenuUI, Assembly-CSharp
+        m_MethodName: OptionsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -414,8 +414,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1501194365}
-        m_TargetAssemblyTypeName: Ajedrez.UI.MenuPrincipalUI, Assembly-CSharp
-        m_MethodName: BotonSalir
+        m_TargetAssemblyTypeName: Ajedrez.UI.MainMenuUI, Assembly-CSharp
+        m_MethodName: ExitButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1216,7 +1216,7 @@ GameObject:
   - component: {fileID: 1501194364}
   - component: {fileID: 1501194365}
   m_Layer: 0
-  m_Name: MenuPrincipalUI
+  m_Name: MainMenuUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1394,7 +1394,7 @@ GameObject:
   - component: {fileID: 1770781959}
   - component: {fileID: 1770781958}
   m_Layer: 0
-  m_Name: PersistenciaSystem
+  m_Name: PersistenceSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1646,8 +1646,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1501194365}
-        m_TargetAssemblyTypeName: Ajedrez.UI.MenuPrincipalUI, Assembly-CSharp
-        m_MethodName: BotonJugar
+        m_TargetAssemblyTypeName: Ajedrez.UI.MainMenuUI, Assembly-CSharp
+        m_MethodName: PlayButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -701,7 +701,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66ff66c7c69249241be9daaa742e6395, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jugadorEnfrentamientoManager: {fileID: 1482261341}
+  remotePlayerManager: {fileID: 1482261341}
   colorVerde: {r: 0.14901961, g: 0.85490197, b: 0.43529412, a: 1}
   TMP_nombre: {fileID: 417167668}
   TMP_conectado: {fileID: 866009158}
@@ -1899,9 +1899,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 470094724}
-        m_TargetAssemblyTypeName: Ajedrez.Debugging.Enfrentamiento.JugadorEnfrentamientoUI,
+        m_TargetAssemblyTypeName: Ajedrez.Debugging.Enfrentamiento.RemotePlayerUI,
           Assembly-CSharp
-        m_MethodName: AbrirCommit
+        m_MethodName: OpenCommit
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2527,7 +2527,7 @@ GameObject:
   - component: {fileID: 1482261342}
   - component: {fileID: 1482261341}
   m_Layer: 0
-  m_Name: JugadorEnfrentamientoManager
+  m_Name: RemotePlayerManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2545,9 +2545,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55e0ec08862397349b8f5b03758c36e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jugadorEnfrentamientoUI: {fileID: 470094724}
-  libroAperturas: {fileID: 4900000, guid: 1ce85fc4242363643a65db0a1f1b8343, type: 3}
-  nombreJugador: Version 1
+  remotePlayerUI: {fileID: 470094724}
+  openingBook: {fileID: 4900000, guid: 1ce85fc4242363643a65db0a1f1b8343, type: 3}
+  playerName: Version 1
 --- !u!4 &1482261342
 Transform:
   m_ObjectHideFlags: 0

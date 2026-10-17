@@ -13,7 +13,7 @@ OcclusionCullingSettings:
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 9
+  serializedVersion: 10
   m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
@@ -42,8 +42,8 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
-  m_GIWorkflowMode: 1
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -66,9 +66,6 @@ LightmapSettings:
     m_LightmapParameters: {fileID: 0}
     m_LightmapsBakeMode: 1
     m_TextureCompression: 1
-    m_FinalGather: 0
-    m_FinalGatherFiltering: 1
-    m_FinalGatherRayCount: 256
     m_ReflectionCompression: 2
     m_MixedBakeMode: 2
     m_BakeBackend: 0
@@ -222,15 +219,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -267,7 +266,7 @@ GameObject:
   - component: {fileID: 72350742}
   - component: {fileID: 72350743}
   m_Layer: 0
-  m_Name: PartidaUI
+  m_Name: GameUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -300,16 +299,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 827f91b3454bba94c8a4694a50d8fe03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textoSituacionTablero: {fileID: 1432753757}
-  textoTipoResultado: {fileID: 1316589703}
-  lineaDivisoria: {fileID: 1463491949}
-  textoTiempoJugadorAbajo: {fileID: 270898133}
-  textoTiempoJugadorArriba: {fileID: 48298559}
-  textoNombreJugadorAbajo: {fileID: 2115484747}
-  textoNombreJugadorArriba: {fileID: 1316908435}
-  panelResultado: {fileID: 547489959}
-  colorTextoTiempo: {r: 1, g: 1, b: 1, a: 1}
-  colorTextoTiempoEscaso: {r: 1, g: 0, b: 0, a: 1}
+  boardStatusText: {fileID: 1432753757}
+  resultTypeText: {fileID: 1316589703}
+  dividerLine: {fileID: 1463491949}
+  bottomPlayerTimeText: {fileID: 270898133}
+  topPlayerTimeText: {fileID: 48298559}
+  bottomPlayerNameText: {fileID: 2115484747}
+  topPlayerNameText: {fileID: 1316908435}
+  resultPanel: {fileID: 547489959}
+  timeTextColor: {r: 1, g: 1, b: 1, a: 1}
+  lowTimeTextColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1 &103260233
 GameObject:
   m_ObjectHideFlags: 0
@@ -430,7 +429,7 @@ GameObject:
   - component: {fileID: 163805054}
   - component: {fileID: 163805055}
   m_Layer: 0
-  m_Name: TableroUI
+  m_Name: BoardUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -463,11 +462,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0664a1469eec76d4bb0957cd6a6491fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tableroTransform: {fileID: 175533307}
-  casillaPrefab: {fileID: 1005922701090754317, guid: 653485930bf99654e80549bc32b44538, type: 3}
-  coloresTablero: {fileID: 11400000, guid: 7218d9984d7cfb94f9eb04891fa96b5f, type: 2}
-  piezasSet: {fileID: 11400000, guid: 72d34913b316a3241802af30a76ae146, type: 2}
-  textoCoordenadaPrefab: {fileID: 7059299848291692136, guid: 9aacd2919e9e8d344ae43310c5ca594a, type: 3}
+  boardTransform: {fileID: 175533307}
+  squarePrefab: {fileID: 1005922701090754317, guid: 653485930bf99654e80549bc32b44538, type: 3}
+  boardColors: {fileID: 11400000, guid: 7218d9984d7cfb94f9eb04891fa96b5f, type: 2}
+  pieceSet: {fileID: 11400000, guid: 72d34913b316a3241802af30a76ae146, type: 2}
+  coordinateTextPrefab: {fileID: 7059299848291692136, guid: 9aacd2919e9e8d344ae43310c5ca594a, type: 3}
 --- !u!1 &175533306
 GameObject:
   m_ObjectHideFlags: 0
@@ -583,8 +582,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1440524396}
-        m_TargetAssemblyTypeName: Ajedrez.UI.PromocionUI, Assembly-CSharp
-        m_MethodName: SeleccionarReina
+        m_TargetAssemblyTypeName: Ajedrez.UI.PromotionUI, Assembly-CSharp
+        m_MethodName: SelectQueen
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -732,15 +731,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -1000,8 +1001,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1440524396}
-        m_TargetAssemblyTypeName: Ajedrez.UI.PromocionUI, Assembly-CSharp
-        m_MethodName: SeleccionarAlfil
+        m_TargetAssemblyTypeName: Ajedrez.UI.PromotionUI, Assembly-CSharp
+        m_MethodName: SelectBishop
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1133,8 +1134,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1440524396}
-        m_TargetAssemblyTypeName: Ajedrez.UI.PromocionUI, Assembly-CSharp
-        m_MethodName: SeleccionarReina
+        m_TargetAssemblyTypeName: Ajedrez.UI.PromotionUI, Assembly-CSharp
+        m_MethodName: SelectQueen
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1369,15 +1370,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -1530,15 +1533,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -1732,8 +1737,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1440524396}
-        m_TargetAssemblyTypeName: Ajedrez.UI.PromocionUI, Assembly-CSharp
-        m_MethodName: SeleccionarTorre
+        m_TargetAssemblyTypeName: Ajedrez.UI.PromotionUI, Assembly-CSharp
+        m_MethodName: SelectRook
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2018,8 +2023,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1440524396}
-        m_TargetAssemblyTypeName: Ajedrez.UI.PromocionUI, Assembly-CSharp
-        m_MethodName: SeleccionarCaballo
+        m_TargetAssemblyTypeName: Ajedrez.UI.PromotionUI, Assembly-CSharp
+        m_MethodName: SelectKnight
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2078,7 +2083,7 @@ GameObject:
   - component: {fileID: 852247658}
   - component: {fileID: 852247659}
   m_Layer: 0
-  m_Name: BusquedaDebugger
+  m_Name: SearchDebugger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2111,7 +2116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d77eec6209fdb634a99db32876cbfeac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textoDebugBusqueda: {fileID: 1267422746}
+  searchDebugText: {fileID: 1267422746}
 --- !u!1 &864290203
 GameObject:
   m_ObjectHideFlags: 0
@@ -2196,8 +2201,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1440524396}
-        m_TargetAssemblyTypeName: Ajedrez.UI.PromocionUI, Assembly-CSharp
-        m_MethodName: SeleccionarCaballo
+        m_TargetAssemblyTypeName: Ajedrez.UI.PromotionUI, Assembly-CSharp
+        m_MethodName: SelectKnight
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2364,8 +2369,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1440524396}
-        m_TargetAssemblyTypeName: Ajedrez.UI.PromocionUI, Assembly-CSharp
-        m_MethodName: SeleccionarTorre
+        m_TargetAssemblyTypeName: Ajedrez.UI.PromotionUI, Assembly-CSharp
+        m_MethodName: SelectRook
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2457,7 +2462,7 @@ GameObject:
   - component: {fileID: 960440512}
   - component: {fileID: 960440513}
   m_Layer: 0
-  m_Name: EstadoDebugger
+  m_Name: StateDebugger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2490,7 +2495,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 267101d28ec973e46b089b9478b93a4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textoDebugEstadoTablero: {fileID: 461470035}
+  boardStateDebugText: {fileID: 461470035}
 --- !u!1 &1094974106
 GameObject:
   m_ObjectHideFlags: 0
@@ -2575,7 +2580,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 72350743}
-        m_TargetAssemblyTypeName: Ajedrez.UI.PartidaUI, Assembly-CSharp
+        m_TargetAssemblyTypeName: Ajedrez.UI.GameUI, Assembly-CSharp
         m_MethodName: BotonSalir
         m_Mode: 1
         m_Arguments:
@@ -2803,15 +2808,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -3030,7 +3037,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 15, y: -15}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 250, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1316908435
 MonoBehaviour:
@@ -3095,15 +3102,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 3
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -3207,6 +3216,7 @@ MonoBehaviour:
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
+  m_ScrollDeltaPerTick: 6
 --- !u!1 &1357375353
 GameObject:
   m_ObjectHideFlags: 0
@@ -3447,7 +3457,7 @@ GameObject:
   - component: {fileID: 1440524395}
   - component: {fileID: 1440524396}
   m_Layer: 0
-  m_Name: PromocionUI
+  m_Name: PromotionUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3480,8 +3490,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2522910c8592cc145bce1e439015faf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panelPromocionBlancas: {fileID: 402169339}
-  panelPromocionNegras: {fileID: 2134159335}
+  whitePromotionPanel: {fileID: 402169339}
+  blackPromotionPanel: {fileID: 2134159335}
 --- !u!1 &1463491947
 GameObject:
   m_ObjectHideFlags: 0
@@ -3661,9 +3671,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9c0997b22a791d45b75827e912e4065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tableroTransform: {fileID: 175533307}
-  spriteMarcaDebug: {fileID: 7482667652216324306, guid: bb15ad55a57a5db45b73fd326445427f, type: 3}
-  textoModoDebug: {fileID: 508424114}
+  boardTransform: {fileID: 175533307}
+  debugMarkSprite: {fileID: 7482667652216324306, guid: bb15ad55a57a5db45b73fd326445427f, type: 3}
+  debugModeText: {fileID: 508424114}
 --- !u!4 &1593883677
 Transform:
   m_ObjectHideFlags: 0
@@ -3763,8 +3773,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1440524396}
-        m_TargetAssemblyTypeName: Ajedrez.UI.PromocionUI, Assembly-CSharp
-        m_MethodName: SeleccionarAlfil
+        m_TargetAssemblyTypeName: Ajedrez.UI.PromotionUI, Assembly-CSharp
+        m_MethodName: SelectBishop
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3841,9 +3851,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cb88564253c6154cbcef1104d47f284, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  partidaManager: {fileID: 2145555751}
-  promocionUI: {fileID: 1440524396}
-  tableroUI: {fileID: 0}
+  gameManager: {fileID: 2145555751}
+  promotionUI: {fileID: 1440524396}
+  boardUI: {fileID: 163805055}
 --- !u!4 &1843694729
 Transform:
   m_ObjectHideFlags: 0
@@ -4082,7 +4092,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: -15, y: 15}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 250, y: 50}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &2115484747
 MonoBehaviour:
@@ -4147,15 +4157,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 3
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -4298,7 +4310,7 @@ GameObject:
   - component: {fileID: 2145555752}
   - component: {fileID: 2145555751}
   m_Layer: 0
-  m_Name: PartidaManager
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4316,9 +4328,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59011914841744b48a4d400e6f9d035d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  partidaUI: {fileID: 72350743}
-  tableroUI: {fileID: 163805055}
-  promocionUI: {fileID: 1440524396}
+  gameUI: {fileID: 72350743}
+  boardUI: {fileID: 163805055}
+  promotionUI: {fileID: 1440524396}
 --- !u!4 &2145555752
 Transform:
   m_ObjectHideFlags: 0
