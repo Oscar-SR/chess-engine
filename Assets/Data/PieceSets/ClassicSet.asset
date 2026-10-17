@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 91677b60bf6d76c4082dff4cb0fddf04, type: 3}
-  m_Name: SetClasico
+  m_Name: ClassicSet
   m_EditorClassIdentifier: 
   reyBlanco: {fileID: 1866176533, guid: 840e6bb9bdac36b47950b42ab5fefd33, type: 3}
   reinaBlanca: {fileID: -1845421088, guid: 840e6bb9bdac36b47950b42ab5fefd33, type: 3}
