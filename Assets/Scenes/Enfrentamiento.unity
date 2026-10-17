@@ -245,7 +245,7 @@ GameObject:
   - component: {fileID: 139199226}
   - component: {fileID: 139199225}
   m_Layer: 0
-  m_Name: EnfrentamientoManager
+  m_Name: MultiplayerManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -432,7 +432,7 @@ GameObject:
   - component: {fileID: 187429247}
   - component: {fileID: 187429246}
   m_Layer: 5
-  m_Name: TextoDebug
+  m_Name: DebugText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -578,7 +578,7 @@ GameObject:
   m_Component:
   - component: {fileID: 362651593}
   m_Layer: 0
-  m_Name: Tablero
+  m_Name: Board
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1102,7 +1102,7 @@ GameObject:
   - component: {fileID: 842080143}
   - component: {fileID: 842080142}
   m_Layer: 5
-  m_Name: BotonEmpezar
+  m_Name: StartButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1327,7 +1327,7 @@ GameObject:
   - component: {fileID: 873878006}
   - component: {fileID: 873878005}
   m_Layer: 5
-  m_Name: TextoMaxMovimientosPartida
+  m_Name: MaxMovesText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1595,7 +1595,7 @@ GameObject:
   - component: {fileID: 1126263832}
   - component: {fileID: 1126263831}
   m_Layer: 5
-  m_Name: TextoJugadores
+  m_Name: PlayersText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1979,7 +1979,7 @@ GameObject:
   - component: {fileID: 1513648436}
   - component: {fileID: 1513648435}
   m_Layer: 5
-  m_Name: TextoJugadorNegras
+  m_Name: BlackPlayerText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2191,7 +2191,7 @@ GameObject:
   - component: {fileID: 1629345208}
   - component: {fileID: 1629345207}
   m_Layer: 5
-  m_Name: ScrollViewDebug
+  m_Name: DebugScrollView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2381,7 +2381,7 @@ GameObject:
   - component: {fileID: 1723924462}
   - component: {fileID: 1723924461}
   m_Layer: 5
-  m_Name: MaxTiempoPensar
+  m_Name: MaxThinkingTimeInput
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2569,7 +2569,7 @@ GameObject:
   - component: {fileID: 1728387562}
   - component: {fileID: 1728387561}
   m_Layer: 5
-  m_Name: MaxMovimientosPartida
+  m_Name: MaxMovesPerGameInput
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2756,7 +2756,7 @@ GameObject:
   - component: {fileID: 1805114461}
   - component: {fileID: 1805114460}
   m_Layer: 5
-  m_Name: TextoJugadorBlancas
+  m_Name: WhitePlayerText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3045,7 +3045,7 @@ GameObject:
   - component: {fileID: 1843584226}
   - component: {fileID: 1843584225}
   m_Layer: 5
-  m_Name: TextoEstadisticas
+  m_Name: StatisticsText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3334,7 +3334,7 @@ GameObject:
   - component: {fileID: 1885893021}
   - component: {fileID: 1885893020}
   m_Layer: 5
-  m_Name: TextoMaxTiempoPensar
+  m_Name: MaxThinkingTimeText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3503,7 +3503,7 @@ GameObject:
   - component: {fileID: 1908840993}
   - component: {fileID: 1908840992}
   m_Layer: 0
-  m_Name: EnfrentamientoUI
+  m_Name: MultiplayerUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3557,7 +3557,7 @@ GameObject:
   - component: {fileID: 1967918678}
   - component: {fileID: 1967918677}
   m_Layer: 5
-  m_Name: TextoEnfrentamiento
+  m_Name: MatchText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

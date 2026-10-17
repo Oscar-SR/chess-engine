@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5276761135338074986}
   - component: {fileID: 5370937983127600214}
   m_Layer: 0
-  m_Name: TextoCoordenada
+  m_Name: CoordinateText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

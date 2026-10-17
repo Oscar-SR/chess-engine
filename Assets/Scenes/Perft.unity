@@ -732,7 +732,7 @@ GameObject:
   - component: {fileID: 368868398}
   - component: {fileID: 368868397}
   m_Layer: 5
-  m_Name: BotonSuite
+  m_Name: SuiteButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1315,7 +1315,7 @@ GameObject:
   - component: {fileID: 638459655}
   - component: {fileID: 638459657}
   m_Layer: 5
-  m_Name: TextoPerft
+  m_Name: PerftText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1602,7 +1602,7 @@ GameObject:
   - component: {fileID: 908495956}
   - component: {fileID: 908495955}
   m_Layer: 5
-  m_Name: BotonPerft
+  m_Name: PerftButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2309,7 +2309,7 @@ GameObject:
   - component: {fileID: 1460909840}
   - component: {fileID: 1460909839}
   m_Layer: 5
-  m_Name: BotonDetenerEjecucion
+  m_Name: StopExecutionButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2620,7 +2620,7 @@ GameObject:
   - component: {fileID: 1544593273}
   - component: {fileID: 1544593272}
   m_Layer: 5
-  m_Name: EntradaFEN
+  m_Name: FENInput
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2934,7 +2934,7 @@ GameObject:
   - component: {fileID: 1885777046}
   - component: {fileID: 1885777045}
   m_Layer: 5
-  m_Name: BotonDivide
+  m_Name: DivideButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3278,7 +3278,7 @@ GameObject:
   - component: {fileID: 2004954170}
   - component: {fileID: 2004954169}
   m_Layer: 5
-  m_Name: EntradaLimiteProfundidad
+  m_Name: DepthLimitInput
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

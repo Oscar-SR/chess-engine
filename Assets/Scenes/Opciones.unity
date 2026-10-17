@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 111130095}
   - component: {fileID: 111130096}
   m_Layer: 5
-  m_Name: SliderVolumenGeneral
+  m_Name: GeneralVolumeSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -237,7 +237,7 @@ GameObject:
   - component: {fileID: 175854429}
   - component: {fileID: 175854428}
   m_Layer: 5
-  m_Name: BotonVolver
+  m_Name: BackButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -445,7 +445,7 @@ GameObject:
   - component: {fileID: 315318236}
   - component: {fileID: 315318235}
   m_Layer: 5
-  m_Name: TextoMusica
+  m_Name: MusicText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -578,7 +578,7 @@ GameObject:
   - component: {fileID: 409369487}
   - component: {fileID: 409369488}
   m_Layer: 5
-  m_Name: SliderVolumenEfectos
+  m_Name: EffectsVolumeSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -759,7 +759,7 @@ GameObject:
   - component: {fileID: 800997698}
   - component: {fileID: 800997697}
   m_Layer: 5
-  m_Name: TextoSonido
+  m_Name: SoundText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1210,7 +1210,7 @@ GameObject:
   - component: {fileID: 1037064381}
   - component: {fileID: 1037064380}
   m_Layer: 5
-  m_Name: TextoGeneral
+  m_Name: GeneralText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1604,7 +1604,7 @@ GameObject:
   - component: {fileID: 1495484247}
   - component: {fileID: 1495484248}
   m_Layer: 5
-  m_Name: SliderVolumenMusica
+  m_Name: MusicVolumeSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1754,7 +1754,7 @@ GameObject:
   - component: {fileID: 1576727167}
   - component: {fileID: 1576727166}
   m_Layer: 5
-  m_Name: Flecha
+  m_Name: Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1940,7 +1940,7 @@ GameObject:
   - component: {fileID: 1923767324}
   - component: {fileID: 1923767323}
   m_Layer: 5
-  m_Name: TextoEfectos
+  m_Name: EffectsText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 224192026}
   - component: {fileID: 224192025}
   m_Layer: 5
-  m_Name: BotonOpciones
+  m_Name: OptionsButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -343,7 +343,7 @@ GameObject:
   - component: {fileID: 572126026}
   - component: {fileID: 572126029}
   m_Layer: 5
-  m_Name: BotonSalir
+  m_Name: ExitButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -769,7 +769,7 @@ GameObject:
   - component: {fileID: 1170953357}
   - component: {fileID: 1170953356}
   m_Layer: 5
-  m_Name: Fondo
+  m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -845,7 +845,7 @@ GameObject:
   - component: {fileID: 1201265803}
   - component: {fileID: 1201265805}
   m_Layer: 5
-  m_Name: PanelOpciones
+  m_Name: OptionsPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1439,7 +1439,7 @@ GameObject:
   - component: {fileID: 1791351813}
   - component: {fileID: 1791351812}
   m_Layer: 5
-  m_Name: Titulo
+  m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1575,7 +1575,7 @@ GameObject:
   - component: {fileID: 1963306862}
   - component: {fileID: 1963306865}
   m_Layer: 5
-  m_Name: BotonJugar
+  m_Name: PlayButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

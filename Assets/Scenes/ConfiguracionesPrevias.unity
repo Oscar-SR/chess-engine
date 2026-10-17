@@ -586,7 +586,7 @@ GameObject:
   - component: {fileID: 67307534}
   - component: {fileID: 67307533}
   m_Layer: 5
-  m_Name: PosicionFEN
+  m_Name: FENPositionInput
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1754,7 +1754,7 @@ GameObject:
   - component: {fileID: 190969776}
   - component: {fileID: 190969775}
   m_Layer: 5
-  m_Name: BotonCambiarColor
+  m_Name: ChangeColorButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2153,7 +2153,7 @@ GameObject:
   - component: {fileID: 269683179}
   - component: {fileID: 269683178}
   m_Layer: 5
-  m_Name: BotonVolver
+  m_Name: BackButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3053,7 +3053,7 @@ GameObject:
   - component: {fileID: 421328950}
   - component: {fileID: 421328949}
   m_Layer: 5
-  m_Name: TextoMinutos
+  m_Name: MinutesText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3458,7 +3458,7 @@ GameObject:
   - component: {fileID: 569567877}
   - component: {fileID: 569567876}
   m_Layer: 5
-  m_Name: SelectorDificultad1
+  m_Name: Difficulty1Dropdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3597,7 +3597,7 @@ GameObject:
   - component: {fileID: 606296691}
   - component: {fileID: 606296690}
   m_Layer: 5
-  m_Name: NombreJugador1
+  m_Name: Player1NameInput
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3817,7 +3817,7 @@ GameObject:
   - component: {fileID: 670921051}
   - component: {fileID: 670921050}
   m_Layer: 5
-  m_Name: TextoJugador1
+  m_Name: Player1Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4337,7 +4337,7 @@ GameObject:
   - component: {fileID: 791675158}
   - component: {fileID: 791675157}
   m_Layer: 5
-  m_Name: BotonEmpezar
+  m_Name: StartButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4918,7 +4918,7 @@ GameObject:
   m_Component:
   - component: {fileID: 889593422}
   m_Layer: 0
-  m_Name: Tablero
+  m_Name: Board
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4952,7 +4952,7 @@ GameObject:
   - component: {fileID: 893361535}
   - component: {fileID: 893361534}
   m_Layer: 5
-  m_Name: SelectorJugador2
+  m_Name: Player2Dropdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5323,7 +5323,7 @@ GameObject:
   - component: {fileID: 995984161}
   - component: {fileID: 995984160}
   m_Layer: 5
-  m_Name: ImagenCambiarColor
+  m_Name: ChangeColorImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5677,7 +5677,7 @@ GameObject:
   - component: {fileID: 1066359193}
   - component: {fileID: 1066359192}
   m_Layer: 5
-  m_Name: SelectorJugador1
+  m_Name: Player1Dropdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7484,7 +7484,7 @@ GameObject:
   - component: {fileID: 1345280814}
   - component: {fileID: 1345280813}
   m_Layer: 5
-  m_Name: Flecha
+  m_Name: Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8197,7 +8197,7 @@ GameObject:
   - component: {fileID: 1434976567}
   - component: {fileID: 1434976566}
   m_Layer: 5
-  m_Name: NombreJugador2
+  m_Name: Player2NameInput
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8558,7 +8558,7 @@ GameObject:
   - component: {fileID: 1492889652}
   - component: {fileID: 1492889651}
   m_Layer: 5
-  m_Name: SelectorTiempo
+  m_Name: TimeDropdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8859,7 +8859,7 @@ GameObject:
   - component: {fileID: 1538220024}
   - component: {fileID: 1538220023}
   m_Layer: 5
-  m_Name: SelectorIncremento
+  m_Name: IncrementDropdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8997,7 +8997,7 @@ GameObject:
   - component: {fileID: 1545109606}
   - component: {fileID: 1545109605}
   m_Layer: 5
-  m_Name: TextoError
+  m_Name: ErrorText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9206,7 +9206,7 @@ GameObject:
   - component: {fileID: 1616816231}
   - component: {fileID: 1616816230}
   m_Layer: 5
-  m_Name: TextoJugador2
+  m_Name: Player2Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10353,7 +10353,7 @@ GameObject:
   - component: {fileID: 1938380252}
   - component: {fileID: 1938380251}
   m_Layer: 5
-  m_Name: Flecha
+  m_Name: Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10428,7 +10428,7 @@ GameObject:
   - component: {fileID: 1964879510}
   - component: {fileID: 1964879509}
   m_Layer: 5
-  m_Name: TextoSegundos
+  m_Name: SecondsText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10563,7 +10563,7 @@ GameObject:
   - component: {fileID: 1978508828}
   - component: {fileID: 1978508827}
   m_Layer: 5
-  m_Name: SelectorDificultad2
+  m_Name: Difficulty2Dropdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

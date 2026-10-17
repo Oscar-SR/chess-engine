@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 48298560}
   - component: {fileID: 48298559}
   m_Layer: 5
-  m_Name: TextoTiempoJugadorArriba
+  m_Name: TopPlayerTimeText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -355,7 +355,7 @@ GameObject:
   - component: {fileID: 140106064}
   - component: {fileID: 140106063}
   m_Layer: 5
-  m_Name: ReinaBlanca
+  m_Name: WhiteQueen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -477,7 +477,7 @@ GameObject:
   m_Component:
   - component: {fileID: 175533307}
   m_Layer: 0
-  m_Name: Tablero
+  m_Name: Board
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -511,7 +511,7 @@ GameObject:
   - component: {fileID: 218812345}
   - component: {fileID: 218812344}
   m_Layer: 5
-  m_Name: BotonReinaBlanca
+  m_Name: WhiteQueenButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -643,7 +643,7 @@ GameObject:
   - component: {fileID: 270898134}
   - component: {fileID: 270898133}
   m_Layer: 5
-  m_Name: TextoTiempoJugadorAbajo
+  m_Name: BottomPlayerTimeText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -779,7 +779,7 @@ GameObject:
   - component: {fileID: 284945682}
   - component: {fileID: 284945681}
   m_Layer: 5
-  m_Name: CaballoNegra
+  m_Name: BlackKnight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -854,7 +854,7 @@ GameObject:
   - component: {fileID: 323426643}
   - component: {fileID: 323426642}
   m_Layer: 5
-  m_Name: TorreBlanca
+  m_Name: WhiteRook
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -930,7 +930,7 @@ GameObject:
   - component: {fileID: 350892209}
   - component: {fileID: 350892208}
   m_Layer: 5
-  m_Name: BotonAlfilNegro
+  m_Name: BlackBishopButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1063,7 +1063,7 @@ GameObject:
   - component: {fileID: 357421710}
   - component: {fileID: 357421709}
   m_Layer: 5
-  m_Name: BotonReinaNegra
+  m_Name: BlackQueenButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1196,7 +1196,7 @@ GameObject:
   - component: {fileID: 402169341}
   - component: {fileID: 402169343}
   m_Layer: 5
-  m_Name: PanelPromocionBlancas
+  m_Name: WhitePromotionPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1301,7 +1301,7 @@ GameObject:
   - component: {fileID: 461470036}
   - component: {fileID: 461470035}
   m_Layer: 5
-  m_Name: TextoDebugEstadoPartida
+  m_Name: BoardStateDebugText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1437,7 +1437,7 @@ GameObject:
   - component: {fileID: 508424113}
   - component: {fileID: 508424114}
   m_Layer: 5
-  m_Name: TextoDebugBitboard
+  m_Name: BitboardDebugText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1666,7 +1666,7 @@ GameObject:
   - component: {fileID: 524170483}
   - component: {fileID: 524170482}
   m_Layer: 5
-  m_Name: BotonTorreBlanca
+  m_Name: WhiteRookButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1798,7 +1798,7 @@ GameObject:
   - component: {fileID: 547489962}
   - component: {fileID: 547489961}
   m_Layer: 5
-  m_Name: PanelFinalPartida
+  m_Name: GameOverPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1876,7 +1876,7 @@ GameObject:
   - component: {fileID: 610611218}
   - component: {fileID: 610611217}
   m_Layer: 5
-  m_Name: AlfilBlanco
+  m_Name: WhiteBishop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1952,7 +1952,7 @@ GameObject:
   - component: {fileID: 669584503}
   - component: {fileID: 669584502}
   m_Layer: 5
-  m_Name: BotonCaballoNegro
+  m_Name: BlackKnightButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2130,7 +2130,7 @@ GameObject:
   - component: {fileID: 864290206}
   - component: {fileID: 864290205}
   m_Layer: 5
-  m_Name: BotonCaballoBlanco
+  m_Name: WhiteKnightButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2298,7 +2298,7 @@ GameObject:
   - component: {fileID: 877861146}
   - component: {fileID: 877861145}
   m_Layer: 5
-  m_Name: BotonTorreNegra
+  m_Name: BlackRookButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2509,7 +2509,7 @@ GameObject:
   - component: {fileID: 1094974109}
   - component: {fileID: 1094974108}
   m_Layer: 5
-  m_Name: BotonSalir
+  m_Name: ExitButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2641,7 +2641,7 @@ GameObject:
   - component: {fileID: 1125945021}
   - component: {fileID: 1125945020}
   m_Layer: 5
-  m_Name: TextoResultado
+  m_Name: ResultText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2720,7 +2720,7 @@ GameObject:
   - component: {fileID: 1267422747}
   - component: {fileID: 1267422746}
   m_Layer: 5
-  m_Name: TextoDebugBusqueda
+  m_Name: SearchDebugText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2856,7 +2856,7 @@ GameObject:
   - component: {fileID: 1310585653}
   - component: {fileID: 1310585652}
   m_Layer: 5
-  m_Name: TextoBotonSalir
+  m_Name: ExitButtonText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2935,7 +2935,7 @@ GameObject:
   - component: {fileID: 1316589704}
   - component: {fileID: 1316589703}
   m_Layer: 5
-  m_Name: TextoTipoResultado
+  m_Name: ResultTypeText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3014,7 +3014,7 @@ GameObject:
   - component: {fileID: 1316908436}
   - component: {fileID: 1316908435}
   m_Layer: 5
-  m_Name: TextoNombreJugadorArriba
+  m_Name: TopPlayerNameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3229,7 +3229,7 @@ GameObject:
   - component: {fileID: 1357375356}
   - component: {fileID: 1357375355}
   m_Layer: 5
-  m_Name: ReinaNegra
+  m_Name: BlackQueen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3304,7 +3304,7 @@ GameObject:
   - component: {fileID: 1398373598}
   - component: {fileID: 1398373597}
   m_Layer: 5
-  m_Name: CaballoBlanco
+  m_Name: WhiteKnight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3379,7 +3379,7 @@ GameObject:
   - component: {fileID: 1432753758}
   - component: {fileID: 1432753757}
   m_Layer: 5
-  m_Name: TextoSituacionTablero
+  m_Name: BoardStatusText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3504,7 +3504,7 @@ GameObject:
   - component: {fileID: 1463491950}
   - component: {fileID: 1463491949}
   m_Layer: 5
-  m_Name: LineaDivisoria
+  m_Name: DividerLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3579,7 +3579,7 @@ GameObject:
   - component: {fileID: 1530274988}
   - component: {fileID: 1530274987}
   m_Layer: 5
-  m_Name: TorreNegra
+  m_Name: BlackRook
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3702,7 +3702,7 @@ GameObject:
   - component: {fileID: 1645727292}
   - component: {fileID: 1645727291}
   m_Layer: 5
-  m_Name: BotonAlfilBlanco
+  m_Name: WhiteBishopButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3881,7 +3881,7 @@ GameObject:
   - component: {fileID: 1913833551}
   - component: {fileID: 1913833550}
   m_Layer: 5
-  m_Name: AlfilNegra
+  m_Name: BlackBishop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4069,7 +4069,7 @@ GameObject:
   - component: {fileID: 2115484748}
   - component: {fileID: 2115484747}
   m_Layer: 5
-  m_Name: TextoNombreJugadorAbajo
+  m_Name: BottomPlayerNameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4206,7 +4206,7 @@ GameObject:
   - component: {fileID: 2134159338}
   - component: {fileID: 2134159337}
   m_Layer: 5
-  m_Name: PanelPromocionNegras
+  m_Name: BlackPromotionPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

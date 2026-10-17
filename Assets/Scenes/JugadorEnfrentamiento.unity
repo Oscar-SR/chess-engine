@@ -416,7 +416,7 @@ GameObject:
   - component: {fileID: 362656443}
   - component: {fileID: 362656442}
   m_Layer: 5
-  m_Name: TiempoPensar
+  m_Name: ThinkingTimeText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -550,7 +550,7 @@ GameObject:
   - component: {fileID: 417167669}
   - component: {fileID: 417167668}
   m_Layer: 5
-  m_Name: Nombre
+  m_Name: NameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -683,7 +683,7 @@ GameObject:
   - component: {fileID: 470094725}
   - component: {fileID: 470094724}
   m_Layer: 0
-  m_Name: JugadorEnfrentamientoUI
+  m_Name: RemotePlayerUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -775,7 +775,7 @@ GameObject:
   - component: {fileID: 687185015}
   - component: {fileID: 687185014}
   m_Layer: 5
-  m_Name: ScrollViewDebug
+  m_Name: DebugScrollView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -853,7 +853,7 @@ GameObject:
   - component: {fileID: 741114719}
   - component: {fileID: 741114718}
   m_Layer: 5
-  m_Name: MovimientoEnviado
+  m_Name: SentMoveText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -987,7 +987,7 @@ GameObject:
   - component: {fileID: 813784199}
   - component: {fileID: 813784198}
   m_Layer: 5
-  m_Name: EncabezadoColorPiezas
+  m_Name: PieceColorHeader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1121,7 +1121,7 @@ GameObject:
   - component: {fileID: 866009159}
   - component: {fileID: 866009158}
   m_Layer: 5
-  m_Name: Conectado
+  m_Name: ConnectedText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1255,7 +1255,7 @@ GameObject:
   - component: {fileID: 960183119}
   - component: {fileID: 960183118}
   m_Layer: 5
-  m_Name: EncabezadoTablero
+  m_Name: BoardHeader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1559,7 +1559,7 @@ GameObject:
   - component: {fileID: 982113008}
   - component: {fileID: 982113007}
   m_Layer: 5
-  m_Name: ColorPiezas
+  m_Name: PieceColorText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1693,7 +1693,7 @@ GameObject:
   - component: {fileID: 1018516920}
   - component: {fileID: 1018516919}
   m_Layer: 5
-  m_Name: EncabezadoMovimientoEnviado
+  m_Name: SentMoveHeader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1828,7 +1828,7 @@ GameObject:
   - component: {fileID: 1066809353}
   - component: {fileID: 1066809352}
   m_Layer: 5
-  m_Name: BotonAbrirCommit
+  m_Name: OpenCommitButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2036,7 +2036,7 @@ GameObject:
   - component: {fileID: 1225661223}
   - component: {fileID: 1225661222}
   m_Layer: 5
-  m_Name: EncabezadoNombre
+  m_Name: NameHeader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2245,7 +2245,7 @@ GameObject:
   - component: {fileID: 1418859197}
   - component: {fileID: 1418859196}
   m_Layer: 5
-  m_Name: EncabezadoTiempoPensar
+  m_Name: ThinkingTimeHeader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2380,7 +2380,7 @@ GameObject:
   - component: {fileID: 1467001738}
   - component: {fileID: 1467001737}
   m_Layer: 5
-  m_Name: TextoDebug
+  m_Name: DebugText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2999,7 +2999,7 @@ GameObject:
   - component: {fileID: 1864942335}
   - component: {fileID: 1864942334}
   m_Layer: 5
-  m_Name: EncabezadoMovimientoRecibido
+  m_Name: ReceivedMoveHeader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3133,7 +3133,7 @@ GameObject:
   - component: {fileID: 1876171604}
   - component: {fileID: 1876171603}
   m_Layer: 5
-  m_Name: MovimientoRecibido
+  m_Name: ReceivedMoveText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3267,7 +3267,7 @@ GameObject:
   - component: {fileID: 2124960999}
   - component: {fileID: 2124960998}
   m_Layer: 5
-  m_Name: Tablero
+  m_Name: Board
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
