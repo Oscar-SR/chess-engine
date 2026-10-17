@@ -5,8 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Debug
-  - Casilla
-  - Pieza
+  - Square
+  - Piece
   layers:
   - Default
   - TransparentFX
@@ -14,8 +14,8 @@ TagManager:
   - 
   - Water
   - UI
-  - Tablero
-  - Piezas
+  - Board
+  - Pieces
   - 
   - 
   - 
@@ -44,10 +44,10 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Tablero
+  - name: Board
     uniqueID: 3760823147
     locked: 0
-  - name: Piezas
+  - name: Pieces
     uniqueID: 338493173
     locked: 0
   - name: Debug

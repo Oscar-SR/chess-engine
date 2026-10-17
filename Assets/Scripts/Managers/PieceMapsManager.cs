@@ -152,7 +152,7 @@ namespace Ajedrez.Managers
 
         private void InstantiateSquare(Vector2 position, Color color, int value)
         {
-            GameObject square = new GameObject("Casilla");
+            GameObject square = new GameObject("Square");
             square.transform.parent = pieceMaps;
             square.transform.position = new Vector3(position.x, position.y, 0f);
             square.transform.localScale = new Vector3(0.9f, 0.9f, 1f);

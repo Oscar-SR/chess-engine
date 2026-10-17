@@ -57,7 +57,7 @@ namespace Ajedrez.UI
         private void InitializeDictionary()
         {
             pieceBySquare = new Dictionary<int, Transform>();
-            GameObject[] pieces = GameObject.FindGameObjectsWithTag("Pieza");
+            GameObject[] pieces = GameObject.FindGameObjectsWithTag("Piece");
 
             int square;
             foreach (GameObject piece in pieces)
@@ -94,7 +94,7 @@ namespace Ajedrez.UI
 
                     // Assign a name to the square
                     square.name = $"Casilla {index}";
-                    square.tag = "Casilla";
+                    square.tag = "Square";
 
                     // Set the square color
                     square.GetComponent<SpriteRenderer>().color = ChessUtils.IsDarkSquare(i, j) ? boardColors.darkSquareColor : boardColors.lightSquareColor;
@@ -362,7 +362,7 @@ namespace Ajedrez.UI
 
             // Create the piece game object
             GameObject pieceObject = new GameObject(name);
-            pieceObject.tag = "Pieza";
+            pieceObject.tag = "Piece";
 
             // Create a sprite renderer for the piece
             SpriteRenderer spriteRenderer = pieceObject.AddComponent<SpriteRenderer>();
@@ -375,8 +375,8 @@ namespace Ajedrez.UI
             pieceObject.transform.localScale = boardTransform.localScale * scaleFactor;
 
             // Assign the piece layer
-            pieceObject.layer = LayerMask.NameToLayer("Piezas");
-            spriteRenderer.sortingLayerName = "Piezas";
+            pieceObject.layer = LayerMask.NameToLayer("Pieces");
+            spriteRenderer.sortingLayerName = "Pieces";
             spriteRenderer.sortingOrder = 0;
 
             // Set the square the piece is on as its parent
@@ -388,7 +388,7 @@ namespace Ajedrez.UI
 
         private void ClearPieces()
         {
-            GameObject[] pieces = GameObject.FindGameObjectsWithTag("Pieza");
+            GameObject[] pieces = GameObject.FindGameObjectsWithTag("Piece");
 
             foreach (GameObject piece in pieces)
             {

@@ -50,7 +50,7 @@ namespace Ajedrez.UI
         void Start()
         {
             cam = Camera.main;
-            pieceLayer = LayerMask.GetMask("Piezas");
+            pieceLayer = LayerMask.GetMask("Pieces");
             cursor = Mouse.current;
             keyboard = Keyboard.current;
 
