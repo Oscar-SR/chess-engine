@@ -18,7 +18,7 @@ namespace Ajedrez.Core
 
         public DifficultyType Difficulty { get; private set; }
 
-        public Busqueda.TipoBusqueda SearchLimit { get; private set; }
+        public Search.SearchType SearchLimit { get; private set; }
         public int Limit { get; private set; }
 
         public bool UseOpeningBook { get; private set; }
@@ -34,7 +34,7 @@ namespace Ajedrez.Core
             return new AIConfiguration
             {
                 Difficulty = DifficultyType.Easy,
-                SearchLimit = Busqueda.TipoBusqueda.PorProfundidad,
+                SearchLimit = Search.SearchType.ByDepth,
                 Limit = 2,
                 UseOpeningBook = true,
                 OpeningBook = book,
@@ -47,7 +47,7 @@ namespace Ajedrez.Core
             return new AIConfiguration
             {
                 Difficulty = DifficultyType.Medium,
-                SearchLimit = Busqueda.TipoBusqueda.PorProfundidad,
+                SearchLimit = Search.SearchType.ByDepth,
                 Limit = 4,
                 UseOpeningBook = true,
                 OpeningBook = book,
@@ -60,7 +60,7 @@ namespace Ajedrez.Core
             return new AIConfiguration
             {
                 Difficulty = DifficultyType.Maximum,
-                SearchLimit = Busqueda.TipoBusqueda.PorTiempo,
+                SearchLimit = Search.SearchType.ByTime,
                 Limit = DYNAMIC_TIME,
                 UseOpeningBook = true,
                 OpeningBook = book,
@@ -71,7 +71,7 @@ namespace Ajedrez.Core
         // 🔹 Personalizado
         public static AIConfiguration CreateCustom
         (
-            Busqueda.TipoBusqueda searchLimit,
+            Search.SearchType searchLimit,
             int limit,
             bool useOpeningBook,
             int maxBookMovement,

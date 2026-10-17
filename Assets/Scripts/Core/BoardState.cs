@@ -23,7 +23,7 @@ namespace Ajedrez.Core
             }
             set
             {
-                if (AjedrezUtils.MismoColor(value, Piece.Color.Black))
+                if (ChessUtils.SameColor(value, Piece.Color.Black))
                     this.state |= 0b0000000000000001;
                 else
                     this.state &= 0b1111111111111110;
@@ -94,7 +94,7 @@ namespace Ajedrez.Core
             set
             {
                 // Ensure the value stays within the valid range (0–50)
-                inactivePlyCount = (byte)Math.Min((byte)value, (byte)Tablero.MAX_PLYS_INACTIVO);
+                inactivePlyCount = (byte)Math.Min((byte)value, (byte)Board.MAX_INACTIVE_PLYS);
             }
         }
 

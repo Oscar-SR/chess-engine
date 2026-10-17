@@ -23,19 +23,19 @@ namespace Ajedrez.Core
             this.moveValue = (ushort)(from | to << 6 | flag << 12);
         }
 
-        public Move(ushort valor)
+        public Move(ushort value)
         {
-            this.moveValue = valor;
+            this.moveValue = value;
         }
 
-        public Move(string LAN, Tablero board)
+        public Move(string LAN, Board board)
         {
             if (string.IsNullOrEmpty(LAN) || (LAN.Length != 4 && LAN.Length != 5))
                 throw new ArgumentException("Invalid LAN");
 
-            int fromSquare = NotacionAlgebraicaACasilla(LAN.Substring(0, 2));
-            int toSquare = NotacionAlgebraicaACasilla(LAN.Substring(2, 2));
-            Piece.Type pieceType = board.ObtenerPieza(fromSquare).PieceType;
+            int fromSquare = AlgebraicNotationToSquare(LAN.Substring(0, 2));
+            int toSquare = AlgebraicNotationToSquare(LAN.Substring(2, 2));
+            Piece.Type pieceType = board.GetPiece(fromSquare).PieceType;
             int flag = NO_FLAG;
 
             if (pieceType == Piece.Type.Pawn)
@@ -52,16 +52,16 @@ namespace Ajedrez.Core
                         _ => throw new ArgumentException("Invalid LAN promotion")
                     };
                 }
-                else if (Math.Abs(AjedrezUtils.ObtenerFila(fromSquare) - AjedrezUtils.ObtenerFila(toSquare)) == 2)
+                else if (Math.Abs(ChessUtils.GetRow(fromSquare) - ChessUtils.GetRow(toSquare)) == 2)
                 {
                     flag = PAWN_TWO_UP;
                 }
-                else if ((AjedrezUtils.ObtenerColumna(fromSquare) != AjedrezUtils.ObtenerColumna(toSquare)) && (board.ObtenerPieza(toSquare).PieceType == Piece.Type.None))
+                else if ((ChessUtils.GetColumn(fromSquare) != ChessUtils.GetColumn(toSquare)) && (board.GetPiece(toSquare).PieceType == Piece.Type.None))
                 {
                     flag = EN_PASSANT_CAPTURE;
                 }
             }
-            else if ((pieceType == Piece.Type.King) && (Math.Abs(AjedrezUtils.ObtenerColumna(fromSquare) - AjedrezUtils.ObtenerColumna(toSquare)) > 1))
+            else if ((pieceType == Piece.Type.King) && (Math.Abs(ChessUtils.GetColumn(fromSquare) - ChessUtils.GetColumn(toSquare)) > 1))
             {
                 // Castling
                 flag = CASTLE;
@@ -104,8 +104,8 @@ namespace Ajedrez.Core
 
         public string ToLAN()
         {
-            string fromLAN = CasillaANotacionAlgebraica(From);
-            string toLAN = CasillaANotacionAlgebraica(To);
+            string fromLAN = SquareToAlgebraicNotation(From);
+            string toLAN = SquareToAlgebraicNotation(To);
             string suffix = "";
 
             if (IsPromotion())
@@ -123,12 +123,12 @@ namespace Ajedrez.Core
             return fromLAN + toLAN + suffix;
         }
 
-        public string ToSAN(Tablero board)
+        public string ToSAN(Board board)
         {
-            Piece piece = board.ObtenerPieza(From);
+            Piece piece = board.GetPiece(From);
             string san = "";
 
-            bool isCapture = board.ObtenerPieza(To).PieceType != Piece.Type.None || Flag == EN_PASSANT_CAPTURE;
+            bool isCapture = board.GetPiece(To).PieceType != Piece.Type.None || Flag == EN_PASSANT_CAPTURE;
 
             // Castling
             if (Flag == CASTLE)
@@ -144,8 +144,8 @@ namespace Ajedrez.Core
             // Disambiguation if ambiguous (e.g. Nbd2 or R1a3)
             if (!isPawn && piece.PieceType != Piece.Type.King)
             {
-                (List<Move> moves, _) = board.GenerarMovimientosLegales();
-                (int fromRank, int fromFile) = AjedrezUtils.IndiceACoordenadas(From);
+                (List<Move> moves, _) = board.GenerateLegalMoves();
+                (int fromRank, int fromFile) = ChessUtils.IndexToCoordinates(From);
                 bool anotherSameRank = false;
                 bool anotherSameFile = false;
 
@@ -153,10 +153,10 @@ namespace Ajedrez.Core
                 {
                     if (move.To == To && move.From != From)
                     {
-                        Piece.Type otroTipoPieza = board.ObtenerPieza(move.From).PieceType;
-                        if (otroTipoPieza == piece.PieceType)
+                        Piece.Type otherPieceType = board.GetPiece(move.From).PieceType;
+                        if (otherPieceType == piece.PieceType)
                         {
-                            (int otherFromRank, int otherFromFile) = AjedrezUtils.IndiceACoordenadas(move.From);
+                            (int otherFromRank, int otherFromFile) = ChessUtils.IndexToCoordinates(move.From);
 
                             if (fromRank == otherFromRank)
                                 anotherSameRank = true;
@@ -167,27 +167,27 @@ namespace Ajedrez.Core
                 }
 
                 if (anotherSameRank)
-                    san += AjedrezUtils.ColumnaANombre(fromFile);
+                    san += ChessUtils.ColumnToChar(fromFile);
 
                 if (anotherSameFile)
-                    san += AjedrezUtils.FilaANombre(fromRank);
+                    san += ChessUtils.RowToChar(fromRank);
             }
 
             // Capture
             if (isCapture)
             {
                 if (isPawn)
-                    san += AjedrezUtils.ColumnaANombre(AjedrezUtils.ObtenerColumna(From)); // File of the pawn
+                    san += ChessUtils.ColumnToChar(ChessUtils.GetColumn(From)); // File of the pawn
                 san += "x";
             }
 
             // From square
-            san += CasillaANotacionAlgebraica(To);
+            san += SquareToAlgebraicNotation(To);
 
             // Promotion
             if (IsPromotion())
             {
-                string promocion = Flag switch
+                string promotion = Flag switch
                 {
                     PROMOTE_TO_QUEEN => "Q",
                     PROMOTE_TO_KNIGHT => "N",
@@ -195,36 +195,36 @@ namespace Ajedrez.Core
                     PROMOTE_TO_BISHOP => "B",
                     _ => ""
                 };
-                san += "=" + promocion;
+                san += "=" + promotion;
             }
 
             // Check or check mate
-            board.HacerMovimiento(this, enBusqueda : true);
-            (List<Move> respuestas, bool jaque) = board.GenerarMovimientosLegales();
-            if (jaque)
+            board.MakeMove(this, inSearch : true);
+            (List<Move> responses, bool inCheck) = board.GenerateLegalMoves();
+            if (inCheck)
             {
-                san += respuestas.Count == 0 ? "#" : "+";
+                san += responses.Count == 0 ? "#" : "+";
             }
-            board.DeshacerMovimiento(this);
+            board.UndoMove(this);
 
             return san;
         }
 
-        private static int NotacionAlgebraicaACasilla(string casilla)
+        private static int AlgebraicNotationToSquare(string square)
         {
-            char columna = casilla[0];
-            char fila = casilla[1];
-            int x = AjedrezUtils.NombreAColumna(columna);
-            int y = AjedrezUtils.NombreAFila(fila);
-            return AjedrezUtils.CoordenadasAIndice(y,x);
+            char column = square[0];
+            char row = square[1];
+            int x = ChessUtils.NameToColumn(column);
+            int y = ChessUtils.NameToRow(row);
+            return ChessUtils.CoordinatesToIndex(y,x);
         }
 
-        private string CasillaANotacionAlgebraica(int indice)
+        private string SquareToAlgebraicNotation(int index)
         {
-            (int fila, int columna) = AjedrezUtils.IndiceACoordenadas(indice);
-            char columnaCaracter = AjedrezUtils.ColumnaANombre(columna);
-            char filaCaracter = AjedrezUtils.FilaANombre(fila);
-            return $"{columnaCaracter}{filaCaracter}";
+            (int row, int column) = ChessUtils.IndexToCoordinates(index);
+            char columnChar = ChessUtils.ColumnToChar(column);
+            char rowChar = ChessUtils.RowToChar(row);
+            return $"{columnChar}{rowChar}";
         }
 
         public static bool operator ==(Move a, Move b)
@@ -239,7 +239,7 @@ namespace Ajedrez.Core
 
         public override bool Equals(object obj)
         {
-            return obj is Move otro && this.moveValue == otro.moveValue;
+            return obj is Move other && this.moveValue == other.moveValue;
         }
 
         public override int GetHashCode()

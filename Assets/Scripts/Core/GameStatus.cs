@@ -18,11 +18,11 @@ namespace Ajedrez.Core
             DrawByArbiter
         }
 
-        public static Type GetGameStatus(Tablero board, int legalMoveCount, bool inCheck)
+        public static Type GetGameStatus(Board board, int legalMoveCount, bool inCheck)
         {
             Type status = Type.InProgress;
 
-            if (board.EstadoActual.InactivePlyCount >= Tablero.MAX_PLYS_INACTIVO)
+            if (board.CurrentState.InactivePlyCount >= Board.MAX_INACTIVE_PLYS)
             {
                 // Fifty-move rule
                 status = Type.FiftyMoveRule;
@@ -32,7 +32,7 @@ namespace Ajedrez.Core
                 // Insufficient material
                 status = Type.InsufficientMaterial;
             }
-            else if (board.HistorialPosicionesRepetidas.IsThreefoldRepetition(board.EstadoActual.ZobristHash))
+            else if (board.RepetitionHistory.IsThreefoldRepetition(board.CurrentState.ZobristHash))
             {
                 // The last move caused a threefold repetition
                 status = Type.ThreefoldRepetition;
@@ -42,7 +42,7 @@ namespace Ajedrez.Core
                 if (inCheck)
                 {
                     // Checkmate
-                    status = board.Turno == Piece.Color.White ? Type.WhiteCheckmate : Type.BlackCheckmate;
+                    status = board.Turn == Piece.Color.White ? Type.WhiteCheckmate : Type.BlackCheckmate;
 
                 }
                 else
@@ -55,27 +55,27 @@ namespace Ajedrez.Core
             return status;
         }
 
-        public static bool IsInsufficientMaterial(Tablero board)
+        public static bool IsInsufficientMaterial(Board board)
         {
             ulong piecesWithoutKings = board.Bitboards[1] | board.Bitboards[2] | board.Bitboards[3] | board.Bitboards[4] | board.Bitboards[5] | board.Bitboards[7] | board.Bitboards[8] | board.Bitboards[9] | board.Bitboards[10] | board.Bitboards[11];
 
             // Only kings remain
             if (piecesWithoutKings == 0)
                 return true;
-            else if (BitboardUtils.EsPotenciaDe2(piecesWithoutKings))
+            else if (BitboardUtils.IsPowerOfTwo(piecesWithoutKings))
             {
                 // King and knight versus king
-                if (BitboardUtils.EsPotenciaDe2(board.Bitboards[4] | board.Bitboards[10]))
+                if (BitboardUtils.IsPowerOfTwo(board.Bitboards[4] | board.Bitboards[10]))
                     return true;
 
                 // King and bishop versus king
-                if (BitboardUtils.EsPotenciaDe2(board.Bitboards[3] | board.Bitboards[9]))
+                if (BitboardUtils.IsPowerOfTwo(board.Bitboards[3] | board.Bitboards[9]))
                     return true;
             }
             else if ((board.Bitboards[1] | board.Bitboards[2] | board.Bitboards[4] | board.Bitboards[5] | board.Bitboards[7] | board.Bitboards[8] | board.Bitboards[10] | board.Bitboards[11]) == 0)
             {
                 // Only kings and bishops remain (if bishops control squares of the same color)
-                if ((board.Bitboards[3] | board.Bitboards[9]) != 0 && BitboardUtils.AlfilesEnCasillasMismoColor(board.Bitboards[3] | board.Bitboards[9]))
+                if ((board.Bitboards[3] | board.Bitboards[9]) != 0 && BitboardUtils.BishopsOnSameColorSquares(board.Bitboards[3] | board.Bitboards[9]))
                     return true;
             }
 
