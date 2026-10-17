@@ -5,19 +5,19 @@ using UnityEngine.SceneManagement;
 
 namespace Ajedrez.UI
 {
-    public class MenuPrincipalUI : MonoBehaviour
+    public class MainMenuUI : MonoBehaviour
     {
-        public void BotonJugar()
+        public void PlayButton()
         {
             SceneManager.LoadScene("ConfiguracionesPrevias");
         }
 
-        public void BotonOpciones()
+        public void OptionsButton()
         {
             SceneManager.LoadScene("Opciones");
         }
 
-        public void BotonSalir()
+        public void ExitButton()
         {
             Application.Quit();
         }

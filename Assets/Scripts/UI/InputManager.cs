@@ -12,37 +12,37 @@ namespace Ajedrez.UI
 {
     public class InputManager : MonoBehaviour
     {
-        public static InputManager Instancia { get; private set; }
-        public event Action<ModoDebugBitboard> OnTeclaDebugBitboard;
-        public event Action OnToggleEstadoTablero;
-        public event Action OnToggleDebugBusqueda;
+        public static InputManager Instance { get; private set; }
+        public event Action<BitboardDebugMode> OnDebugBitboardKey;
+        public event Action OnToggleBoardState;
+        public event Action OnToggleSearchDebug;
 
-        // Comunicarse con el tablero con eventos también, quizás
+        // Communicate with the board through events too, perhaps
 
-        [SerializeField] private PartidaManager partidaManager;
-        [SerializeField] private PromocionUI promocionUI;
-        [SerializeField] private TableroUI tableroUI;
+        [SerializeField] private GameManager gameManager;
+        [SerializeField] private PromotionUI promotionUI;
+        [SerializeField] private BoardUI boardUI;
 
         private Mouse cursor;
         private Keyboard keyboard;
         private Camera cam;
-        private LayerMask capaPiezas;
-        private int casilla;
+        private LayerMask pieceLayer;
+        private int square;
 
-        private Piece.Color colorInteractuable = Piece.Color.None;
-        private bool piezaSeleccionada = false;
-        private bool promocionEnCurso = false;
-        private Vector2 offsetCursorPieza;
+        private Piece.Color interactableColor = Piece.Color.None;
+        private bool selectedPiece = false;
+        private bool promotionInProgress = false;
+        private Vector2 pieceCursorOffset;
 
         private void Awake()
         {
-            if (Instancia != null && Instancia != this)
+            if (Instance != null && Instance != this)
             {
                 Destroy(this.gameObject);
             }
             else
             {
-                Instancia = this;
+                Instance = this;
             }
         }
 
@@ -50,41 +50,41 @@ namespace Ajedrez.UI
         void Start()
         {
             cam = Camera.main;
-            capaPiezas = LayerMask.GetMask("Piezas");
+            pieceLayer = LayerMask.GetMask("Piezas");
             cursor = Mouse.current;
             keyboard = Keyboard.current;
 
             if (cursor == null)
             {
-                Debug.LogError("No se detectó un dispositivo de cursor");
+                Debug.LogError("No cursor device detected");
             }
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (colorInteractuable != Piece.Color.None)
+            if (interactableColor != Piece.Color.None)
             {
-                if (piezaSeleccionada)
+                if (selectedPiece)
                 {
-                    if (!promocionEnCurso)
+                    if (!promotionInProgress)
                     {
-                        // Seguir al ratón con la pieza
-                        partidaManager.ArrastrarPieza(casilla, PosicionCursor());
+                        // Follow the mouse with the piece
+                        gameManager.DragPiece(square, CursorPosition());
 
                         if (cursor.leftButton.wasReleasedThisFrame)
                         {
-                            // Comprobar si se puede colocar la pieza
-                            ColocarPieza();
+                            // Check whether the piece can be placed
+                            PlacePiece();
                         }
                     }
                 }
                 else
                 {
-                    if (!promocionEnCurso && cursor.leftButton.wasPressedThisFrame)
+                    if (!promotionInProgress && cursor.leftButton.wasPressedThisFrame)
                     {
-                        // Comprobar si se ha seleccionado una pieza
-                        SeleccionarPieza();
+                        // Check whether a piece has been selected
+                        SelectPiece();
                     }
                 }
             }
@@ -92,132 +92,132 @@ namespace Ajedrez.UI
 #if UNITY_EDITOR
             // BitboardDebugger
             if (keyboard.qKey.wasPressedThisFrame)
-                OnTeclaDebugBitboard?.Invoke(ModoDebugBitboard.Apagado);
+                OnDebugBitboardKey?.Invoke(BitboardDebugMode.Off);
             if (keyboard.digit1Key.wasPressedThisFrame)
-                OnTeclaDebugBitboard?.Invoke(keyboard.tabKey.isPressed ? ModoDebugBitboard.ReyNegro : ModoDebugBitboard.ReyBlanco);
+                OnDebugBitboardKey?.Invoke(keyboard.tabKey.isPressed ? BitboardDebugMode.BlackKing : BitboardDebugMode.WhiteKing);
             if (keyboard.digit2Key.wasPressedThisFrame)
-                OnTeclaDebugBitboard?.Invoke(keyboard.tabKey.isPressed ? ModoDebugBitboard.ReinasNegras : ModoDebugBitboard.ReinasBlancas);
+                OnDebugBitboardKey?.Invoke(keyboard.tabKey.isPressed ? BitboardDebugMode.BlackQueens : BitboardDebugMode.WhiteQueens);
             if (keyboard.digit3Key.wasPressedThisFrame)
-                OnTeclaDebugBitboard?.Invoke(keyboard.tabKey.isPressed ? ModoDebugBitboard.TorresNegras : ModoDebugBitboard.TorresBlancas);
+                OnDebugBitboardKey?.Invoke(keyboard.tabKey.isPressed ? BitboardDebugMode.BlackRooks : BitboardDebugMode.WhiteRooks);
             if (keyboard.digit4Key.wasPressedThisFrame)
-                OnTeclaDebugBitboard?.Invoke(keyboard.tabKey.isPressed ? ModoDebugBitboard.AlfilesNegros : ModoDebugBitboard.AlfilesBlancos);
+                OnDebugBitboardKey?.Invoke(keyboard.tabKey.isPressed ? BitboardDebugMode.BlackBishops : BitboardDebugMode.WhiteBishops);
             if (keyboard.digit5Key.wasPressedThisFrame)
-                OnTeclaDebugBitboard?.Invoke(keyboard.tabKey.isPressed ? ModoDebugBitboard.CaballosNegros : ModoDebugBitboard.CaballosBlancos);
+                OnDebugBitboardKey?.Invoke(keyboard.tabKey.isPressed ? BitboardDebugMode.BlackKnights : BitboardDebugMode.WhiteKnights);
             if (keyboard.digit6Key.wasPressedThisFrame)
-                OnTeclaDebugBitboard?.Invoke(keyboard.tabKey.isPressed ? ModoDebugBitboard.PeonesNegros : ModoDebugBitboard.PeonesBlancos);
+                OnDebugBitboardKey?.Invoke(keyboard.tabKey.isPressed ? BitboardDebugMode.BlackPawns : BitboardDebugMode.WhitePawns);
             if (keyboard.cKey.wasPressedThisFrame)
-                OnTeclaDebugBitboard?.Invoke(ModoDebugBitboard.PiezasClavadas);
+                OnDebugBitboardKey?.Invoke(BitboardDebugMode.PinnedPieces);
             if (keyboard.rKey.wasPressedThisFrame)
-                OnTeclaDebugBitboard?.Invoke(ModoDebugBitboard.AtacantesRey);
+                OnDebugBitboardKey?.Invoke(BitboardDebugMode.KingAttackers);
             if (keyboard.pKey.wasPressedThisFrame)
-                OnTeclaDebugBitboard?.Invoke(ModoDebugBitboard.Pinners);
+                OnDebugBitboardKey?.Invoke(BitboardDebugMode.Pinners);
 
-            // EstadoDebugger
+            // StateDebugger
             if (keyboard.eKey.wasPressedThisFrame)
-                OnToggleEstadoTablero?.Invoke();
+                OnToggleBoardState?.Invoke();
 
-            // BusquedaDebugger
+            // SearchDebugger
             if (keyboard.bKey.wasPressedThisFrame)
-                OnToggleDebugBusqueda?.Invoke();
+                OnToggleSearchDebug?.Invoke();
 #endif
         }
 
-        private Vector2 PosicionCursor()
+        private Vector2 CursorPosition()
         {
-            Vector2 posCursorPantalla = cursor.position.ReadValue();
-            return cam.ScreenToWorldPoint(posCursorPantalla);
+            Vector2 cursorScreenPosition = cursor.position.ReadValue();
+            return cam.ScreenToWorldPoint(cursorScreenPosition);
         }
 
-        void SeleccionarPieza()
+        void SelectPiece()
         {
-            Vector2 clickPosition = PosicionCursor();
+            Vector2 clickPosition = CursorPosition();
 
-            if (partidaManager.ObtenerCasillaDeCoordenada(clickPosition, out casilla))
+            if (gameManager.GetSquareFromCoordinate(clickPosition, out square))
             {
-                Piece pieza = partidaManager.ObtenerPieza(casilla);
-                if (pieza.PieceType != Piece.Type.None && AjedrezUtils.MismoColor(pieza.PieceColor, colorInteractuable))
+                Piece piece = gameManager.GetPiece(square);
+                if (piece.PieceType != Piece.Type.None && ChessUtils.SameColor(piece.PieceColor, interactableColor))
                 {
-                    piezaSeleccionada = true;
-                    partidaManager.DibujarPiezaPorEncima(casilla);
-                    partidaManager.ColorearCasillaUltimoMovimiento(casilla);
-                    partidaManager.MostrarMovimientosLegalesDePieza(casilla);
+                    selectedPiece = true;
+                    gameManager.DrawPieceAbove(square);
+                    gameManager.HighlightLastMoveSquare(square);
+                    gameManager.ShowLegalMovesForPiece(square);
                 }
             }
         }
 
-        private void ColocarPieza()
+        private void PlacePiece()
         {
-            Vector2 clickPosition = PosicionCursor();
-            int nuevaCasilla;
+            Vector2 clickPosition = CursorPosition();
+            int newSquare;
 
-            if (partidaManager.ObtenerCasillaDeCoordenada(clickPosition, out nuevaCasilla))
+            if (gameManager.GetSquareFromCoordinate(clickPosition, out newSquare))
             {
-                if (nuevaCasilla != casilla)
+                if (newSquare != square)
                 {
-                    Move movimiento = partidaManager.ObtenerMovimientoLegal(nuevaCasilla);
+                    Move move = gameManager.GetLegalMove(newSquare);
 
-                    // Comprobar si se puede hacer el movimiento
-                    if (movimiento != Move.Null)
+                    // Check whether the move can be made
+                    if (move != Move.Null)
                     {
-                        // Sí se puede hacer el movimiento
-                        partidaManager.PosicionarPieza(casilla, nuevaCasilla, movimiento.Flag);
-                        partidaManager.OcultarMovimientosLegales();
-                        partidaManager.DevolverPiezaACapa(nuevaCasilla);
-                        partidaManager.DevolverColoresCasillasUltimoMovimiento();
-                        partidaManager.ColorearCasillaUltimoMovimiento(nuevaCasilla);
-                        StartCoroutine(HacerMovimientoTrasPromocion(movimiento));
+                        // The move can be made
+                        gameManager.PositionPiece(square, newSquare, move.Flag);
+                        gameManager.HideLegalMoves();
+                        gameManager.ReturnPieceToLayer(newSquare);
+                        gameManager.RestoreLastMoveSquareColors();
+                        gameManager.HighlightLastMoveSquare(newSquare);
+                        StartCoroutine(MakeMoveAfterPromotion(move));
                         return;
                     }
                 }
             }
 
-            DeseleccionarPieza();
+            DeselectPiece();
         }
 
-        private void DeseleccionarPieza()
+        private void DeselectPiece()
         {
-            partidaManager.ColorearCasillaOriginal(casilla);
-            partidaManager.OcultarMovimientosLegales();
-            partidaManager.DevolverPiezaACapa(casilla);
-            partidaManager.DevolverPiezaOrigen(casilla);
-            piezaSeleccionada = false;
+            gameManager.RestoreSquareColor(square);
+            gameManager.HideLegalMoves();
+            gameManager.ReturnPieceToLayer(square);
+            gameManager.ReturnPieceToOrigin(square);
+            selectedPiece = false;
         }
 
-        private IEnumerator HacerMovimientoTrasPromocion(Move movimiento)
+        private IEnumerator MakeMoveAfterPromotion(Move move)
         {
-            // Desactivar la interacción con las piezas
-            colorInteractuable = Piece.Color.None;
-            piezaSeleccionada = false;
+            // Disable piece interaction
+            interactableColor = Piece.Color.None;
+            selectedPiece = false;
 
-            if (movimiento.IsPromotion())
+            if (move.IsPromotion())
             {
-                promocionEnCurso = true;
-                int tipoPromocion = Move.PROMOTE_TO_QUEEN;
+                promotionInProgress = true;
+                int promotionType = Move.PROMOTE_TO_QUEEN;
 
-                promocionUI.Mostrar(partidaManager.ObtenerPieza(casilla).PieceColor, tipo =>
+                promotionUI.Show(gameManager.GetPiece(square).PieceColor, type =>
                 {
-                    tipoPromocion = tipo;
-                    promocionEnCurso = false;
+                    promotionType = type;
+                    promotionInProgress = false;
                 });
 
-                yield return new WaitUntil(() => !promocionEnCurso);
+                yield return new WaitUntil(() => !promotionInProgress);
 
-                movimiento = new Move(movimiento.From, movimiento.To, tipoPromocion);
+                move = new Move(move.From, move.To, promotionType);
             }
 
-            StartCoroutine(partidaManager.HacerMovimiento(movimiento));
+            StartCoroutine(gameManager.MakeMove(move));
         }
 
-        public Piece.Color ColorInteractuable
+        public Piece.Color InteractableColor
         {
             set
             {
-                colorInteractuable = value;
+                interactableColor = value;
 
-                if (value == Piece.Color.None && piezaSeleccionada)
+                if (value == Piece.Color.None && selectedPiece)
                 {
-                    // Soltar la pieza si se termina la partida y hay una pieza seleccionada
-                    DeseleccionarPieza();
+                    // Release the piece if the game ends and a piece is selected
+                    DeselectPiece();
                 }
             }
         }
