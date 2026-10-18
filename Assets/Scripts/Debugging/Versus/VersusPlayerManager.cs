@@ -9,7 +9,7 @@ namespace Chess.Debugging.Versus
 {
     public class VersusPlayerManager : ClientTCP
     {
-        [SerializeField] private VersusPlayerUI remotePlayerUI;
+        [SerializeField] private VersusPlayerUI versusPlayerUI;
         [SerializeField] private TextAsset openingBook;
         [SerializeField] private string playerName;
         private bool connected;
@@ -30,15 +30,15 @@ namespace Chess.Debugging.Versus
         {
             if (type == LogType.Error || type == LogType.Exception)
             {
-                remotePlayerUI.WriteDebug("[ERROR] " + logString + "\n" + stackTrace);
+                versusPlayerUI.WriteDebug("[ERROR] " + logString + "\n" + stackTrace);
             }
             else if (type == LogType.Warning)
             {
-                remotePlayerUI.WriteDebug("[WARNING] " + logString);
+                versusPlayerUI.WriteDebug("[WARNING] " + logString);
             }
             else
             {
-                remotePlayerUI.WriteDebug(logString);
+                versusPlayerUI.WriteDebug(logString);
             }
         }
 
@@ -47,7 +47,7 @@ namespace Chess.Debugging.Versus
         {
             board = new Board();
             CreatePlayer();
-            remotePlayerUI.ShowName(playerName);
+            versusPlayerUI.ShowName(playerName);
         }
 
         protected override void OnConnected()
@@ -57,7 +57,7 @@ namespace Chess.Debugging.Versus
             string message = VersusMessage.CreateRegisterPlayerMessage(playerName).ToJsonString();
             SendMessageToServer(message);
             connected = true;
-            remotePlayerUI.ShowConnected();
+            versusPlayerUI.ShowConnected();
         }
 
         protected override void MessageReceived(TcpClient client, string message)
@@ -92,9 +92,9 @@ namespace Chess.Debugging.Versus
             }
 
             // Update UI
-            remotePlayerUI.ShowBoard(fen);
-            remotePlayerUI.ShowPieceColor(pieceColor.ToString());
-            remotePlayerUI.ShowThinkingTime(maxThinkingTime.ToString());
+            versusPlayerUI.ShowBoard(fen);
+            versusPlayerUI.ShowPieceColor(pieceColor.ToString());
+            versusPlayerUI.ShowThinkingTime(maxThinkingTime.ToString());
 
             if (board.Turn == pieceColor)
             {
@@ -104,7 +104,7 @@ namespace Chess.Debugging.Versus
 
         private void OpponentMoveReceived(string moveName)
         {
-            remotePlayerUI.ShowReceivedMove(moveName);
+            versusPlayerUI.ShowReceivedMove(moveName);
             Move move = new Move(moveName, board);
             board.MakeMove(move);
             ChooseMove();
@@ -121,7 +121,7 @@ namespace Chess.Debugging.Versus
 
             string message = versusMessage.ToJsonString();
             SendMessageToServer(message);
-            remotePlayerUI.ShowSentMove(moveLan);
+            versusPlayerUI.ShowSentMove(moveLan);
         }
     }
 }

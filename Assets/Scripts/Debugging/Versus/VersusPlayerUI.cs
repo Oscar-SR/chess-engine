@@ -8,7 +8,7 @@ namespace Chess.Debugging.Versus
 {
     public class VersusPlayerUI : MonoBehaviour
     {
-        [SerializeField] private VersusPlayerManager remotePlayerManager;
+        [SerializeField] private VersusPlayerManager versusPlayerManager;
         [SerializeField] private Color connectedColor;
         [SerializeField] private TMP_Text nameText;
         [SerializeField] private TMP_Text connectedText;

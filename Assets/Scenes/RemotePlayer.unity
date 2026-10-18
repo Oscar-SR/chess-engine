@@ -701,7 +701,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66ff66c7c69249241be9daaa742e6395, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  remotePlayerManager: {fileID: 1482261341}
+  versusPlayerManager: {fileID: 1482261341}
   connectedColor: {r: 0.14901961, g: 0.85490197, b: 0.43529412, a: 1}
   nameText: {fileID: 417167668}
   connectedText: {fileID: 866009158}
@@ -2545,7 +2545,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55e0ec08862397349b8f5b03758c36e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  remotePlayerUI: {fileID: 470094724}
+  versusPlayerUI: {fileID: 470094724}
   openingBook: {fileID: 4900000, guid: 1ce85fc4242363643a65db0a1f1b8343, type: 3}
   playerName: Version 1
 --- !u!4 &1482261342
