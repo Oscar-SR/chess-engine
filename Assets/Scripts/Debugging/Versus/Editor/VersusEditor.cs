@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace Chess.Debugging.Multiplayer
+namespace Chess.Debugging.Versus
 {
     [CustomEditor(typeof(VersusManager))]
     public class VersusEditor : Editor

@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Chess.Debugging.Multiplayer
+namespace Chess.Debugging.Versus
 {
 	public abstract class ServerTCP : MonoBehaviour
 	{

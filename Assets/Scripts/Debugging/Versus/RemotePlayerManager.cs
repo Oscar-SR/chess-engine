@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using Chess.Core;
 using Chess.AI;
 
-namespace Chess.Debugging.Multiplayer
+namespace Chess.Debugging.Versus
 {
     public class RemotePlayerManager : ClientTCP
     {

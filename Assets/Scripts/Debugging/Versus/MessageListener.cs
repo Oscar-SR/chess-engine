@@ -8,7 +8,7 @@ using UnityEngine;
 // Listens for data on a NetworkStream on a separate thread.
 // Raises the OnMessageReceived event on the main thread when a message has been read.
 // Create an instance using MessageListener.CreateInstance(TcpClient)
-namespace Chess.Debugging.Multiplayer
+namespace Chess.Debugging.Versus
 {
 	public class MessageListener : MonoBehaviour
 	{

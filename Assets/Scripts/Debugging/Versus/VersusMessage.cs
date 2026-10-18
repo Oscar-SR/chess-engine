@@ -1,7 +1,7 @@
 using UnityEngine;
 using Chess.Core;
 
-namespace Chess.Debugging.Multiplayer
+namespace Chess.Debugging.Versus
 {
     [System.Serializable]
     public class VersusMessage

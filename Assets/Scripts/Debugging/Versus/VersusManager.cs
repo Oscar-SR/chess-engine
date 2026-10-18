@@ -7,7 +7,7 @@ using Chess.Core;
 using Chess.UI;
 using Chess.Utilities;
 
-namespace Chess.Debugging.Multiplayer
+namespace Chess.Debugging.Versus
 {
     public class RemotePlayer : Player
     {

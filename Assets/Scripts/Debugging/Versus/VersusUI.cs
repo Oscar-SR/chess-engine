@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace Chess.Debugging.Multiplayer
+namespace Chess.Debugging.Versus
 {
     public class VersusUI : MonoBehaviour
     {
