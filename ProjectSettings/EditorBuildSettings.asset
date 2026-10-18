@@ -24,3 +24,4 @@ EditorBuildSettings:
     path: Assets/Scenes/VersusPlayer.unity
     guid: 2b978f0abc7b2d2418819fe14179a6b6
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0
