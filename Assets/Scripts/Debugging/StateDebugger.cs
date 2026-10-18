@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 using TMPro;
 using Ajedrez.UI;
 
@@ -9,7 +8,7 @@ namespace Ajedrez.Debugging
     {
         public static StateDebugger Instance { get; private set; }
 
-        [SerializeField] [FormerlySerializedAs("textoDebugEstadoTablero")]
+        [SerializeField] 
         private TextMeshProUGUI boardStateDebugText;
 
         private bool isVisible = false;

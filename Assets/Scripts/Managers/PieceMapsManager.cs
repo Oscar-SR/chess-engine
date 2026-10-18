@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 using TMPro;
 using Ajedrez.Utilities;
 using Ajedrez.Core;
@@ -10,12 +9,12 @@ namespace Ajedrez.Managers
     [ExecuteInEditMode]
     public class PieceMapsManager : MonoBehaviour
     {
-        [SerializeField] [FormerlySerializedAs("mapasPiezas")] private Transform pieceMaps;
-        [SerializeField] [FormerlySerializedAs("colorMinimo")] private Color minColor;
-        [SerializeField] [FormerlySerializedAs("colorMaximo")] private Color maxColor;
-        [SerializeField] [FormerlySerializedAs("tipoPieza")] private Piece.Type pieceType = Piece.Type.Pawn;
-        [SerializeField, Range(0f, 1f)] [FormerlySerializedAs("valorEndgame")] private float endgameValue;
-        [SerializeField] [FormerlySerializedAs("salida")] private string output;
+        [SerializeField] private Transform pieceMaps;
+        [SerializeField] private Color minColor;
+        [SerializeField] private Color maxColor;
+        [SerializeField] private Piece.Type pieceType = Piece.Type.Pawn;
+        [SerializeField, Range(0f, 1f)] private float endgameValue;
+        [SerializeField] private string output;
 
         private int[] map;
         private bool needsUpdate = false;

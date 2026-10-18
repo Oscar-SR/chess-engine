@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Ajedrez.Systems;
@@ -8,9 +7,9 @@ namespace Ajedrez.UI
 {
     public class OptionsUI : MonoBehaviour
     {
-        [SerializeField] [FormerlySerializedAs("sliderVolumenGeneral")] private Slider generalVolumeSlider;
-        [SerializeField] [FormerlySerializedAs("sliderVolumenEfectos")] private Slider effectsVolumeSlider;
-        [SerializeField] [FormerlySerializedAs("sliderVolumenMusica")] private Slider musicVolumeSlider;
+        [SerializeField] private Slider generalVolumeSlider;
+        [SerializeField] private Slider effectsVolumeSlider;
+        [SerializeField] private Slider musicVolumeSlider;
 
         private void OnEnable()
         {

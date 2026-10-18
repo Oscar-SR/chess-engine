@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using TMPro;
 
@@ -9,15 +8,15 @@ namespace Ajedrez.Debugging.Enfrentamiento
 {
     public class MultiplayerUI : MonoBehaviour
     {
-        [SerializeField] [FormerlySerializedAs("enfrentamientoManager")] private MultiplayerManager matchManager;
-        [SerializeField] [FormerlySerializedAs("textoJugadores")] private TMP_Text playersText;
-        [SerializeField] [FormerlySerializedAs("textoEstadisticas")] private TMP_Text statisticsText;
-        [SerializeField] [FormerlySerializedAs("textoNombreBlancas")] private TMP_Text whitePlayerNameText;
-        [SerializeField] [FormerlySerializedAs("textoNombreNegras")] private TMP_Text blackPlayerNameText;
-        [SerializeField] [FormerlySerializedAs("textoDebug")] private TMP_Text debugText;
-        [SerializeField] [FormerlySerializedAs("maxTiempoPensar")] private TMP_InputField maxThinkingTime;
-        [SerializeField] [FormerlySerializedAs("maxMovimientosPartida")] private TMP_InputField maxMovesPerGame;
-        [SerializeField] [FormerlySerializedAs("botonEmpezar")] private Button startButton;
+        [SerializeField] private MultiplayerManager matchManager;
+        [SerializeField] private TMP_Text playersText;
+        [SerializeField] private TMP_Text statisticsText;
+        [SerializeField] private TMP_Text whitePlayerNameText;
+        [SerializeField] private TMP_Text blackPlayerNameText;
+        [SerializeField] private TMP_Text debugText;
+        [SerializeField] private TMP_InputField maxThinkingTime;
+        [SerializeField] private TMP_InputField maxMovesPerGame;
+        [SerializeField] private Button startButton;
         private const string greenColor = "#26DA6F";
 
         // Start is called before the first frame update

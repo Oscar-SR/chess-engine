@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 using TMPro;
 using System.IO;
 using Ajedrez.UI;
@@ -13,7 +12,7 @@ namespace Ajedrez.Debugging
     {
         public static SearchDebugger Instance { get; private set; }
 
-        [SerializeField] [FormerlySerializedAs("textoDebugBusqueda")]
+        [SerializeField] 
         private TextMeshProUGUI searchDebugText;
 
         private bool isVisible = false;

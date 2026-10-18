@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 using System;
 using TMPro;
 using UnityEngine.UI;
@@ -34,19 +33,19 @@ namespace Ajedrez.UI
             ThirtySeconds = 30
         }
 
-        [SerializeField] [FormerlySerializedAs("selectorTiempo")] private TMP_Dropdown durationDropdown;
-        [SerializeField] [FormerlySerializedAs("selectorIncremento")] private TMP_Dropdown incrementDropdown;
-        [SerializeField] [FormerlySerializedAs("selectorDificultad1")] private TMP_Dropdown difficultyDropdown1;
-        [SerializeField] [FormerlySerializedAs("selectorDificultad2")] private TMP_Dropdown difficultyDropdown2;
-        [SerializeField] [FormerlySerializedAs("selectorJugador1")] private TMP_Dropdown playerDropdown1;
-        [SerializeField] [FormerlySerializedAs("selectorJugador2")] private TMP_Dropdown playerDropdown2;
-        [SerializeField] [FormerlySerializedAs("nombreJugador1")] private TMP_InputField player1NameInput;
-        [SerializeField] [FormerlySerializedAs("nombreJugador2")] private TMP_InputField player2NameInput;
-        [SerializeField] [FormerlySerializedAs("posicionFEN")] private TMP_InputField fenPositionInput;
-        [SerializeField] [FormerlySerializedAs("textoError")] private TMP_Text errorText;
-        [SerializeField] [FormerlySerializedAs("textoJugador1")] private TMP_Text player1Text;
-        [SerializeField] [FormerlySerializedAs("textoJugador2")] private TMP_Text player2Text;
-        [SerializeField] [FormerlySerializedAs("botonEmpezar")] private Button startButton;
+        [SerializeField] private TMP_Dropdown durationDropdown;
+        [SerializeField] private TMP_Dropdown incrementDropdown;
+        [SerializeField] private TMP_Dropdown difficultyDropdown1;
+        [SerializeField] private TMP_Dropdown difficultyDropdown2;
+        [SerializeField] private TMP_Dropdown playerDropdown1;
+        [SerializeField] private TMP_Dropdown playerDropdown2;
+        [SerializeField] private TMP_InputField player1NameInput;
+        [SerializeField] private TMP_InputField player2NameInput;
+        [SerializeField] private TMP_InputField fenPositionInput;
+        [SerializeField] private TMP_Text errorText;
+        [SerializeField] private TMP_Text player1Text;
+        [SerializeField] private TMP_Text player2Text;
+        [SerializeField] private Button startButton;
         [SerializeField] private GameSettingsManager gameSettingsManager;
 
         // Start is called before the first frame update

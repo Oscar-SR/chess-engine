@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 using TMPro;
 using Ajedrez.Core;
 using Ajedrez.Systems;
@@ -16,11 +15,11 @@ namespace Ajedrez.UI
         private const float DARKEN_VALUE = 0.4f;
         private const float MOVE_ANIMATION_DURATION = 0.2f;
 
-        [SerializeField] [FormerlySerializedAs("tableroTransform")] private Transform boardTransform;
-        [SerializeField] [FormerlySerializedAs("casillaPrefab")] private GameObject squarePrefab;
-        [SerializeField] [FormerlySerializedAs("coloresTablero")] private BoardColors boardColors;
-        [SerializeField] [FormerlySerializedAs("piezasSet")] private PieceSet pieceSet;
-        [SerializeField] [FormerlySerializedAs("textoCoordenadaPrefab")] private GameObject coordinateTextPrefab;
+        [SerializeField] private Transform boardTransform;
+        [SerializeField] private GameObject squarePrefab;
+        [SerializeField] private BoardColors boardColors;
+        [SerializeField] private PieceSet pieceSet;
+        [SerializeField] private GameObject coordinateTextPrefab;
 
         private GameObject[] squares;
         private Dictionary<int, Transform> pieceBySquare;

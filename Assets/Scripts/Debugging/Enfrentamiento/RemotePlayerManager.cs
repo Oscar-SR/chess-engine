@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 using System.Net.Sockets;
 using Ajedrez.Core;
 using Ajedrez.IA;
@@ -10,9 +9,9 @@ namespace Ajedrez.Debugging.Enfrentamiento
 {
     public class RemotePlayerManager : ClientTCP
     {
-        [SerializeField] [FormerlySerializedAs("jugadorEnfrentamientoUI")] private RemotePlayerUI remotePlayerUI;
-        [SerializeField] [FormerlySerializedAs("libroAperturas")] private TextAsset openingBook;
-        [SerializeField] [FormerlySerializedAs("nombreJugador")] private string playerName;
+        [SerializeField] private RemotePlayerUI remotePlayerUI;
+        [SerializeField] private TextAsset openingBook;
+        [SerializeField] private string playerName;
         private bool connected;
         private Board board;
         private AIPlayer player;

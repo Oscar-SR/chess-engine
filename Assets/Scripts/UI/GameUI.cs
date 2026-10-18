@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
@@ -12,16 +11,16 @@ namespace Ajedrez.UI
     {
         private const float RESULT_WAIT_TIME = 3;
 
-        [SerializeField] [FormerlySerializedAs("textoSituacionTablero")] private Text boardStatusText;
-        [SerializeField] [FormerlySerializedAs("textoTipoResultado")] private Text resultTypeText;
-        [SerializeField] [FormerlySerializedAs("lineaDivisoria")] private Image dividerLine;
-        [SerializeField] [FormerlySerializedAs("textoTiempoJugadorAbajo")] private TextMeshProUGUI bottomPlayerTimeText;
-        [SerializeField] [FormerlySerializedAs("textoTiempoJugadorArriba")] private TextMeshProUGUI topPlayerTimeText;
-        [SerializeField] [FormerlySerializedAs("textoNombreJugadorAbajo")] private TextMeshProUGUI bottomPlayerNameText;
-        [SerializeField] [FormerlySerializedAs("textoNombreJugadorArriba")] private TextMeshProUGUI topPlayerNameText;
-        [SerializeField] [FormerlySerializedAs("panelResultado")] private GameObject resultPanel;
-        [SerializeField] [FormerlySerializedAs("colorTextoTiempo")] private Color timeTextColor;
-        [SerializeField] [FormerlySerializedAs("colorTextoTiempoEscaso")] private Color lowTimeTextColor;
+        [SerializeField] private Text boardStatusText;
+        [SerializeField] private Text resultTypeText;
+        [SerializeField] private Image dividerLine;
+        [SerializeField] private TextMeshProUGUI bottomPlayerTimeText;
+        [SerializeField] private TextMeshProUGUI topPlayerTimeText;
+        [SerializeField] private TextMeshProUGUI bottomPlayerNameText;
+        [SerializeField] private TextMeshProUGUI topPlayerNameText;
+        [SerializeField] private GameObject resultPanel;
+        [SerializeField] private Color timeTextColor;
+        [SerializeField] private Color lowTimeTextColor;
 
         private TextMeshProUGUI whitePlayerTimeText;
         private TextMeshProUGUI blackPlayerTimeText;

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using TMPro;
 using System.Diagnostics;
@@ -19,13 +18,13 @@ namespace Ajedrez.Managers
         private const string CYAN = "#6BCDAE";
         private const string GRAY = "#808080";
         
-        [SerializeField] [FormerlySerializedAs("textoPerft")] private TextMeshProUGUI perftText;
-        [SerializeField] [FormerlySerializedAs("entradaFEN")] private TMP_InputField fenInput;
-        [SerializeField] [FormerlySerializedAs("entradaLimiteProfundidad")] private TMP_InputField depthLimitInput;
-        [SerializeField] [FormerlySerializedAs("botonPerft")] private Button perftButton;
-        [SerializeField] [FormerlySerializedAs("botonDivide")] private Button divideButton;
-        [SerializeField] [FormerlySerializedAs("botonDetenerEjecucion")] private Button stopExecutionButton;
-        [SerializeField] [FormerlySerializedAs("contenidoScrollView")] private RectTransform scrollViewContent;
+        [SerializeField] private TextMeshProUGUI perftText;
+        [SerializeField] private TMP_InputField fenInput;
+        [SerializeField] private TMP_InputField depthLimitInput;
+        [SerializeField] private Button perftButton;
+        [SerializeField] private Button divideButton;
+        [SerializeField] private Button stopExecutionButton;
+        [SerializeField] private RectTransform scrollViewContent;
         [SerializeField] private TextAsset suite;
 
         private Board board;

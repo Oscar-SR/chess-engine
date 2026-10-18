@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Ajedrez.Core;
 using Ajedrez.UI;
 using Ajedrez.Utilities;
@@ -64,13 +63,13 @@ namespace Ajedrez.Debugging.Enfrentamiento
 
     public class MultiplayerManager : ServerTCP
     {
-        [SerializeField] [FormerlySerializedAs("tableroUI")] private BoardUI boardUI;
-        [SerializeField] [FormerlySerializedAs("enfrentamientoUI")] private MultiplayerUI matchUI;
-        [SerializeField] [FormerlySerializedAs("maxTiempoPensar")] private int maxThinkingTime = 1000;
-        [SerializeField] [FormerlySerializedAs("maxMovimientosPartida")] private int maxMovesPerGame = 100;
-        [SerializeField] [FormerlySerializedAs("posicionesIniciales")] private TextAsset initialPositions;
-        [SerializeField] [FormerlySerializedAs("ambosJueganCadaPosicion")] private bool bothPlayEachPosition = true;
-        [SerializeField] [FormerlySerializedAs("rutaDeGuardado")] private string savePath;
+        [SerializeField] private BoardUI boardUI;
+        [SerializeField] private MultiplayerUI matchUI;
+        [SerializeField] private int maxThinkingTime = 1000;
+        [SerializeField] private int maxMovesPerGame = 100;
+        [SerializeField] private TextAsset initialPositions;
+        [SerializeField] private bool bothPlayEachPosition = true;
+        [SerializeField] private string savePath;
 
         private Game game;
         private RemotePlayer player1;

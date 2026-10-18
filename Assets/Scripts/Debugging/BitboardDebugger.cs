@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
@@ -39,9 +38,9 @@ namespace Ajedrez.Debugging
         private const string LIGHT_RED = "#00FFFF80";
         private const string CYAN = "#FF000080";
 
-        [SerializeField] [FormerlySerializedAs("tableroTransform")] private Transform boardTransform;
-        [SerializeField] [FormerlySerializedAs("spriteMarcaDebug")] private Sprite debugMarkSprite;
-        [SerializeField] [FormerlySerializedAs("textoModoDebug")] private TextMeshProUGUI debugModeText;
+        [SerializeField] private Transform boardTransform;
+        [SerializeField] private Sprite debugMarkSprite;
+        [SerializeField] private TextMeshProUGUI debugModeText;
 
         private bool isInitialized = false;
         private Color bitboardColor1;

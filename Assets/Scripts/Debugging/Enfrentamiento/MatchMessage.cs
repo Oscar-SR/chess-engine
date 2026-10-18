@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 using Ajedrez.Core;
 
 namespace Ajedrez.Debugging.Enfrentamiento
@@ -10,25 +9,18 @@ namespace Ajedrez.Debugging.Enfrentamiento
         // Types of messages that can be sent
         public enum MessageType { None, RegisterPlayer, MakeMove, NewGame }
 
-        [FormerlySerializedAs("tipoMensaje")]
         public MessageType messageType;
 
         // Data for the RegisterPlayer message
-        [FormerlySerializedAs("nombreJugador")]
         public string playerName;
 
         // Data for the movement message
-        [FormerlySerializedAs("nombreMovimiento")]
         public string moveName;
-        [FormerlySerializedAs("profundidadBusquedaIterativa")]
         public int iterativeSearchDepth;
 
         // Data for the NewGame message
-        [FormerlySerializedAs("fenInicial")]
         public string initialFen;
-        [FormerlySerializedAs("colorPiezas")]
         public Piece.Color pieceColor;
-        [FormerlySerializedAs("tiempoMaximoPensamientoMs")]
         public int maxThinkingTimeMs;
 
         // Method to create a player registration message

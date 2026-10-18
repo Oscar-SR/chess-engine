@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.Serialization;
 
 namespace Ajedrez.Systems
 {
@@ -36,19 +35,19 @@ namespace Ajedrez.Systems
         [SerializeField] private AudioMixer audioMixer;
 
         [Header("Mixer Groups")]
-        [SerializeField] [FormerlySerializedAs("mixerGrupoEfectos")] private AudioMixerGroup effectsMixerGroup;
-        [SerializeField] [FormerlySerializedAs("mixerGrupoMusica")] private AudioMixerGroup musicMixerGroup;
+        [SerializeField] private AudioMixerGroup effectsMixerGroup;
+        [SerializeField] private AudioMixerGroup musicMixerGroup;
 
         // Audio clips
         [Header("Sounds")]
-        [SerializeField] [FormerlySerializedAs("sonidoMovimiento")] private AudioClip moveSound;
-        [SerializeField] [FormerlySerializedAs("sonidoCaptura")] private AudioClip captureSound;
-        [SerializeField] [FormerlySerializedAs("sonidoEnroque")] private AudioClip castleSound;
-        [SerializeField] [FormerlySerializedAs("sonidoPromocion")] private AudioClip promotionSound;
-        [SerializeField] [FormerlySerializedAs("sonidoJaque")] private AudioClip checkSound;
+        [SerializeField] private AudioClip moveSound;
+        [SerializeField] private AudioClip captureSound;
+        [SerializeField] private AudioClip castleSound;
+        [SerializeField] private AudioClip promotionSound;
+        [SerializeField] private AudioClip checkSound;
 
         [Header("Music")]
-        [SerializeField] [FormerlySerializedAs("musicaMenu")] private AudioClip menuMusic;
+        [SerializeField] private AudioClip menuMusic;
 
         private Dictionary<SoundType, AudioClip> sounds;
         private Dictionary<MusicType, AudioClip> musics;

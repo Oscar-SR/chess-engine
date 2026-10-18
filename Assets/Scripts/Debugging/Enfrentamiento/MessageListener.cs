@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 // Listens for data on a NetworkStream on a separate thread.
 // Raises the OnMessageReceived event on the main thread when a message has been read.
@@ -17,9 +16,7 @@ namespace Ajedrez.Debugging.Enfrentamiento
 
 		public event System.Action<TcpClient, string> OnMessageReceived;
 
-		[FormerlySerializedAs("cliente")]
 		TcpClient client;
-		[FormerlySerializedAs("colaMensajes")]
 		ConcurrentQueue<string> messageQueue;
 
 		void Awake()

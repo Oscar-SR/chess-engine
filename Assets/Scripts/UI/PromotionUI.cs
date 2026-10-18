@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using System;
 using Ajedrez.Core;
@@ -9,8 +8,8 @@ namespace Ajedrez.UI
 {
     public class PromotionUI : MonoBehaviour
     {
-        [SerializeField] [FormerlySerializedAs("panelPromocionBlancas")] private GameObject whitePromotionPanel;
-        [SerializeField] [FormerlySerializedAs("panelPromocionNegras")] private GameObject blackPromotionPanel;
+        [SerializeField] private GameObject whitePromotionPanel;
+        [SerializeField] private GameObject blackPromotionPanel;
         private GameObject currentPromotionPanel;
         private Action<int> selectionCallback;
 

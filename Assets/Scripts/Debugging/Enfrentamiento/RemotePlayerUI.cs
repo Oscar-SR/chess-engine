@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using TMPro;
 
@@ -9,17 +8,17 @@ namespace Ajedrez.Debugging.Enfrentamiento
 {
     public class RemotePlayerUI : MonoBehaviour
     {
-        [SerializeField] [FormerlySerializedAs("jugadorEnfrentamientoManager")] private RemotePlayerManager remotePlayerManager;
-        [SerializeField] [FormerlySerializedAs("colorVerde")] private Color connectedColor;
-        [SerializeField] [FormerlySerializedAs("TMP_nombre")] private TMP_Text nameText;
-        [SerializeField] [FormerlySerializedAs("TMP_conectado")] private TMP_Text connectedText;
-        [SerializeField] [FormerlySerializedAs("TMP_tablero")] private TMP_Text boardText;
-        [SerializeField] [FormerlySerializedAs("TMP_colorPiezas")] private TMP_Text pieceColorText;
-        [SerializeField] [FormerlySerializedAs("TMP_tiempoPensar")] private TMP_Text thinkingTimeText;
-        [SerializeField] [FormerlySerializedAs("TMP_movimientoRecibido")] private TMP_Text receivedMoveText;
-        [SerializeField] [FormerlySerializedAs("TMP_movimientoEnviado")] private TMP_Text sentMoveText;
-        [SerializeField] [FormerlySerializedAs("textoDebug")] private TMP_Text debugText;
-        [SerializeField] [FormerlySerializedAs("enlaceCommitGithub")] private string githubCommitLink;
+        [SerializeField] private RemotePlayerManager remotePlayerManager;
+        [SerializeField] private Color connectedColor;
+        [SerializeField] private TMP_Text nameText;
+        [SerializeField] private TMP_Text connectedText;
+        [SerializeField] private TMP_Text boardText;
+        [SerializeField] private TMP_Text pieceColorText;
+        [SerializeField] private TMP_Text thinkingTimeText;
+        [SerializeField] private TMP_Text receivedMoveText;
+        [SerializeField] private TMP_Text sentMoveText;
+        [SerializeField] private TMP_Text debugText;
+        [SerializeField] private string githubCommitLink;
 
         // Start is called before the first frame update
         void Start()
