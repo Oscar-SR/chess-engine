@@ -724,11 +724,11 @@ namespace Chess.UI
             InitializeDictionary();
         }
 
-        // Note: original did not call InitializeDictionary in ChangePerspective? It did not. But pieces regenerated; dictionary stale. Add to be safe? Original code didn't. Keep original behavior? 
-        // Actually original CambiarPerspectiva didn't call InicializarDiccionario. But generated pieces fresh and dictionary from previous orientation stale. However Init path calls. Hmm. Keep faithful: no dictionary reinit? But then broken. 
-        // I'll leave as original (no reinit) to avoid behavior change; but InitializeDictionary should be called after GeneratePieces. 
-        // Let's call InitializeDictionary to maintain correctness.
-        // Already added.
+        // Note: the original code did not call InitializeDictionary from
+        // ChangePerspective (CambiarPerspectiva). The pieces are regenerated
+        // here, so the dictionary built for the previous orientation is stale.
+        // Reinitializing it keeps things correct; leaving it out to stay
+        // faithful to the original would break the piece lookup.
 
         public (Piece.Color player1Color, Piece.Color player2Color) GetPlayerColors()
         {

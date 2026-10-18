@@ -25,10 +25,10 @@ namespace Chess.Core
         public TextAsset OpeningBook { get; private set; }
         public int MaxBookMovement { get; private set; }
 
-        // ✅ Constructores privados para evitar usos incorrectos
+        // ✅ Private constructors to prevent incorrect usage
         private AIConfiguration() { }
 
-        // 🔹 Preconfigurados
+        // 🔹 Preconfigured instances
         public static AIConfiguration CreateEasy(TextAsset book)
         {
             return new AIConfiguration
