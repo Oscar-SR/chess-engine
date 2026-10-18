@@ -2,79 +2,79 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace Ajedrez.Systems
+namespace Chess.Systems
 {
     public class AudioSystem : MonoBehaviour
     {
-        public enum TipoSonido
+        public enum SoundType
         {
-            Movimiento,
-            Captura,
-            Enroque,
-            Promocion,
-            Jaque
+            Move,
+            Capture,
+            Castle,
+            Promotion,
+            InCheck
         }
 
-        public enum TipoMusica
+        public enum MusicType
         {
             Menu
         }
 
-        public static AudioSystem Instancia { get; private set; }
+        public static AudioSystem Instance { get; private set; }
 
-        // Constantes
+        // Constants
         private const float MIN_PITCH = 0.9f;
         private const float MAX_PITCH = 1.1f;
 
         // Audio sources
-        private AudioSource sonidoSource;
-        private AudioSource sonidoAleatorioSource;
-        private AudioSource musicaSource;
+        private AudioSource soundSource;
+        private AudioSource randomSoundSource;
+        private AudioSource musicSource;
 
         [Header("Audio Mixer")]
         [SerializeField] private AudioMixer audioMixer;
 
         [Header("Mixer Groups")]
-        [SerializeField] private AudioMixerGroup mixerGrupoEfectos;
-        [SerializeField] private AudioMixerGroup mixerGrupoMusica;
+        [SerializeField] private AudioMixerGroup effectsMixerGroup;
+        [SerializeField] private AudioMixerGroup musicMixerGroup;
 
         // Audio clips
-        [Header("Sonidos")]
-        [SerializeField] private AudioClip sonidoMovimiento;
-        [SerializeField] private AudioClip sonidoCaptura;
-        [SerializeField] private AudioClip sonidoEnroque;
-        [SerializeField] private AudioClip sonidoPromocion;
-        [SerializeField] private AudioClip sonidoJaque;
+        [Header("Sounds")]
+        [SerializeField] private AudioClip moveSound;
+        [SerializeField] private AudioClip captureSound;
+        [SerializeField] private AudioClip castleSound;
+        [SerializeField] private AudioClip promotionSound;
+        [SerializeField] private AudioClip checkSound;
 
-        [Header("Música")]
-        [SerializeField] private AudioClip musicaMenu;
+        [Header("Music")]
+        [SerializeField] private AudioClip menuMusic;
 
-        private Dictionary<TipoSonido, AudioClip> sonidos;
-        private Dictionary<TipoMusica, AudioClip> musicas;
+        private Dictionary<SoundType, AudioClip> sounds;
+        private Dictionary<MusicType, AudioClip> musics;
 
         private void Awake()
         {
-            if (Instancia == null)
+            if (Instance == null)
             {
-                Instancia = this;
+                Instance = this;
                 DontDestroyOnLoad(gameObject);
 
-                // Crear y configurar los AudioSource por código
-                sonidoSource = gameObject.AddComponent<AudioSource>();
-                sonidoAleatorioSource = gameObject.AddComponent<AudioSource>();
-                musicaSource = gameObject.AddComponent<AudioSource>();
-                sonidoSource.playOnAwake = false;
-                sonidoAleatorioSource.playOnAwake = false;
-                musicaSource.playOnAwake = false;
-                musicaSource.loop = true;
+                // Create and configure the AudioSource instances in code
+                soundSource = gameObject.AddComponent<AudioSource>();
+                randomSoundSource = gameObject.AddComponent<AudioSource>();
+                musicSource = gameObject.AddComponent<AudioSource>();
+                soundSource.playOnAwake = false;
+                randomSoundSource.playOnAwake = false;
+                musicSource.playOnAwake = false;
+                musicSource.loop = true;
 
-                // Asignar Mixer Groups
-                sonidoSource.outputAudioMixerGroup = mixerGrupoEfectos;
-                sonidoAleatorioSource.outputAudioMixerGroup = mixerGrupoEfectos;
-                musicaSource.outputAudioMixerGroup = mixerGrupoMusica;
+                // Assign Mixer Groups
+                soundSource.outputAudioMixerGroup = effectsMixerGroup;
+                randomSoundSource.outputAudioMixerGroup = effectsMixerGroup;
+                musicSource.outputAudioMixerGroup = musicMixerGroup;
 
-                InicializarSonidos();
-                InicializarMusicas();
+                InitializeSounds();
+                InitializeMusic();
             }
             else
             {
@@ -82,74 +82,74 @@ namespace Ajedrez.Systems
             }
         }
 
-        private void InicializarSonidos()
+        private void InitializeSounds()
         {
-            sonidos = new Dictionary<TipoSonido, AudioClip>
+            sounds = new Dictionary<SoundType, AudioClip>
             {
-                { TipoSonido.Movimiento, sonidoMovimiento },
-                { TipoSonido.Captura, sonidoCaptura },
-                { TipoSonido.Enroque, sonidoEnroque },
-                { TipoSonido.Promocion, sonidoPromocion },
-                { TipoSonido.Jaque, sonidoJaque }
+                { SoundType.Move, moveSound },
+                { SoundType.Capture, captureSound },
+                { SoundType.Castle, castleSound },
+                { SoundType.Promotion, promotionSound },
+                { SoundType.InCheck, checkSound }
             };
         }
 
-        private void InicializarMusicas()
+        private void InitializeMusic()
         {
-            musicas = new Dictionary<TipoMusica, AudioClip>
+            musics = new Dictionary<MusicType, AudioClip>
             {
-                { TipoMusica.Menu, musicaMenu }
+                { MusicType.Menu, menuMusic }
             };
         }
 
-        public void ReproducirSonido(TipoSonido sonido)
+        public void PlaySound(SoundType sound)
         {
-            sonidoSource.PlayOneShot(sonidos[sonido]);
+            soundSource.PlayOneShot(sounds[sound]);
         }
 
-        public void ReproducirSonidoConPitchAleatorio(TipoSonido sonido, float min = MIN_PITCH, float max = MAX_PITCH)
+        public void PlaySoundWithRandomPitch(SoundType sound, float min = MIN_PITCH, float max = MAX_PITCH)
         {
-            sonidoAleatorioSource.pitch = Random.Range(min, max);
-            sonidoAleatorioSource.PlayOneShot(sonidos[sonido]);
+            randomSoundSource.pitch = Random.Range(min, max);
+            randomSoundSource.PlayOneShot(sounds[sound]);
         }
 
-        public void ReproducirMusica(TipoMusica musica)
+        public void PlayMusic(MusicType music)
         {
-            musicaSource.clip = musicas[musica];
-            musicaSource.Play();
+            musicSource.clip = musics[music];
+            musicSource.Play();
         }
 
-        public void EstablecerVolumenGeneral(float volumen)
+        public void SetGeneralVolume(float volume)
         {
-            audioMixer.SetFloat("volumenGeneral", Mathf.Log10(volumen) * 20f);
+            audioMixer.SetFloat("volumenGeneral", Mathf.Log10(volume) * 20f);
         }
 
-        public void EstablecerVolumenEfectos(float volumen)
+        public void SetEffectsVolume(float volume)
         {
-            audioMixer.SetFloat("volumenEfectos", Mathf.Log10(volumen) * 20f);
+            audioMixer.SetFloat("volumenEfectos", Mathf.Log10(volume) * 20f);
         }
 
-        public void EstablecerVolumenMusica(float volumen)
+        public void SetMusicVolume(float volume)
         {
-            audioMixer.SetFloat("volumenMusica", Mathf.Log10(volumen) * 20f);
+            audioMixer.SetFloat("volumenMusica", Mathf.Log10(volume) * 20f);
         }
 
-        public float ObtenerVolumenGeneral()
+        public float GetGeneralVolume()
         {
-            audioMixer.GetFloat("volumenGeneral", out float valorDb);
-            return Mathf.Pow(10f, valorDb / 20f);
+            audioMixer.GetFloat("volumenGeneral", out float valueDb);
+            return Mathf.Pow(10f, valueDb / 20f);
         }
 
-        public float ObtenerVolumenEfectos()
+        public float GetEffectsVolume()
         {
-            audioMixer.GetFloat("volumenEfectos", out float valorDb);
-            return Mathf.Pow(10f, valorDb / 20f);
+            audioMixer.GetFloat("volumenEfectos", out float valueDb);
+            return Mathf.Pow(10f, valueDb / 20f);
         }
 
-        public float ObtenerVolumenMusica()
+        public float GetMusicVolume()
         {
-            audioMixer.GetFloat("volumenMusica", out float valorDb);
-            return Mathf.Pow(10f, valorDb / 20f);
+            audioMixer.GetFloat("volumenMusica", out float valueDb);
+            return Mathf.Pow(10f, valueDb / 20f);
         }
     }
 }

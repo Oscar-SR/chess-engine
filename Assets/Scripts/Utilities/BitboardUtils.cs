@@ -1,14 +1,14 @@
 using static System.Math;
 
-namespace Ajedrez.Utilities
+namespace Chess.Utilities
 {
     public static class BitboardUtils
     {
-        public static readonly ulong[] AtaquesCaballo = new ulong[AjedrezUtils.MAX_INDICE]; // bitboard que contiene las casillas desde las que puede atacar un caballo a cada una de las casillas del tablero
-        public static readonly ulong[] AtaquesRey = new ulong[AjedrezUtils.MAX_INDICE]; // bitboard que contiene las casillas desde las que puede atacar un rey a cada una de las casillas del tablero
-        public static readonly ulong[,] AtaquesPeon = new ulong[2, AjedrezUtils.MAX_INDICE]; // bitboard que contiene las casillas desde las que puede atacar un peon de cada color a cada una de las casillas del tablero
-        private static ulong[,] CasillasEntre = new ulong[64, 64]; // matriz de bitboards que definen las casillas que hay entre otras dos en línea recta o diagonal (si no hay este tipo de casillas entre medias, devuelve 0UL)
-        private static readonly int[] Index64 = // secuencia De Bruijin
+        public static readonly ulong[] KnightAttacks = new ulong[ChessUtils.BOARD_SQUARE_COUNT]; // bitboard containing the squares from which a knight can attack each square of the board
+        public static readonly ulong[] KingAttacks = new ulong[ChessUtils.BOARD_SQUARE_COUNT]; // bitboard containing the squares from which a king can attack each square of the board
+        public static readonly ulong[,] PawnAttacks = new ulong[2, ChessUtils.BOARD_SQUARE_COUNT]; // bitboard containing the squares from which a pawn of each color can attack each square of the board
+        private static ulong[,] SquaresBetween = new ulong[64, 64]; // matrix of bitboards defining the squares between two others in a straight or diagonal line (if there are no such squares in between, returns 0UL)
+        private static readonly int[] Index64 = // De Bruijn sequence
         {
             0, 47,  1, 56, 48, 27,  2, 60,
             57, 49, 41, 37, 28, 16,  3, 61,
@@ -20,54 +20,60 @@ namespace Ajedrez.Utilities
             13, 18,  8, 12,  7,  6,  5, 63
         };
 
-        // Constructor estático
+        // Static constructor
         static BitboardUtils()
         {
-            // Precáculos
-            PrecalcularAtaquesCaballo();
-            PrecalcularAtaquesRey();
-            PrecalcularAtaquesPeones();
-            PrecalcularCasillasEntre();
+            // Precalculations
+            PrecalculateKnightAttacks();
+            PrecalculateKingAttacks();
+            PrecalculatePawnAttacks();
+            PrecalculateSquaresBetween();
         }
 
-        /// <summary>
-        /// Activa el bit correspondiente a la casilla dada.
-        /// </summary>
-        /// <param name="casilla">Índice de la casilla (0-63).</param>
-        /// <returns>Bitboard con solo esa casilla activada.</returns>
-        public static ulong SetBit(int casilla)
+        public static void Initialize()
         {
-            return 1UL << casilla;
+            // Empty method for lazy initialization
+            // Call this method to force initialization
         }
 
         /// <summary>
-        /// Comprueba si una casilla está activa en el bitboard dado.
+        /// Sets the bit corresponding to the given square.
         /// </summary>
-        /// <param name="casilla">Índice de la casilla.</param>
-        /// <param name="bitboard">Bitboard a evaluar.</param>
-        /// <returns>Verdadero si el bit está activo, falso si no.</returns>
-        public static bool EstaCasillaActiva(int casilla, ulong bitboard)
+        /// <param name="square">Square index (0-63).</param>
+        /// <returns>Bitboard with only that square set.</returns>
+        public static ulong SetBit(int square)
         {
-            return (bitboard & SetBit(casilla)) != 0;
+            return 1UL << square;
         }
 
         /// <summary>
-        /// Indica si hay más de un bit activo en el bitboard.
+        /// Checks whether a square is set in the given bitboard.
         /// </summary>
-        /// <param name="bitboard">Bitboard a evaluar.</param>
-        /// <returns>Verdadero si hay más de un bit a 1, falso si hay 0 o 1.</returns>
-        public static bool MasDeUnBitActivo(ulong bitboard)
+        /// <param name="square">Square index.</param>
+        /// <param name="bitboard">Bitboard to evaluate.</param>
+        /// <returns>True if the bit is set, false otherwise.</returns>
+        public static bool IsSquareActive(int square, ulong bitboard)
+        {
+            return (bitboard & SetBit(square)) != 0;
+        }
+
+        /// <summary>
+        /// Indicates whether more than one bit is set in the bitboard.
+        /// </summary>
+        /// <param name="bitboard">Bitboard to evaluate.</param>
+        /// <returns>True if more than one bit is set, false otherwise (0 or 1).</returns>
+        public static bool MoreThanOneBitActive(ulong bitboard)
         {
             return (bitboard & (bitboard - 1)) != 0;
         }
 
-        // ATAQUES CABALLO
-        private static void PrecalcularAtaquesCaballo()
+        // KNIGHT ATTACKS
+        private static void PrecalculateKnightAttacks()
         {
-            for (int i = 0; i < AjedrezUtils.MAX_INDICE; i++)
+            for (int i = 0; i < ChessUtils.BOARD_SQUARE_COUNT; i++)
             {
-                ulong ataques = 0UL;
-                (int f, int c) = AjedrezUtils.IndiceACoordenadas(i);
+                ulong attacks = 0UL;
+                (int rank, int file) = ChessUtils.IndexToCoordinates(i);
 
                 int[,] offsets = {
                     { -2, -1 }, { -2, 1 }, { -1, -2 }, { -1, 2 },
@@ -76,113 +82,113 @@ namespace Ajedrez.Utilities
 
                 for (int j = 0; j < offsets.GetLength(0); j++)
                 {
-                    int nf = f + offsets[j, 0];
-                    int nc = c + offsets[j, 1];
-                    if (nf >= 0 && nf < AjedrezUtils.TAM_TABLERO && nc >= 0 && nc < AjedrezUtils.TAM_TABLERO)
-                        ataques |= SetBit(AjedrezUtils.CoordenadasAIndice(nf, nc));
+                    int newRank = rank + offsets[j, 0];
+                    int newFile = file + offsets[j, 1];
+                    if (newRank >= 0 && newRank < ChessUtils.BOARD_SIZE && newFile >= 0 && newFile < ChessUtils.BOARD_SIZE)
+                        attacks |= SetBit(ChessUtils.CoordinatesToIndex(newRank, newFile));
                 }
 
-                AtaquesCaballo[i] = ataques;
+                KnightAttacks[i] = attacks;
             }
         }
 
-        // ATAQUES REY
-        private static void PrecalcularAtaquesRey()
+        // KING ATTACKS
+        private static void PrecalculateKingAttacks()
         {
-            for (int i = 0; i < AjedrezUtils.MAX_INDICE; i++)
+            for (int i = 0; i < ChessUtils.BOARD_SQUARE_COUNT; i++)
             {
-                ulong ataques = 0UL;
-                (int f, int c) = AjedrezUtils.IndiceACoordenadas(i);
+                ulong attacks = 0UL;
+                (int rank, int file) = ChessUtils.IndexToCoordinates(i);
 
-                for (int df = -1; df <= 1; df++)
+                for (int dr = -1; dr <= 1; dr++)
                 {
-                    for (int dc = -1; dc <= 1; dc++)
+                    for (int df = -1; df <= 1; df++)
                     {
-                        if (df == 0 && dc == 0) continue;
+                        if (dr == 0 && df == 0) continue;
 
-                        int nf = f + df;
-                        int nc = c + dc;
+                        int newRank = rank + dr;
+                        int newFile = file + df;
 
-                        if (nf >= 0 && nf < AjedrezUtils.TAM_TABLERO && nc >= 0 && nc < AjedrezUtils.TAM_TABLERO)
-                            ataques |= SetBit(AjedrezUtils.CoordenadasAIndice(nf, nc));
+                        if (newRank >= 0 && newRank < ChessUtils.BOARD_SIZE && newFile >= 0 && newFile < ChessUtils.BOARD_SIZE)
+                            attacks |= SetBit(ChessUtils.CoordinatesToIndex(newRank, newFile));
                     }
                 }
 
-                AtaquesRey[i] = ataques;
+                KingAttacks[i] = attacks;
             }
         }
 
-        // ATAQUES PEONES
-        private static void PrecalcularAtaquesPeones()
+        // PAWN ATTACKS
+        private static void PrecalculatePawnAttacks()
         {
-            for (int i = 0; i < AjedrezUtils.MAX_INDICE; i++)
+            for (int i = 0; i < ChessUtils.BOARD_SQUARE_COUNT; i++)
             {
-                (int f, int c) = AjedrezUtils.IndiceACoordenadas(i);
+                (int rank, int file) = ChessUtils.IndexToCoordinates(i);
 
-                ulong blanco = 0UL, negro = 0UL;
+                ulong white = 0UL, black = 0UL;
 
-                // Ataques peón blanco (hacia el norte = fila -1)
-                if (f > 0)
+                // White pawn attacks (north = rank - 1)
+                if (rank > 0)
                 {
-                    if (c > 0) blanco |= SetBit(AjedrezUtils.CoordenadasAIndice(f - 1, c - 1));
-                    if (c < 7) blanco |= SetBit(AjedrezUtils.CoordenadasAIndice(f - 1, c + 1));
+                    if (file > 0) white |= SetBit(ChessUtils.CoordinatesToIndex(rank - 1, file - 1));
+                    if (file < 7) white |= SetBit(ChessUtils.CoordinatesToIndex(rank - 1, file + 1));
                 }
 
-                // Ataques peón negro (hacia el sur = fila +1)
-                if (f < 7)
+                // Black pawn attacks (south = rank + 1)
+                if (rank < 7)
                 {
-                    if (c > 0) negro |= SetBit(AjedrezUtils.CoordenadasAIndice(f + 1, c - 1));
-                    if (c < 7) negro |= SetBit(AjedrezUtils.CoordenadasAIndice(f + 1, c + 1));
+                    if (file > 0) black |= SetBit(ChessUtils.CoordinatesToIndex(rank + 1, file - 1));
+                    if (file < 7) black |= SetBit(ChessUtils.CoordinatesToIndex(rank + 1, file + 1));
                 }
 
-                AtaquesPeon[0, i] = blanco; // Blancas
-                AtaquesPeon[1, i] = negro; // Negras
+                PawnAttacks[0, i] = white; // White
+                PawnAttacks[1, i] = black; // Black
             }
         }
 
-        private static void PrecalcularCasillasEntre()
+        private static void PrecalculateSquaresBetween()
         {
-            for (int desde = 0; desde < 64; desde++)
+            for (int from = 0; from < 64; from++)
             {
-                for (int hasta = 0; hasta < 64; hasta++)
+                for (int to = 0; to < 64; to++)
                 {
-                    CasillasEntre[desde, hasta] = CalcularCasillasEntre(desde, hasta);
+                    SquaresBetween[from, to] = CalculateSquaresBetween(from, to);
                 }
             }
         }
 
-        private static ulong CalcularCasillasEntre(int desde, int hasta)
+        private static ulong CalculateSquaresBetween(int from, int to)
         {
-            int filaDesde = desde / 8;
-            int colDesde = desde % 8;
-            int filaHasta = hasta / 8;
-            int colHasta = hasta % 8;
+            int fromRank = from / 8;
+            int fromFile = from % 8;
+            int toRank = to / 8;
+            int toFile = to % 8;
 
-            int deltaFila = Sign(filaHasta - filaDesde);
-            int deltaCol = Sign(colHasta - colDesde);
+            int rankDelta = Sign(toRank - fromRank);
+            int fileDelta = Sign(toFile - fromFile);
 
-            // Si son la misma casilla, no hay nada entre ellas
-            if (deltaFila == 0 && deltaCol == 0)
+            // If it is the same square, there is nothing between them
+            if (rankDelta == 0 && fileDelta == 0)
                 return 0UL;
 
-            // Verifica si están alineadas (misma fila, columna o diagonal)
-            if ((Abs(filaHasta - filaDesde) == Abs(colHasta - colDesde)) ||
-                filaDesde == filaHasta || colDesde == colHasta)
+            // Check whether they are aligned (same rank, file or diagonal)
+            if ((Abs(toRank - fromRank) == Abs(toFile - fromFile)) ||
+                fromRank == toRank || fromFile == toFile)
             {
                 ulong ray = 0UL;
-                int f = filaDesde + deltaFila;
-                int c = colDesde + deltaCol;
+                int r = fromRank + rankDelta;
+                int f = fromFile + fileDelta;
 
-                while (f != filaHasta || c != colHasta)
+                while (r != toRank || f != toFile)
                 {
-                    ray |= 1UL << (f * 8 + c);
-                    f += deltaFila;
-                    c += deltaCol;
+                    ray |= 1UL << (r * 8 + f);
+                    r += rankDelta;
+                    f += fileDelta;
                 }
 
-                // Excluye las casillas de origen y destino
-                ray &= ~(1UL << desde);
-                ray &= ~(1UL << hasta);
+                // Exclude the origin and destination squares
+                ray &= ~(1UL << from);
+                ray &= ~(1UL << to);
 
                 return ray;
             }
@@ -191,206 +197,206 @@ namespace Ajedrez.Utilities
         }
 
         /// <summary>
-        /// Devuelve las casillas entre dos posiciones si están alineadas.
+        /// Returns the squares between two positions if they are aligned.
         /// </summary>
-        /// <param name="desde">Índice de casilla inicial.</param>
-        /// <param name="hasta">Índice de casilla final.</param>
-        /// <returns>Bitboard con las casillas entre 'desde' y 'hasta'.</returns>
-        public static ulong ObtenerCasillasEntre(int desde, int hasta)
+        /// <param name="from">Starting square index.</param>
+        /// <param name="to">Ending square index.</param>
+        /// <returns>Bitboard with the squares between 'from' and 'to'.</returns>
+        public static ulong GetSquaresBetween(int from, int to)
         {
-            return CasillasEntre[desde, hasta];
+            return SquaresBetween[from, to];
         }
 
         /// <summary>
-        /// Calcula las casillas a las que puede atacar un alfil desde una posición dada, considerando bloqueos.
+        /// Calculates the squares a bishop can attack from a given position, considering blockers.
         /// </summary>
-        /// <param name="casillasOcupadas">Bitboard con todas las piezas en el tablero.</param>
-        /// <param name="casilla">Índice de la casilla del alfil.</param>
-        /// <returns>Bitboard con casillas atacadas por el alfil.</returns>
-        public static ulong AtaquesAlfil(ulong casillasOcupadas, int casilla)
+        /// <param name="occupiedSquares">Bitboard with all pieces on the board.</param>
+        /// <param name="square">Index of the bishop's square.</param>
+        /// <returns>Bitboard with squares attacked by the bishop.</returns>
+        public static ulong BishopAttacks(ulong occupiedSquares, int square)
         {
-            (int rank, int file) = AjedrezUtils.IndiceACoordenadas(casilla);
-            ulong ataques = 0UL;
+            (int rank, int file) = ChessUtils.IndexToCoordinates(square);
+            ulong attacks = 0UL;
 
-            // Direcciones diagonales: NE, NO, SE, SO
-            int[] dRank = { 1, 1, -1, -1 };
-            int[] dFile = { 1, -1, 1, -1 };
+            // Diagonal directions: NE, NW, SE, SW
+            int[] rankDelta = { 1, 1, -1, -1 };
+            int[] fileDelta = { 1, -1, 1, -1 };
 
             for (int dir = 0; dir < 4; dir++)
             {
-                int r = rank + dRank[dir];
-                int f = file + dFile[dir];
+                int r = rank + rankDelta[dir];
+                int f = file + fileDelta[dir];
 
-                while (AjedrezUtils.EnTablero(r, f))
+                while (ChessUtils.IsOnBoard(r, f))
                 {
                     int sq = r * 8 + f;
-                    ataques |= SetBit(sq);
-                    if ((casillasOcupadas & SetBit(sq)) != 0) break; // si hay una pieza, detenemos
-                    r += dRank[dir];
-                    f += dFile[dir];
+                    attacks |= SetBit(sq);
+                    if ((occupiedSquares & SetBit(sq)) != 0) break; // if there is a piece, stop
+                    r += rankDelta[dir];
+                    f += fileDelta[dir];
                 }
             }
 
-            return ataques;
+            return attacks;
         }
 
         /// <summary>
-        /// Calcula las casillas a las que puede atacar una torre desde una posición dada.
+        /// Calculates the squares a rook can attack from a given position.
         /// </summary>
-        /// <param name="casillasOcupadas">Bitboard con todas las piezas en el tablero.</param>
-        /// <param name="casilla">Índice de la casilla de la torre.</param>
-        /// <returns>Bitboard con casillas atacadas por la torre.</returns>
-        public static ulong AtaquesTorre(ulong casillasOcupadas, int casilla)
+        /// <param name="occupiedSquares">Bitboard with all pieces on the board.</param>
+        /// <param name="square">Index of the rook's square.</param>
+        /// <returns>Bitboard with squares attacked by the rook.</returns>
+        public static ulong RookAttacks(ulong occupiedSquares, int square)
         {
-            (int rank, int file) = AjedrezUtils.IndiceACoordenadas(casilla);
-            ulong ataques = 0UL;
+            (int rank, int file) = ChessUtils.IndexToCoordinates(square);
+            ulong attacks = 0UL;
 
-            // Direcciones ortogonales: N, S, E, O
-            int[] dRank = { 1, -1, 0, 0 };
-            int[] dFile = { 0, 0, 1, -1 };
+            // Orthogonal directions: N, S, E, W
+            int[] rankDelta = { 1, -1, 0, 0 };
+            int[] fileDelta = { 0, 0, 1, -1 };
 
             for (int dir = 0; dir < 4; dir++)
             {
-                int r = rank + dRank[dir];
-                int f = file + dFile[dir];
+                int r = rank + rankDelta[dir];
+                int f = file + fileDelta[dir];
 
-                while (AjedrezUtils.EnTablero(r, f))
+                while (ChessUtils.IsOnBoard(r, f))
                 {
                     int sq = r * 8 + f;
-                    ataques |= SetBit(sq);
-                    if ((casillasOcupadas & SetBit(sq)) != 0) break;
-                    r += dRank[dir];
-                    f += dFile[dir];
+                    attacks |= SetBit(sq);
+                    if ((occupiedSquares & SetBit(sq)) != 0) break;
+                    r += rankDelta[dir];
+                    f += fileDelta[dir];
                 }
             }
 
-            return ataques;
+            return attacks;
         }
 
         /// <summary>
-        /// Calcula los ataques de rayos X (piezas detrás de una obstrucción) para una torre.
+        /// Calculates X-ray attacks (pieces behind an obstruction) for a rook.
         /// </summary>
-        /// <param name="casillasOcupadas">Bitboard de todas las piezas.</param>
-        /// <param name="bloqueadores">Bitboard de piezas que pueden bloquear.</param>
-        /// <param name="casillaTorre">Índice de la torre.</param>
-        /// <returns>Bitboard con casillas atacadas por rayos X.</returns>
-        public static ulong AtaquesRayosXTorre(ulong casillasOcupadas, ulong bloqueadores, int casillaTorre)
+        /// <param name="occupiedSquares">Bitboard of all pieces.</param>
+        /// <param name="blockers">Bitboard of pieces that may block.</param>
+        /// <param name="rookSquare">Index of the rook.</param>
+        /// <returns>Bitboard with squares attacked by X-rays.</returns>
+        public static ulong XRayRookAttacks(ulong occupiedSquares, ulong blockers, int rookSquare)
         {
-            ulong ataques = AtaquesTorre(casillasOcupadas, casillaTorre);
-            bloqueadores &= ataques; // Nos quedamos solo con bloqueadores en la línea de ataque
-            return ataques ^ AtaquesTorre(casillasOcupadas ^ bloqueadores, casillaTorre);
+            ulong attacks = RookAttacks(occupiedSquares, rookSquare);
+            blockers &= attacks; // Keep only blockers in the attack line
+            return attacks ^ RookAttacks(occupiedSquares ^ blockers, rookSquare);
         }
 
 
         /// <summary>
-        /// Calcula los ataques de rayos X para un alfil.
+        /// Calculates X-ray attacks for a bishop.
         /// </summary>
-        /// <param name="casillasOcupadas">Bitboard de todas las piezas.</param>
-        /// <param name="bloqueadores">Bitboard de piezas bloqueadoras.</param>
-        /// <param name="casillaAlfil">Índice de la casilla del alfil.</param>
-        /// <returns>Bitboard con casillas atacadas por rayos X del alfil.</returns>
-        public static ulong AtaquesRayosXAlfil(ulong casillasOcupadas, ulong bloqueadores, int casillaAlfil)
+        /// <param name="occupiedSquares">Bitboard of all pieces.</param>
+        /// <param name="blockers">Bitboard of blocking pieces.</param>
+        /// <param name="bishopSquare">Index of the bishop's square.</param>
+        /// <returns>Bitboard with squares attacked by the bishop's X-rays.</returns>
+        public static ulong XRayBishopAttacks(ulong occupiedSquares, ulong blockers, int bishopSquare)
         {
-            ulong ataques = AtaquesAlfil(casillasOcupadas, casillaAlfil);
-            bloqueadores &= ataques; // Solo bloqueadores en la diagonal
-            return ataques ^ AtaquesAlfil(casillasOcupadas ^ bloqueadores, casillaAlfil);
+            ulong attacks = BishopAttacks(occupiedSquares, bishopSquare);
+            blockers &= attacks; // Only blockers on the diagonal
+            return attacks ^ BishopAttacks(occupiedSquares ^ blockers, bishopSquare);
         }
 
         /// <summary>
-        /// Devuelve el índice del primer bit activo (empezando desde el menos significativo).
+        /// Returns the index of the first set bit (starting from the least significant).
         /// </summary>
-        /// <param name="bitboard">Bitboard de entrada.</param>
-        /// <returns>Índice del primer bit activo (0-63).</returns>
+        /// <param name="bitboard">Input bitboard.</param>
+        /// <returns>Index of the first set bit (0-63).</returns>
         /// <remarks>
-        /// Fuente: <see href="https://www.chessprogramming.org/BitScan">Chess Programming Wiki</see><br/>
-        /// Autor: Kim Walisch (2012)
+        /// Source: <see href="https://www.chessprogramming.org/BitScan">Chess Programming Wiki</see><br/>
+        /// Author: Kim Walisch (2012)
         /// </remarks>
-        public static int PrimerBitActivo(ulong bb)
+        public static int FirstActiveBit(ulong bitboard)
         {
             const ulong DeBruijn64 = 0x03f79d71b4cb0a89UL;
-            if (bb == 0)
+            if (bitboard == 0)
                 return -1;
-            return Index64[((bb ^ (bb - 1)) * DeBruijn64) >> 58];
+            return Index64[((bitboard ^ (bitboard - 1)) * DeBruijn64) >> 58];
         }
 
         /// <summary>
-        /// Genera ataques deslizantes sin filtrar hacia el rey enemigo (útil para rayos X).
+        /// Generates sliding attacks without filtering towards the enemy king (useful for X-rays).
         /// </summary>
-        /// <param name="ocupadas">Bitboard de todas las piezas en el tablero.</param>
-        /// <param name="torres">Bitboard de torres del atacante.</param>
-        /// <param name="alfiles">Bitboard de alfiles del atacante.</param>
-        /// <param name="damas">Bitboard de damas del atacante.</param>
-        /// <param name="reyEnemigo">Bitboard con solo el rey enemigo activo.</param>
-        /// <returns>Bitboard con casillas atacadas por piezas deslizantes.</returns>
-        public static ulong AtaquesDeslizantesSinFiltrar(ulong ocupadas, ulong torres, ulong alfiles, ulong damas, ulong reyEnemigo)
+        /// <param name="occupied">Bitboard with all pieces on the board.</param>
+        /// <param name="rooks">Bitboard of the attacker's rooks.</param>
+        /// <param name="bishops">Bitboard of the attacker's bishops.</param>
+        /// <param name="queens">Bitboard of the attacker's queens.</param>
+        /// <param name="enemyKing">Bitboard with only the enemy king set.</param>
+        /// <returns>Bitboard with squares attacked by sliding pieces.</returns>
+        public static ulong UnfilteredSlidingAttacks(ulong occupied, ulong rooks, ulong bishops, ulong queens, ulong enemyKing)
         {
-            ulong ataques = 0;
+            ulong attacks = 0;
 
-            // Quitamos el rey enemigo del bitboard de ocupadas
-            ulong ocupadasSinRey = ocupadas & ~reyEnemigo;
+            // Remove the enemy king from the occupied bitboard
+            ulong occupiedWithoutKing = occupied & ~enemyKing;
 
-            // Torres y damas (movimientos ortogonales)
+            // Rooks and queens (orthogonal moves)
             for (int i = 0; i < 64; i++)
             {
-                if (((torres | damas) & (1UL << i)) != 0)
+                if (((rooks | queens) & (1UL << i)) != 0)
                 {
-                    ataques |= AtaquesTorre(ocupadasSinRey, i);
+                    attacks |= RookAttacks(occupiedWithoutKing, i);
                 }
             }
 
-            // Alfiles y damas (movimientos diagonales)
+            // Bishops and queens (diagonal moves)
             for (int i = 0; i < 64; i++)
             {
-                if (((alfiles | damas) & (1UL << i)) != 0)
+                if (((bishops | queens) & (1UL << i)) != 0)
                 {
-                    ataques |= AtaquesAlfil(ocupadasSinRey, i);
+                    attacks |= BishopAttacks(occupiedWithoutKing, i);
                 }
             }
 
-            return ataques;
+            return attacks;
         }
 
         /// <summary>
-        /// Indica si un número es potencia de 2.
+        /// Indicates whether a number is a power of two.
         /// </summary>
-        /// <param name="x">Número a evaluar.</param>
-        /// <returns>Verdadero si es potencia de 2, falso si no.</returns>
-        public static bool EsPotenciaDe2(ulong x)
+        /// <param name="value">Number to evaluate.</param>
+        /// <returns>True if it is a power of two, false otherwise.</returns>
+        public static bool IsPowerOfTwo(ulong value)
         {
-            return x != 0 && (x & (x - 1)) == 0;
+            return value != 0 && (value & (value - 1)) == 0;
         }
 
         /// <summary>
-        /// Comprueba si todos los alfiles están en casillas del mismo color.
+        /// Checks whether all bishops are on squares of the same color.
         /// </summary>
-        /// <param name="alfiles">Bitboard de alfiles.</param>
-        /// <returns>Verdadero si están en casillas del mismo color, falso en caso contrario.</returns>
-        public static bool AlfilesEnCasillasMismoColor(ulong alfiles)
+        /// <param name="bishops">Bitboard of bishops.</param>
+        /// <returns>True if they are on squares of the same color, false otherwise.</returns>
+        public static bool BishopsOnSameColorSquares(ulong bishops)
         {
-            const ulong casillasClaras = 0x55AA55AA55AA55AA;
-            const ulong casillasOscuras = 0xAA55AA55AA55AA55;
+            const ulong lightSquares = 0x55AA55AA55AA55AA;
+            const ulong darkSquares = 0xAA55AA55AA55AA55;
 
-            return ((alfiles & casillasClaras) == 0) || ((alfiles & casillasOscuras) == 0);
+            return ((bishops & lightSquares) == 0) || ((bishops & darkSquares) == 0);
         }
 
         /// <summary>
-        /// Cuenta la cantidad de bits activos (peso de Hamming).
+        /// Counts the number of set bits (Hamming weight).
         /// </summary>
-        /// <param name="x">Bitboard a evaluar.</param>
-        /// <returns>Número de bits activos.</returns>
+        /// <param name="value">Bitboard to evaluate.</param>
+        /// <returns>Number of set bits.</returns>
         /// <remarks>
-        /// Fuente: <see href="https://discussions.unity.com/t/portable-pop-count-hamming-weight/807752">Unity Discussions - Portable Pop Count / Hamming Weight</see>
+        /// Source: <see href="https://discussions.unity.com/t/portable-pop-count-hamming-weight/807752">Unity Discussions - Portable Pop Count / Hamming Weight</see>
         /// </remarks>
-        public static int ContarBitsActivos(ulong x)
+        public static int CountActiveBits(ulong value)
         {
             const ulong h01 = 0x0101010101010101;
             const ulong m1 = 0x5555555555555555; // 0101...
             const ulong m2 = 0x3333333333333333; // 00110011..
             const ulong m4 = 0x0f0f0f0f0f0f0f0f;
-            x -= (x >> 1) & m1;             // put count of each 2 bits into those 2 bits
-            x = (x & m2) + ((x >> 2) & m2); // put count of each 4 bits into those 4 bits
-            x = (x + (x >> 4)) & m4;        // put count of each 8 bits into those 8 bits
-            return (int)((x * h01) >> 56);
+            value -= (value >> 1) & m1;             // put count of each 2 bits into those 2 bits
+            value = (value & m2) + ((value >> 2) & m2); // put count of each 4 bits into those 4 bits
+            value = (value + (value >> 4)) & m4;        // put count of each 8 bits into those 8 bits
+            return (int)((value * h01) >> 56);
         }
     }
 }

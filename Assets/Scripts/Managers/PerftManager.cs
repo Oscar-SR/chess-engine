@@ -5,40 +5,45 @@ using TMPro;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Ajedrez.Core;
-using Ajedrez.Utilities;
+using Chess.Core;
+using Chess.Utilities;
+using Chess.Testing;
 
-namespace Ajedrez.Managers
+namespace Chess.Managers
 {
     public class PerftManager : MonoBehaviour
     {
-        private const string ROJO = "#B3472B";
-        private const string VERDE = "#79AD51";
-        private const string CIAN = "#6BCDAE";
-        private const string GRIS = "#808080";
+        private const string RED = "#B3472B";
+        private const string GREEN = "#79AD51";
+        private const string CYAN = "#6BCDAE";
+        private const string GRAY = "#808080";
         
-        [SerializeField] private TextMeshProUGUI textoPerft;
-        [SerializeField] private TMP_InputField entradaFEN;
-        [SerializeField] private TMP_InputField entradaLimiteProfundidad;
-        [SerializeField] private Button botonPerft;
-        [SerializeField] private Button botonDivide;
-        [SerializeField] private Button botonDetenerEjecucion;
-        [SerializeField] private RectTransform contenidoScrollView;
+        [SerializeField] private TextMeshProUGUI perftText;
+        [SerializeField] private TMP_InputField fenInput;
+        [SerializeField] private TMP_InputField depthLimitInput;
+        [SerializeField] private Button perftButton;
+        [SerializeField] private Button divideButton;
+        [SerializeField] private Button stopExecutionButton;
+        [SerializeField] private RectTransform scrollViewContent;
+        [SerializeField] private TextAsset suite;
 
-        private Tablero tablero;
+        private Board board;
         private CancellationTokenSource cancellationTokenSource;
         private CancellationToken cancellationToken;
         private SynchronizationContext unityContext;
 
         void Start()
         {
-            // Capturar el contexto del hilo principal
+            // Capture the main thread context
             unityContext = SynchronizationContext.Current;
+
+            // Warm-up
+            Perft.Run(1, new Board(), CancellationToken.None);
         }
 
-        public void EjecutarTarea(string tarea)
+        public void ExecuteTask(string task)
         {
-            DesactivarBotonesEjecucion();
+            DisableExecutionButtons();
 
             if (cancellationTokenSource != null)
             {
@@ -48,160 +53,163 @@ namespace Ajedrez.Managers
             cancellationTokenSource = new CancellationTokenSource();
             cancellationToken = cancellationTokenSource.Token;
 
-            string fen = string.IsNullOrEmpty(entradaFEN.text)
-                ? entradaFEN.placeholder.GetComponent<TMP_Text>().text
-                : entradaFEN.text;
+            string fen = string.IsNullOrEmpty(fenInput.text)
+                ? fenInput.placeholder.GetComponent<TMP_Text>().text
+                : fenInput.text;
 
-            int limiteProfundidad = (int.TryParse(entradaLimiteProfundidad.text, out int resultado) && resultado > 0) ? resultado : int.MaxValue;
+            int depthLimit = (int.TryParse(depthLimitInput.text, out int result) && result > 0) ? result : int.MaxValue;
 
-            tablero = new Tablero(fen);
-
-            switch(tarea)
+            switch(task)
             {
-                case "TareaPerft":
+                case "PerftTask":
                 {
-                    Task.Run(() => TareaPerft(cancellationToken, limiteProfundidad));
+                    board = new Board(fen);
+                    Task.Run(() => PerftTask(cancellationToken, depthLimit));
                     break;
                 }
 
-                case "TareaDivide":
+                case "DivideTask":
                 {
-                    Task.Run(() => TareaDivide(cancellationToken, limiteProfundidad));
+                    board = new Board(fen);
+                    Task.Run(() => DivideTask(cancellationToken, depthLimit));
+                    break;
+                }
+
+                case "SuiteTask":
+                {
+                    string suiteText = suite != null ? suite.text : null;
+                    Task.Run(() => SuiteTask(cancellationToken, suiteText));
                     break;
                 }
 
                 default:
                 {
-                    UnityEngine.Debug.LogError("Tarea no encontrada");
-                    ActivarBotonesEjecucion();
+                    UnityEngine.Debug.LogError("Task not found");
+                    EnableExecutionButtons();
                     break;
                 }
             }
         }
 
-        public void DetenerEjecucion()
+        public void StopExecution()
         {
             if (cancellationTokenSource != null)
             {
                 cancellationTokenSource.Cancel();
             }
 
-            ActivarBotonesEjecucion();
+            EnableExecutionButtons();
         }
 
-        private void DesactivarBotonesEjecucion()
+        private void DisableExecutionButtons()
         {
-            botonPerft.interactable = false;
-            botonDivide.interactable = false;
-            botonDetenerEjecucion.interactable = true;
+            perftButton.interactable = false;
+            divideButton.interactable = false;
+            stopExecutionButton.interactable = true;
         }
 
-        private void ActivarBotonesEjecucion()
+        private void EnableExecutionButtons()
         {
-            botonPerft.interactable = true;
-            botonDivide.interactable = true;
-            botonDetenerEjecucion.interactable = false;
+            perftButton.interactable = true;
+            divideButton.interactable = true;
+            stopExecutionButton.interactable = false;
         }
 
-        private void VaciarTextPerft()
+        private void ClearPerftText()
         {
             unityContext.Post(_ =>
             {
-                textoPerft.text = "";
-                LayoutRebuilder.ForceRebuildLayoutImmediate(contenidoScrollView);
+                perftText.text = "";
+                LayoutRebuilder.ForceRebuildLayoutImmediate(scrollViewContent);
             }, null);
         }
 
-        private void EscribirTextPerft(string texto)
+        private void WritePerftText(string text)
         {
-            // Actualizar la UI en el hilo principal
+            // Update the UI on the main thread
             unityContext.Post(_ =>
             {
-                textoPerft.text += texto;
-                LayoutRebuilder.ForceRebuildLayoutImmediate(contenidoScrollView);
+                perftText.text += text;
+                LayoutRebuilder.ForceRebuildLayoutImmediate(scrollViewContent);
             }, null);
         }
 
-        private async Task TareaPerft(CancellationToken token, int limiteProfundidad)
+        private async Task PerftTask(CancellationToken token, int depthLimit)
         {
-            int profundidad = 1;
-            VaciarTextPerft();
+            int depth = 1;
+            ClearPerftText();
 
-            while ((profundidad <= limiteProfundidad) && !token.IsCancellationRequested)
+            while ((depth <= depthLimit) && !token.IsCancellationRequested)
             {
-                Stopwatch cronometro = new Stopwatch();
+                Stopwatch stopwatch = new Stopwatch();
 
-                cronometro.Start();
-                int numPosiciones = Perft(profundidad);
-                cronometro.Stop();
+                stopwatch.Start();
+                int nodeCount = Perft.Run(depth, board, cancellationToken);
+                stopwatch.Stop();
 
-                EscribirTextPerft(
-                    $"Profundidad: <color={VERDE}>{profundidad}</color> <color={GRIS}>ply</color>  " +
-                    $"Búsqueda: <color={ROJO}>{numPosiciones:N0}</color> <color={GRIS}>posiciones</color>  " +
-                    $"Tiempo: <color={CIAN}>{cronometro.ElapsedMilliseconds:N0}</color> <color={GRIS}>milisegundos</color>\n"
+                WritePerftText(
+                    $"Depth: <color={GREEN}>{depth}</color> <color={GRAY}>ply</color>  " +
+                    $"Search: <color={RED}>{nodeCount:N0}</color> <color={GRAY}>positions</color>  " +
+                    $"Time: <color={CYAN}>{stopwatch.ElapsedMilliseconds:N0}</color> <color={GRAY}>milliseconds</color>\n"
                 );
 
                 if (token.IsCancellationRequested)
                 {
-                    EscribirTextPerft($"<color={ROJO}>Ejecución cancelada</color>");
+                    WritePerftText($"<color={RED}>Execution cancelled</color>");
                     return;
                 }
 
-                profundidad++;
+                depth++;
                 await Task.Yield();
             }
 
-            EscribirTextPerft($"<color={VERDE}>Test finalizado</color>");
-            unityContext.Post(_ => ActivarBotonesEjecucion(), null); // Activar desde el hilo principal
+            WritePerftText($"<color={GREEN}>Test finished</color>");
+            unityContext.Post(_ => EnableExecutionButtons(), null); // Enable from the main thread
         }
 
-        private int Perft(int profundidad)
+        private async Task DivideTask(CancellationToken token, int depthLimit)
         {
-            if (profundidad == 0)
-                return 1;
+            (List<Move> moves, _) = board.GenerateLegalMoves();
+            int totalNodes = 0;
+            ClearPerftText();
 
-            (List<Movimiento> movimientos, _) = tablero.GenerarMovimientosLegales();
-            int numPosiciones = 0;
-
-            foreach (Movimiento movimiento in movimientos)
-            {                
-                tablero.HacerMovimiento(movimiento);
-                numPosiciones += Perft(profundidad - 1);
-                tablero.DeshacerMovimiento(movimiento);
-
-                if (cancellationToken.IsCancellationRequested)
-                    break;
-            }
-
-            return numPosiciones;
-        }
-
-        private async Task TareaDivide(CancellationToken token, int limiteProfundidad)
-        {
-            (List<Movimiento> movimientos, _) = tablero.GenerarMovimientosLegales();
-            int totalNodos = 0;
-            VaciarTextPerft();
-
-            foreach (Movimiento movimiento in movimientos)
+            foreach (Move move in moves)
             {
-                tablero.HacerMovimiento(movimiento);
-                int nodos = Perft(limiteProfundidad - 1);
-                tablero.DeshacerMovimiento(movimiento);
+                board.MakeMove(move);
+                int nodes = Perft.Run(depthLimit - 1, board, cancellationToken);
+                board.UndoMove(move);
 
-                EscribirTextPerft($"{movimiento.ToLAN()}: <color={CIAN}>{nodos}</color>\n");
+                WritePerftText($"{move.ToLAN()}: <color={CYAN}>{nodes}</color>\n");
 
                 if (token.IsCancellationRequested)
                 {
-                    EscribirTextPerft($"<color={ROJO}>Ejecución cancelada</color>");
+                    WritePerftText($"<color={RED}>Execution cancelled</color>");
                     return;
                 }
 
-                totalNodos += nodos;
+                totalNodes += nodes;
                 await Task.Yield();
             }
 
-            EscribirTextPerft($"\nTotal de nodos: <color={CIAN}>{totalNodos}</color>\n<color={VERDE}>Test finalizado</color>");
-            unityContext.Post(_ => ActivarBotonesEjecucion(), null); // Activar desde el hilo principal
+            WritePerftText($"\nTotal nodes: <color={CYAN}>{totalNodes}</color>\n<color={GREEN}>Test finished</color>");
+            unityContext.Post(_ => EnableExecutionButtons(), null); // Enable from the main thread
+        }
+
+        private Task SuiteTask(CancellationToken token, string suiteText)
+        {
+            ClearPerftText();
+
+            if (suiteText == null)
+            {
+                WritePerftText($"<color={RED}>No suite assigned</color>");
+                unityContext.Post(_ => EnableExecutionButtons(), null);
+                return Task.CompletedTask;
+            }
+
+            PerftSuiteRunner.RunSuite(suiteText, token, WritePerftText);
+
+            unityContext.Post(_ => EnableExecutionButtons(), null);
+            return Task.CompletedTask;
         }
     }
 }
