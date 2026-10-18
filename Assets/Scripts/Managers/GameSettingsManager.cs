@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.SceneManagement;
-using Ajedrez.Core;
-using Ajedrez.UI;
-using Ajedrez.IA;
-using Ajedrez.Systems;
+using Chess.Core;
+using Chess.UI;
+using Chess.AI;
+using Chess.Systems;
 
-namespace Ajedrez.Managers
+namespace Chess.Managers
 {
     public class GameSettingsManager : MonoBehaviour
     {

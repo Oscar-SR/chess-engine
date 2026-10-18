@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace Ajedrez.Debugging.Enfrentamiento
+namespace Chess.Debugging.Multiplayer
 {
     [CustomEditor(typeof(MultiplayerManager))]
     public class MultiplayerEditor : Editor

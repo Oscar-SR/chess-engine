@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using Ajedrez.Core;
-using Ajedrez.Debugging;
+using Chess.Core;
+using Chess.Debugging;
 
-namespace Ajedrez.IA
+namespace Chess.AI
 {
     public class Search
     {

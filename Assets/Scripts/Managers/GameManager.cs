@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine.SceneManagement;
-using Ajedrez.UI;
-using Ajedrez.IA;
-using Ajedrez.Core;
-using Ajedrez.Systems;
-using Ajedrez.Utilities;
-using Ajedrez.Debugging;
+using Chess.UI;
+using Chess.AI;
+using Chess.Core;
+using Chess.Systems;
+using Chess.Utilities;
+using Chess.Debugging;
 
-namespace Ajedrez.Managers
+namespace Chess.Managers
 {
     public class GameManager : MonoBehaviour
     {

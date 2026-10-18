@@ -1,6 +1,6 @@
-using Ajedrez.Core;
+using Chess.Core;
 
-namespace Ajedrez.IA
+namespace Chess.AI
 {
     public class TranspositionTable
     {

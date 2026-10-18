@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using Ajedrez.Systems;
+using Chess.Systems;
 
-namespace Ajedrez.UI
+namespace Chess.UI
 {
     public class OptionsUI : MonoBehaviour
     {

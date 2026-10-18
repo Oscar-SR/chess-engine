@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Ajedrez.Core;
+using Chess.Core;
 
-namespace Ajedrez.IA
+namespace Chess.AI
 {
     public class MoveOrderer
     {

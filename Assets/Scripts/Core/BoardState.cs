@@ -1,7 +1,7 @@
 using System;
-using Ajedrez.Utilities;
+using Chess.Utilities;
 
-namespace Ajedrez.Core
+namespace Chess.Core
 {
     public struct BoardState
     {

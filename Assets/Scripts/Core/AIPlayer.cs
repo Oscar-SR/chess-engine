@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Ajedrez.Managers;
-using Ajedrez.IA;
-using Ajedrez.Debugging;
+using Chess.Managers;
+using Chess.AI;
+using Chess.Debugging;
 using System.Diagnostics;
 
-namespace Ajedrez.Core
+namespace Chess.Core
 {
     public class AIPlayer : Player
     {

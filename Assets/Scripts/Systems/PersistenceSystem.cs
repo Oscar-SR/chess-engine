@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Ajedrez.Core;
+using Chess.Core;
 
-namespace Ajedrez.Systems
+namespace Chess.Systems
 {
     public class PersistenceSystem : MonoBehaviour
     {

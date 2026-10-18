@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using UnityEngine;
-using Ajedrez.Core;
-using Ajedrez.UI;
-using Ajedrez.Utilities;
+using Chess.Core;
+using Chess.UI;
+using Chess.Utilities;
 
-namespace Ajedrez.Debugging.Enfrentamiento
+namespace Chess.Debugging.Multiplayer
 {
     public class RemotePlayer : Player
     {

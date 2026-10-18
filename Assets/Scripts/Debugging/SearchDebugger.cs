@@ -1,12 +1,12 @@
 using UnityEngine;
 using TMPro;
 using System.IO;
-using Ajedrez.UI;
+using Chess.UI;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace Ajedrez.Debugging
+namespace Chess.Debugging
 {
     public class SearchDebugger : MonoBehaviour
     {

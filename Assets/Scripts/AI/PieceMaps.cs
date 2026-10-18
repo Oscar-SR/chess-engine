@@ -1,7 +1,7 @@
-using Ajedrez.Utilities;
-using Ajedrez.Core;
+using Chess.Utilities;
+using Chess.Core;
 
-namespace Ajedrez.IA
+namespace Chess.AI
 {
     public static class PieceMaps
     {

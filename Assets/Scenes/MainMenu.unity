@@ -227,7 +227,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1501194365}
-        m_TargetAssemblyTypeName: Ajedrez.UI.MainMenuUI, Assembly-CSharp
+        m_TargetAssemblyTypeName: Chess.UI.MainMenuUI, Assembly-CSharp
         m_MethodName: OptionsButton
         m_Mode: 1
         m_Arguments:
@@ -414,7 +414,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1501194365}
-        m_TargetAssemblyTypeName: Ajedrez.UI.MainMenuUI, Assembly-CSharp
+        m_TargetAssemblyTypeName: Chess.UI.MainMenuUI, Assembly-CSharp
         m_MethodName: ExitButton
         m_Mode: 1
         m_Arguments:
@@ -1484,7 +1484,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Ajedrez
+  m_text: Chess
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1646,7 +1646,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1501194365}
-        m_TargetAssemblyTypeName: Ajedrez.UI.MainMenuUI, Assembly-CSharp
+        m_TargetAssemblyTypeName: Chess.UI.MainMenuUI, Assembly-CSharp
         m_MethodName: PlayButton
         m_Mode: 1
         m_Arguments:

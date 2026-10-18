@@ -1,7 +1,7 @@
 using UnityEngine;
-using Ajedrez.Core;
+using Chess.Core;
 
-namespace Ajedrez.Debugging.Enfrentamiento
+namespace Chess.Debugging.Multiplayer
 {
     [System.Serializable]
     public class MatchMessage

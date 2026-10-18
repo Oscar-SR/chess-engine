@@ -4,10 +4,10 @@ using UnityEngine;
 using System;
 using TMPro;
 using UnityEngine.UI;
-using Ajedrez.Core;
-using Ajedrez.Managers;
+using Chess.Core;
+using Chess.Managers;
 
-namespace Ajedrez.UI
+namespace Chess.UI
 {
     public class GameSettingsUI : MonoBehaviour
     {

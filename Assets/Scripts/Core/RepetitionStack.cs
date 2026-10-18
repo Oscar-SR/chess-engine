@@ -1,6 +1,6 @@
 using System;
 
-namespace Ajedrez.Core
+namespace Chess.Core
 {
     public class RepetitionStack
     {

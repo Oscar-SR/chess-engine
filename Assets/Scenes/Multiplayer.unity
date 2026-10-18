@@ -1173,7 +1173,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1908840992}
-        m_TargetAssemblyTypeName: Ajedrez.Debugging.Enfrentamiento.MultiplayerUI,
+        m_TargetAssemblyTypeName: Chess.Debugging.Multiplayer.MultiplayerUI,
           Assembly-CSharp
         m_MethodName: StartButton
         m_Mode: 1
@@ -2470,7 +2470,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1908840992}
-        m_TargetAssemblyTypeName: Ajedrez.Debugging.Enfrentamiento.MultiplayerUI,
+        m_TargetAssemblyTypeName: Chess.Debugging.Multiplayer.MultiplayerUI,
           Assembly-CSharp
         m_MethodName: ValidateMaxThinkingTime
         m_Mode: 0
@@ -2658,7 +2658,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1908840992}
-        m_TargetAssemblyTypeName: Ajedrez.Debugging.Enfrentamiento.MultiplayerUI,
+        m_TargetAssemblyTypeName: Chess.Debugging.Multiplayer.MultiplayerUI,
           Assembly-CSharp
         m_MethodName: ValidateMaxMovesPerGame
         m_Mode: 0

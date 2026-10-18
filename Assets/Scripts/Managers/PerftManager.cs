@@ -5,11 +5,11 @@ using TMPro;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Ajedrez.Core;
-using Ajedrez.Utilities;
-using Ajedrez.Testing;
+using Chess.Core;
+using Chess.Utilities;
+using Chess.Testing;
 
-namespace Ajedrez.Managers
+namespace Chess.Managers
 {
     public class PerftManager : MonoBehaviour
     {

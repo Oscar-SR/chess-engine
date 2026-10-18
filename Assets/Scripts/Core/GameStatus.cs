@@ -1,6 +1,6 @@
-using Ajedrez.Utilities;
+using Chess.Utilities;
 
-namespace Ajedrez.Core
+namespace Chess.Core
 {
     public static class GameStatus
     {

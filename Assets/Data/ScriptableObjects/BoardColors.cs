@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace Ajedrez.Data
+namespace Chess.Data
 {
-    [CreateAssetMenu(fileName = "NewBoardColors", menuName = "Ajedrez/Board Colors")]
+    [CreateAssetMenu(fileName = "NewBoardColors", menuName = "Chess/Board Colors")]
     public class BoardColors : ScriptableObject
     {
         public Color lightSquareColor;

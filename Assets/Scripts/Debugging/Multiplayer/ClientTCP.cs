@@ -2,7 +2,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Ajedrez.Debugging.Enfrentamiento
+namespace Chess.Debugging.Multiplayer
 {
 	public class ClientTCP : MonoBehaviour
 	{

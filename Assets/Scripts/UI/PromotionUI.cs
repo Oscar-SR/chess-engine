@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-using Ajedrez.Core;
-using Ajedrez.Utilities;
+using Chess.Core;
+using Chess.Utilities;
 
-namespace Ajedrez.UI
+namespace Chess.UI
 {
     public class PromotionUI : MonoBehaviour
     {

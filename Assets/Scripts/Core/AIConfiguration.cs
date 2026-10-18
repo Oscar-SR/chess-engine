@@ -1,8 +1,8 @@
 using System;
 using UnityEngine;
-using Ajedrez.IA;
+using Chess.AI;
 
-namespace Ajedrez.Core
+namespace Chess.Core
 {
     public class AIConfiguration
     {

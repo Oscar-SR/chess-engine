@@ -582,7 +582,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1440524396}
-        m_TargetAssemblyTypeName: Ajedrez.UI.PromotionUI, Assembly-CSharp
+        m_TargetAssemblyTypeName: Chess.UI.PromotionUI, Assembly-CSharp
         m_MethodName: SelectQueen
         m_Mode: 1
         m_Arguments:
@@ -1001,7 +1001,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1440524396}
-        m_TargetAssemblyTypeName: Ajedrez.UI.PromotionUI, Assembly-CSharp
+        m_TargetAssemblyTypeName: Chess.UI.PromotionUI, Assembly-CSharp
         m_MethodName: SelectBishop
         m_Mode: 1
         m_Arguments:
@@ -1134,7 +1134,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1440524396}
-        m_TargetAssemblyTypeName: Ajedrez.UI.PromotionUI, Assembly-CSharp
+        m_TargetAssemblyTypeName: Chess.UI.PromotionUI, Assembly-CSharp
         m_MethodName: SelectQueen
         m_Mode: 1
         m_Arguments:
@@ -1737,7 +1737,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1440524396}
-        m_TargetAssemblyTypeName: Ajedrez.UI.PromotionUI, Assembly-CSharp
+        m_TargetAssemblyTypeName: Chess.UI.PromotionUI, Assembly-CSharp
         m_MethodName: SelectRook
         m_Mode: 1
         m_Arguments:
@@ -2023,7 +2023,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1440524396}
-        m_TargetAssemblyTypeName: Ajedrez.UI.PromotionUI, Assembly-CSharp
+        m_TargetAssemblyTypeName: Chess.UI.PromotionUI, Assembly-CSharp
         m_MethodName: SelectKnight
         m_Mode: 1
         m_Arguments:
@@ -2201,7 +2201,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1440524396}
-        m_TargetAssemblyTypeName: Ajedrez.UI.PromotionUI, Assembly-CSharp
+        m_TargetAssemblyTypeName: Chess.UI.PromotionUI, Assembly-CSharp
         m_MethodName: SelectKnight
         m_Mode: 1
         m_Arguments:
@@ -2369,7 +2369,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1440524396}
-        m_TargetAssemblyTypeName: Ajedrez.UI.PromotionUI, Assembly-CSharp
+        m_TargetAssemblyTypeName: Chess.UI.PromotionUI, Assembly-CSharp
         m_MethodName: SelectRook
         m_Mode: 1
         m_Arguments:
@@ -2580,7 +2580,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 72350743}
-        m_TargetAssemblyTypeName: Ajedrez.UI.GameUI, Assembly-CSharp
+        m_TargetAssemblyTypeName: Chess.UI.GameUI, Assembly-CSharp
         m_MethodName: ExitButton
         m_Mode: 1
         m_Arguments:
@@ -3773,7 +3773,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1440524396}
-        m_TargetAssemblyTypeName: Ajedrez.UI.PromotionUI, Assembly-CSharp
+        m_TargetAssemblyTypeName: Chess.UI.PromotionUI, Assembly-CSharp
         m_MethodName: SelectBishop
         m_Mode: 1
         m_Arguments:

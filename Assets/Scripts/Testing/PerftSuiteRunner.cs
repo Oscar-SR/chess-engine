@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-using Ajedrez.Core;
+using Chess.Core;
 
-namespace Ajedrez.Testing
+namespace Chess.Testing
 {
     public static class PerftSuiteRunner
     {

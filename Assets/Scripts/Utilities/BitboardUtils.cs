@@ -1,6 +1,6 @@
 using static System.Math;
 
-namespace Ajedrez.Utilities
+namespace Chess.Utilities
 {
     public static class BitboardUtils
     {

@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Ajedrez.Core;
-using Ajedrez.Systems;
-using Ajedrez.Utilities;
-using Ajedrez.Data;
+using Chess.Core;
+using Chess.Systems;
+using Chess.Utilities;
+using Chess.Data;
 
-namespace Ajedrez.UI
+namespace Chess.UI
 {
     public class BoardUI : MonoBehaviour
     {

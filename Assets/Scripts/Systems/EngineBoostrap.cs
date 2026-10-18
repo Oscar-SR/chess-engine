@@ -1,5 +1,5 @@
 using UnityEngine;
-using Ajedrez.Utilities;
+using Chess.Utilities;
 
 public static class EngineBootstrap
 {

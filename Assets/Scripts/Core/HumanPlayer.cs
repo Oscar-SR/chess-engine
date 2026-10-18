@@ -1,4 +1,4 @@
-namespace Ajedrez.Core
+namespace Chess.Core
 {
     public class HumanPlayer : Player
     {

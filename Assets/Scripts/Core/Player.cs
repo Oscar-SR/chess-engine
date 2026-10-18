@@ -1,8 +1,8 @@
 using System;
-using Ajedrez.Managers;
-using Ajedrez.Utilities;
+using Chess.Managers;
+using Chess.Utilities;
 
-namespace Ajedrez.Core
+namespace Chess.Core
 {
     public abstract class Player
     {

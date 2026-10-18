@@ -803,7 +803,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 33293740}
-        m_TargetAssemblyTypeName: Ajedrez.Managers.PerftManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: Chess.Managers.PerftManager, Assembly-CSharp
         m_MethodName: ExecuteTask
         m_Mode: 5
         m_Arguments:
@@ -1673,7 +1673,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 33293740}
-        m_TargetAssemblyTypeName: Ajedrez.Managers.PerftManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: Chess.Managers.PerftManager, Assembly-CSharp
         m_MethodName: ExecuteTask
         m_Mode: 5
         m_Arguments:
@@ -2380,7 +2380,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 33293740}
-        m_TargetAssemblyTypeName: Ajedrez.Managers.PerftManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: Chess.Managers.PerftManager, Assembly-CSharp
         m_MethodName: StopExecution
         m_Mode: 1
         m_Arguments:
@@ -3005,7 +3005,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 33293740}
-        m_TargetAssemblyTypeName: Ajedrez.Managers.PerftManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: Chess.Managers.PerftManager, Assembly-CSharp
         m_MethodName: ExecuteTask
         m_Mode: 5
         m_Arguments:

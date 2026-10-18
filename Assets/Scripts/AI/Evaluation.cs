@@ -1,8 +1,8 @@
 using static System.Math;
-using Ajedrez.Core;
-using Ajedrez.Utilities;
+using Chess.Core;
+using Chess.Utilities;
 
-namespace Ajedrez.IA
+namespace Chess.AI
 {
     public class Evaluation
     {

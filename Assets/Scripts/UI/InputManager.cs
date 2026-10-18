@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Ajedrez.Managers;
-using Ajedrez.Core;
-using Ajedrez.Utilities;
-using Ajedrez.Debugging;
+using Chess.Managers;
+using Chess.Core;
+using Chess.Utilities;
+using Chess.Debugging;
 
-namespace Ajedrez.UI
+namespace Chess.UI
 {
     public class InputManager : MonoBehaviour
     {

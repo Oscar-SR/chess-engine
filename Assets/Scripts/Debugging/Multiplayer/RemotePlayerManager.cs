@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Net.Sockets;
-using Ajedrez.Core;
-using Ajedrez.IA;
+using Chess.Core;
+using Chess.AI;
 
-namespace Ajedrez.Debugging.Enfrentamiento
+namespace Chess.Debugging.Multiplayer
 {
     public class RemotePlayerManager : ClientTCP
     {

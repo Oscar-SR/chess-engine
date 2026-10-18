@@ -213,7 +213,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1506808006}
-        m_TargetAssemblyTypeName: Ajedrez.UI.OptionsUI, Assembly-CSharp
+        m_TargetAssemblyTypeName: Chess.UI.OptionsUI, Assembly-CSharp
         m_MethodName: ChangeGeneralVolume
         m_Mode: 0
         m_Arguments:
@@ -309,7 +309,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1506808006}
-        m_TargetAssemblyTypeName: Ajedrez.UI.OptionsUI, Assembly-CSharp
+        m_TargetAssemblyTypeName: Chess.UI.OptionsUI, Assembly-CSharp
         m_MethodName: BackToMainMenu
         m_Mode: 1
         m_Arguments:
@@ -658,7 +658,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1506808006}
-        m_TargetAssemblyTypeName: Ajedrez.UI.OptionsUI, Assembly-CSharp
+        m_TargetAssemblyTypeName: Chess.UI.OptionsUI, Assembly-CSharp
         m_MethodName: ChangeEffectsVolume
         m_Mode: 0
         m_Arguments:
@@ -1684,7 +1684,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1506808006}
-        m_TargetAssemblyTypeName: Ajedrez.UI.OptionsUI, Assembly-CSharp
+        m_TargetAssemblyTypeName: Chess.UI.OptionsUI, Assembly-CSharp
         m_MethodName: ChangeMusicVolume
         m_Mode: 0
         m_Arguments:

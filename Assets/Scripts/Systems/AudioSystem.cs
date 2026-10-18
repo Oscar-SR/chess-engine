@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace Ajedrez.Systems
+namespace Chess.Systems
 {
     public class AudioSystem : MonoBehaviour
     {

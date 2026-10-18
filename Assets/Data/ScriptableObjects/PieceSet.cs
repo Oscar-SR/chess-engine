@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Ajedrez.Data
+namespace Chess.Data
 {
     [CreateAssetMenu(fileName = "NewPieceSet", menuName = "Chess/Piece Set")]
     public class PieceSet : ScriptableObject

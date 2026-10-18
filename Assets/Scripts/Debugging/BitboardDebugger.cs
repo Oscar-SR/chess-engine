@@ -3,13 +3,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
-using Ajedrez.Managers;
-using Ajedrez.Core;
-using Ajedrez.Utilities;
-using Ajedrez.IA;
-using Ajedrez.UI;
+using Chess.Managers;
+using Chess.Core;
+using Chess.Utilities;
+using Chess.AI;
+using Chess.UI;
 
-namespace Ajedrez.Debugging
+namespace Chess.Debugging
 {
     public enum BitboardDebugMode : byte
     {

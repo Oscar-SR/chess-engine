@@ -1,8 +1,8 @@
 using UnityEngine;
 using TMPro;
-using Ajedrez.UI;
+using Chess.UI;
 
-namespace Ajedrez.Debugging
+namespace Chess.Debugging
 {
     public class StateDebugger : MonoBehaviour
     {

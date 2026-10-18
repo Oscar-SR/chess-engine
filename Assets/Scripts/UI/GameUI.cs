@@ -3,9 +3,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
-using Ajedrez.Core;
+using Chess.Core;
 
-namespace Ajedrez.UI
+namespace Chess.UI
 {
     public class GameUI : MonoBehaviour
     {

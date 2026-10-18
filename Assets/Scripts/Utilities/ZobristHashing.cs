@@ -1,7 +1,7 @@
 using System;
-using Ajedrez.Core;
+using Chess.Core;
 
-namespace Ajedrez.Utilities
+namespace Chess.Utilities
 {
     public class ZobristHashing
     {

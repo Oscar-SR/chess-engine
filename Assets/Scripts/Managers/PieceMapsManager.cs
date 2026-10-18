@@ -1,10 +1,10 @@
 using UnityEngine;
 using TMPro;
-using Ajedrez.Utilities;
-using Ajedrez.Core;
-using Ajedrez.IA;
+using Chess.Utilities;
+using Chess.Core;
+using Chess.AI;
 
-namespace Ajedrez.Managers
+namespace Chess.Managers
 {
     [ExecuteInEditMode]
     public class PieceMapsManager : MonoBehaviour

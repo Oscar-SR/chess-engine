@@ -1,10 +1,10 @@
 using System;
 using System.Text;
 using System.Collections.Generic;
-using Ajedrez.Utilities;
-using Ajedrez.IA;
+using Chess.Utilities;
+using Chess.AI;
 
-namespace Ajedrez.Core
+namespace Chess.Core
 {
     public class Game
     {
