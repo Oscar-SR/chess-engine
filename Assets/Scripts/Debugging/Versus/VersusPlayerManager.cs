@@ -7,9 +7,9 @@ using Chess.AI;
 
 namespace Chess.Debugging.Versus
 {
-    public class RemotePlayerManager : ClientTCP
+    public class VersusPlayerManager : ClientTCP
     {
-        [SerializeField] private RemotePlayerUI remotePlayerUI;
+        [SerializeField] private VersusPlayerUI remotePlayerUI;
         [SerializeField] private TextAsset openingBook;
         [SerializeField] private string playerName;
         private bool connected;

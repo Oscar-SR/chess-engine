@@ -37,21 +37,21 @@ namespace Chess.Debugging.Versus
             maxMovesPerGamePlaceholder.text = initialMaxMovesPerGame.ToString();
         }
 
-        public void WritePlayerNames(RemotePlayer player1, RemotePlayer player2)
+        public void WritePlayerNames(VersusPlayer player1, VersusPlayer player2)
         {
             string name1 = player1 != null ? player1.Name : "?";
             string name2 = player2 != null ? player2.Name : "?";
             playersText.text = $"<color={greenColor}>{name1}</color> vs <color={greenColor}>{name2}</color>";
         }
 
-        public void UpdateStatistics(int gameCount, int gameIndex, RemotePlayer player1, RemotePlayer player2)
+        public void UpdateStatistics(int gameCount, int gameIndex, VersusPlayer player1, VersusPlayer player2)
         {
             statisticsText.text = $"Game number: {Mathf.Min(gameIndex + 1, gameCount)} / {gameCount}";
 
             UpdatePlayerInformation(player1);
             UpdatePlayerInformation(player2);
 
-            void UpdatePlayerInformation(RemotePlayer player)
+            void UpdatePlayerInformation(VersusPlayer player)
             {
                 if (player != null)
                 {

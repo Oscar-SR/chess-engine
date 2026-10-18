@@ -6,9 +6,9 @@ using TMPro;
 
 namespace Chess.Debugging.Versus
 {
-    public class RemotePlayerUI : MonoBehaviour
+    public class VersusPlayerUI : MonoBehaviour
     {
-        [SerializeField] private RemotePlayerManager remotePlayerManager;
+        [SerializeField] private VersusPlayerManager remotePlayerManager;
         [SerializeField] private Color connectedColor;
         [SerializeField] private TMP_Text nameText;
         [SerializeField] private TMP_Text connectedText;

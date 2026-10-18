@@ -9,7 +9,7 @@ using Chess.Utilities;
 
 namespace Chess.Debugging.Versus
 {
-    public class RemotePlayer : Player
+    public class VersusPlayer : Player
     {
         private TcpClient client;
         private int winCount;
@@ -18,7 +18,7 @@ namespace Chess.Debugging.Versus
         private int moveCount;
         private int totalSearchDepth;
 
-        public RemotePlayer(string name, Piece.Color pieceColor, TcpClient client)
+        public VersusPlayer(string name, Piece.Color pieceColor, TcpClient client)
             : base(name, pieceColor)
         {
             this.client = client;
@@ -72,8 +72,8 @@ namespace Chess.Debugging.Versus
         [SerializeField] private string savePath;
 
         private Game game;
-        private RemotePlayer player1;
-        private RemotePlayer player2;
+        private VersusPlayer player1;
+        private VersusPlayer player2;
         private int gameIndex;
         private int gameCount;
         private string[] initialPositionFens;
@@ -141,8 +141,8 @@ namespace Chess.Debugging.Versus
                 string whiteMessage = VersusMessage.CreateNewGameMessage(game.StartingFen, Piece.Color.White, maxThinkingTime).ToJsonString();
                 string blackMessage = VersusMessage.CreateNewGameMessage(game.StartingFen, Piece.Color.Black, maxThinkingTime).ToJsonString();
 
-                SendMessageToClient(((RemotePlayer)game.WhitePlayer).Client, whiteMessage);
-                SendMessageToClient(((RemotePlayer)game.BlackPlayer).Client, blackMessage);
+                SendMessageToClient(((VersusPlayer)game.WhitePlayer).Client, whiteMessage);
+                SendMessageToClient(((VersusPlayer)game.BlackPlayer).Client, blackMessage);
             }
 
             versusUI.UpdateStatistics(gameCount, gameIndex, player1, player2);
@@ -174,12 +174,12 @@ namespace Chess.Debugging.Versus
 
             if (player1 == null)
             {
-                player1 = new RemotePlayer(playerName, Piece.Color.White, client);
+                player1 = new VersusPlayer(playerName, Piece.Color.White, client);
                 game.WhitePlayer = player1;
             }
             else if (player2 == null)
             {
-                player2 = new RemotePlayer(playerName, Piece.Color.Black, client);
+                player2 = new VersusPlayer(playerName, Piece.Color.Black, client);
 
                 game.BlackPlayer = player2;
 
@@ -199,7 +199,7 @@ namespace Chess.Debugging.Versus
         {
             versusUI.WriteDebug("Move: " + moveLan + "\n");
 
-            RemotePlayer currentPlayer = ChessUtils.SameColor(game.Board.Turn, Piece.Color.White) ? (RemotePlayer)game.WhitePlayer : (RemotePlayer)game.BlackPlayer;
+            VersusPlayer currentPlayer = ChessUtils.SameColor(game.Board.Turn, Piece.Color.White) ? (VersusPlayer)game.WhitePlayer : (VersusPlayer)game.BlackPlayer;
             currentPlayer.MoveCount++;
             currentPlayer.TotalSearchDepth += Mathf.Min(iterativeSearchDepth, 15);
 
@@ -215,7 +215,7 @@ namespace Chess.Debugging.Versus
 
             if (game.Status == GameStatus.Type.InProgress)
             {
-                RemotePlayer nextPlayer = ChessUtils.SameColor(game.Board.Turn, Piece.Color.White) ? (RemotePlayer)game.WhitePlayer : (RemotePlayer)game.BlackPlayer;
+                VersusPlayer nextPlayer = ChessUtils.SameColor(game.Board.Turn, Piece.Color.White) ? (VersusPlayer)game.WhitePlayer : (VersusPlayer)game.BlackPlayer;
                 string json = VersusMessage.CreateMoveMessage(moveLan).ToJsonString();
                 SendMessageToClient(nextPlayer.Client, json);
             }
@@ -260,13 +260,13 @@ namespace Chess.Debugging.Versus
             {
                 if (game.Status == GameStatus.Type.WhiteCheckmate)
                 {
-                    ((RemotePlayer)game.BlackPlayer).WinCount++;
-                    ((RemotePlayer)game.WhitePlayer).LossCount++;
+                    ((VersusPlayer)game.BlackPlayer).WinCount++;
+                    ((VersusPlayer)game.WhitePlayer).LossCount++;
                 }
                 else if (game.Status == GameStatus.Type.BlackCheckmate)
                 {
-                    ((RemotePlayer)game.WhitePlayer).WinCount++;
-                    ((RemotePlayer)game.BlackPlayer).LossCount++;
+                    ((VersusPlayer)game.WhitePlayer).WinCount++;
+                    ((VersusPlayer)game.BlackPlayer).LossCount++;
                 }
                 else
                 {
