@@ -1899,7 +1899,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 470094724}
-        m_TargetAssemblyTypeName: Chess.Debugging.Multiplayer.RemotePlayerUI,
+        m_TargetAssemblyTypeName: Chess.Debugging.Versus.RemotePlayerUI,
           Assembly-CSharp
         m_MethodName: OpenCommit
         m_Mode: 1

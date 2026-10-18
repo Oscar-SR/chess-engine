@@ -245,7 +245,7 @@ GameObject:
   - component: {fileID: 139199226}
   - component: {fileID: 139199225}
   m_Layer: 0
-  m_Name: MultiplayerManager
+  m_Name: VersusManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -342,7 +342,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Start match
+  m_text: Start versus
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1173,7 +1173,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1908840992}
-        m_TargetAssemblyTypeName: Chess.Debugging.Multiplayer.MultiplayerUI,
+        m_TargetAssemblyTypeName: Chess.Debugging.Versus.VersusUI,
           Assembly-CSharp
         m_MethodName: StartButton
         m_Mode: 1
@@ -2470,7 +2470,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1908840992}
-        m_TargetAssemblyTypeName: Chess.Debugging.Multiplayer.MultiplayerUI,
+        m_TargetAssemblyTypeName: Chess.Debugging.Versus.VersusUI,
           Assembly-CSharp
         m_MethodName: ValidateMaxThinkingTime
         m_Mode: 0
@@ -2658,7 +2658,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1908840992}
-        m_TargetAssemblyTypeName: Chess.Debugging.Multiplayer.MultiplayerUI,
+        m_TargetAssemblyTypeName: Chess.Debugging.Versus.VersusUI,
           Assembly-CSharp
         m_MethodName: ValidateMaxMovesPerGame
         m_Mode: 0
@@ -3503,7 +3503,7 @@ GameObject:
   - component: {fileID: 1908840993}
   - component: {fileID: 1908840992}
   m_Layer: 0
-  m_Name: MultiplayerUI
+  m_Name: VersusUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3557,7 +3557,7 @@ GameObject:
   - component: {fileID: 1967918678}
   - component: {fileID: 1967918677}
   m_Layer: 5
-  m_Name: MatchText
+  m_Name: VersusText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3602,7 +3602,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Match
+  m_text: Versus
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

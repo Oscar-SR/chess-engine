@@ -18,7 +18,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Options.unity
     guid: 23c0c79be504bba4f9a3a7e9fb6531b0
   - enabled: 0
-    path: Assets/Scenes/Multiplayer.unity
+    path: Assets/Scenes/Versus.unity
     guid: 429f0d4359f1e0d459fcf8a26fc527e7
   - enabled: 0
     path: Assets/Scenes/RemotePlayer.unity
