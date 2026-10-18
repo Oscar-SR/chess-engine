@@ -9,10 +9,10 @@ using Chess.Utilities;
 
 namespace Chess.Debugging.Versus
 {
-    public class VersusManager : ServerTCP
+    public class VersusHostManager : ServerTCP
     {
         [SerializeField] private BoardUI boardUI;
-        [SerializeField] private VersusUI versusUI;
+        [SerializeField] private VersusHostUI versusUI;
         [SerializeField] private int maxThinkingTime = 1000;
         [SerializeField] private int maxMovesPerGame = 100;
         [SerializeField] private TextAsset initialPositions;

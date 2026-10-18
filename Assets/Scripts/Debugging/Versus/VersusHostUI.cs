@@ -6,9 +6,9 @@ using TMPro;
 
 namespace Chess.Debugging.Versus
 {
-    public class VersusUI : MonoBehaviour
+    public class VersusHostUI : MonoBehaviour
     {
-        [SerializeField] private VersusManager versusManager;
+        [SerializeField] private VersusHostManager versusManager;
         [SerializeField] private TMP_Text playersText;
         [SerializeField] private TMP_Text statisticsText;
         [SerializeField] private TMP_Text whitePlayerNameText;

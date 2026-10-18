@@ -5,8 +5,8 @@ using UnityEditor;
 
 namespace Chess.Debugging.Versus
 {
-    [CustomEditor(typeof(VersusManager))]
-    public class VersusEditor : Editor
+    [CustomEditor(typeof(VersusHostManager))]
+    public class VersusHostEditor : Editor
     {
         public override void OnInspectorGUI()
         {
@@ -16,8 +16,8 @@ namespace Chess.Debugging.Versus
             // Button to open the folder containing the saved game files
             if (GUILayout.Button("Open saved games folder"))
             {
-                System.IO.Directory.CreateDirectory(VersusManager.SavedGamesFolder);
-                EditorUtility.RevealInFinder(VersusManager.SavedGamesFolder);
+                System.IO.Directory.CreateDirectory(VersusHostManager.SavedGamesFolder);
+                EditorUtility.RevealInFinder(VersusHostManager.SavedGamesFolder);
             }
         }
     }
