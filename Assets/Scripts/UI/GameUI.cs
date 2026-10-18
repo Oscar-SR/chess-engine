@@ -44,10 +44,10 @@ namespace Chess.UI
                 blackPlayerTimeText = bottomPlayerTimeText;
             }
 
-            FormatName(whitePlayerName, bottomPlayerNameText);
-            FormatName(blackPlayerName, topPlayerNameText);
-            FormatTime(duration, bottomPlayerTimeText);
-            FormatTime(duration, topPlayerTimeText);
+            FormatName(whitePlayerName, whitePlayerNameText);
+            FormatName(blackPlayerName, blackPlayerNameText);
+            FormatTime(duration, whitePlayerTimeText);
+            FormatTime(duration, blackPlayerTimeText);
         }
 
         public void FormatWhitePlayerTime(float time)
@@ -58,16 +58,6 @@ namespace Chess.UI
         public void FormatBlackPlayerTime(float time)
         {
             FormatTime(time, blackPlayerTimeText);
-        }
-
-        public void FormatWhitePlayerName(string name)
-        {
-            FormatName(name, whitePlayerNameText);
-        }
-
-        public void FormatBlackPlayerName(string name)
-        {
-            FormatName(name, blackPlayerNameText);
         }
 
         private void FormatTime(float time, TextMeshProUGUI timeText)
