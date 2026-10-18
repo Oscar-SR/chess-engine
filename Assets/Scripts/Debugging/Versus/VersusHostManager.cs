@@ -240,8 +240,6 @@ namespace Chess.Debugging.Versus
             }
         }
 
-        // Folder name kept in Spanish on purpose: renaming it would leave every
-        // previously saved game unreachable.
-        public static string SavedGamesFolder => Path.Combine(Application.persistentDataPath, "Partidas enfrentamiento");
+        public static string SavedGamesFolder => Path.Combine(Application.persistentDataPath, "Versus games");
     }
 }
