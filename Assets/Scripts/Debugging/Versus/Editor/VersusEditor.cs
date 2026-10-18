@@ -13,11 +13,11 @@ namespace Chess.Debugging.Versus
             // Draw the default inspector
             DrawDefaultInspector();
 
-            // Button to open the folder containing the saved match games
-            if (GUILayout.Button("Open match games folder"))
+            // Button to open the folder containing the saved game files
+            if (GUILayout.Button("Open saved games folder"))
             {
-                System.IO.Directory.CreateDirectory(VersusManager.SavedMatchesFolder);
-                EditorUtility.RevealInFinder(VersusManager.SavedMatchesFolder);
+                System.IO.Directory.CreateDirectory(VersusManager.SavedGamesFolder);
+                EditorUtility.RevealInFinder(VersusManager.SavedGamesFolder);
             }
         }
     }

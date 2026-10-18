@@ -117,7 +117,7 @@ namespace Chess.Debugging.Versus
             StartServer();
         }
 
-        public void StartNewMatch()
+        public void StartNewGame()
         {
             gameIndex++;
             int fenIndex = bothPlayEachPosition ? gameIndex / 2 : gameIndex;
@@ -221,22 +221,22 @@ namespace Chess.Debugging.Versus
             }
             else
             {
-                FinishMatch();
+                FinishGame();
             }
         }
 
-        private void FinishMatch()
+        private void FinishGame()
         {
             SaveGamePgn();
             UpdateStatistics();
             versusUI.UpdateStatistics(gameCount, gameIndex, player1, player2);
-            StartNewMatch();
+            StartNewGame();
 
             void SaveGamePgn()
             {
                 if (string.IsNullOrEmpty(savePath))
                 {
-                    savePath = Path.Combine(SavedMatchesFolder, $"Matches_{System.DateTime.Now:yyyy-MM-dd_HH-mm-ss}");
+                    savePath = Path.Combine(SavedGamesFolder, $"Games_{System.DateTime.Now:yyyy-MM-dd_HH-mm-ss}");
                     Directory.CreateDirectory(savePath);
                 }
 
@@ -292,6 +292,8 @@ namespace Chess.Debugging.Versus
             }
         }
 
-        public static string SavedMatchesFolder => Path.Combine(Application.persistentDataPath, "Partidas enfrentamiento");
+        // Folder name kept in Spanish on purpose: renaming it would leave every
+        // previously saved game unreachable.
+        public static string SavedGamesFolder => Path.Combine(Application.persistentDataPath, "Partidas enfrentamiento");
     }
 }

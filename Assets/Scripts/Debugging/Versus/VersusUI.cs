@@ -97,7 +97,7 @@ namespace Chess.Debugging.Versus
         public void StartButton()
         {
             startButton.interactable = false;
-            versusManager.StartNewMatch();
+            versusManager.StartNewGame();
         }
 
         public void WriteDebug(string message)
