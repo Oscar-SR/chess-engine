@@ -61,10 +61,10 @@ namespace Chess.Debugging.Multiplayer
         }
     }
 
-    public class MultiplayerManager : ServerTCP
+    public class VersusManager : ServerTCP
     {
         [SerializeField] private BoardUI boardUI;
-        [SerializeField] private MultiplayerUI matchUI;
+        [SerializeField] private VersusUI matchUI;
         [SerializeField] private int maxThinkingTime = 1000;
         [SerializeField] private int maxMovesPerGame = 100;
         [SerializeField] private TextAsset initialPositions;

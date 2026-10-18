@@ -5,8 +5,8 @@ using UnityEditor;
 
 namespace Chess.Debugging.Multiplayer
 {
-    [CustomEditor(typeof(MultiplayerManager))]
-    public class MultiplayerEditor : Editor
+    [CustomEditor(typeof(VersusManager))]
+    public class VersusEditor : Editor
     {
         public override void OnInspectorGUI()
         {
@@ -16,8 +16,8 @@ namespace Chess.Debugging.Multiplayer
             // Button to open the folder containing the saved match games
             if (GUILayout.Button("Open match games folder"))
             {
-                System.IO.Directory.CreateDirectory(MultiplayerManager.SavedMatchesFolder);
-                EditorUtility.RevealInFinder(MultiplayerManager.SavedMatchesFolder);
+                System.IO.Directory.CreateDirectory(VersusManager.SavedMatchesFolder);
+                EditorUtility.RevealInFinder(VersusManager.SavedMatchesFolder);
             }
         }
     }

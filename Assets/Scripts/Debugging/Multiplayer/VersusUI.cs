@@ -6,9 +6,9 @@ using TMPro;
 
 namespace Chess.Debugging.Multiplayer
 {
-    public class MultiplayerUI : MonoBehaviour
+    public class VersusUI : MonoBehaviour
     {
-        [SerializeField] private MultiplayerManager matchManager;
+        [SerializeField] private VersusManager matchManager;
         [SerializeField] private TMP_Text playersText;
         [SerializeField] private TMP_Text statisticsText;
         [SerializeField] private TMP_Text whitePlayerNameText;
