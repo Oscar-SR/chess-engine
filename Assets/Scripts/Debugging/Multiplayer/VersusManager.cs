@@ -64,7 +64,7 @@ namespace Chess.Debugging.Multiplayer
     public class VersusManager : ServerTCP
     {
         [SerializeField] private BoardUI boardUI;
-        [SerializeField] private VersusUI matchUI;
+        [SerializeField] private VersusUI versusUI;
         [SerializeField] private int maxThinkingTime = 1000;
         [SerializeField] private int maxMovesPerGame = 100;
         [SerializeField] private TextAsset initialPositions;
@@ -74,8 +74,8 @@ namespace Chess.Debugging.Multiplayer
         private Game game;
         private RemotePlayer player1;
         private RemotePlayer player2;
-        private int matchIndex;
-        private int matchCount;
+        private int gameIndex;
+        private int gameCount;
         private string[] initialPositionFens;
 
         void OnEnable()
@@ -92,15 +92,15 @@ namespace Chess.Debugging.Multiplayer
         {
             if (type == LogType.Error || type == LogType.Exception)
             {
-                matchUI.WriteDebug("[ERROR] " + logString + "\n" + stackTrace);
+                versusUI.WriteDebug("[ERROR] " + logString + "\n" + stackTrace);
             }
             else if (type == LogType.Warning)
             {
-                matchUI.WriteDebug("[WARNING] " + logString);
+                versusUI.WriteDebug("[WARNING] " + logString);
             }
             else
             {
-                matchUI.WriteDebug(logString);
+                versusUI.WriteDebug(logString);
             }
         }
 
@@ -108,26 +108,26 @@ namespace Chess.Debugging.Multiplayer
         void Start()
         {
             initialPositionFens = initialPositions.text.Split('\n');
-            matchIndex = -1;
-            matchCount = bothPlayEachPosition ? initialPositionFens.Length * 2 : initialPositionFens.Length;
+            gameIndex = -1;
+            gameCount = bothPlayEachPosition ? initialPositionFens.Length * 2 : initialPositionFens.Length;
             game = new Game();
             boardUI.Init(null);
-            matchUI.Init(maxThinkingTime, maxMovesPerGame);
-            matchUI.UpdateStatistics(matchCount, matchIndex, player1, player2);
+            versusUI.Init(maxThinkingTime, maxMovesPerGame);
+            versusUI.UpdateStatistics(gameCount, gameIndex, player1, player2);
             StartServer();
         }
 
         public void StartNewMatch()
         {
-            matchIndex++;
-            int fenIndex = bothPlayEachPosition ? matchIndex / 2 : matchIndex;
+            gameIndex++;
+            int fenIndex = bothPlayEachPosition ? gameIndex / 2 : gameIndex;
 
             if (fenIndex < initialPositionFens.Length)
             {
                 // Load board position
                 game.LoadFEN(initialPositionFens[fenIndex]);
 
-                if (matchIndex > 0)
+                if (gameIndex > 0)
                 {
                     // Swap colors
                     game.SwapPlayerColors();
@@ -135,42 +135,42 @@ namespace Chess.Debugging.Multiplayer
 
                 // Update UI
                 boardUI.ChangePosition(game.Board);
-                matchUI.SetWhitePlayerName(game.WhitePlayer.Name);
-                matchUI.SetBlackPlayerName(game.BlackPlayer.Name);
+                versusUI.SetWhitePlayerName(game.WhitePlayer.Name);
+                versusUI.SetBlackPlayerName(game.BlackPlayer.Name);
 
-                string whiteMessage = MatchMessage.CreateNewGameMessage(game.StartingFen, Piece.Color.White, maxThinkingTime).ToJsonString();
-                string blackMessage = MatchMessage.CreateNewGameMessage(game.StartingFen, Piece.Color.Black, maxThinkingTime).ToJsonString();
+                string whiteMessage = VersusMessage.CreateNewGameMessage(game.StartingFen, Piece.Color.White, maxThinkingTime).ToJsonString();
+                string blackMessage = VersusMessage.CreateNewGameMessage(game.StartingFen, Piece.Color.Black, maxThinkingTime).ToJsonString();
 
                 SendMessageToClient(((RemotePlayer)game.WhitePlayer).Client, whiteMessage);
                 SendMessageToClient(((RemotePlayer)game.BlackPlayer).Client, blackMessage);
             }
 
-            matchUI.UpdateStatistics(matchCount, matchIndex, player1, player2);
+            versusUI.UpdateStatistics(gameCount, gameIndex, player1, player2);
         }
 
         protected override void OnClientConnected(TcpClient client)
         {
             base.OnClientConnected(client);
-            matchUI.WriteDebug("Client connected\n");
+            versusUI.WriteDebug("Client connected\n");
         }
 
         protected override void MessageReceived(TcpClient client, string message)
         {
-            MatchMessage matchMessage = MatchMessage.CreateFromJson(message);
-            switch (matchMessage.messageType)
+            VersusMessage versusMessage = VersusMessage.CreateFromJson(message);
+            switch (versusMessage.messageType)
             {
-                case MatchMessage.MessageType.RegisterPlayer:
-                    RegisterPlayer(client, matchMessage.playerName);
+                case VersusMessage.MessageType.RegisterPlayer:
+                    RegisterPlayer(client, versusMessage.playerName);
                     break;
-                case MatchMessage.MessageType.MakeMove:
-                    MoveReceived(matchMessage.moveName, matchMessage.iterativeSearchDepth);
+                case VersusMessage.MessageType.MakeMove:
+                    MoveReceived(versusMessage.moveName, versusMessage.iterativeSearchDepth);
                     break;
             }
         }
 
         private void RegisterPlayer(TcpClient client, string playerName)
         {
-            matchUI.WriteDebug("Register " + playerName + "\n");
+            versusUI.WriteDebug("Register " + playerName + "\n");
 
             if (player1 == null)
             {
@@ -184,20 +184,20 @@ namespace Chess.Debugging.Multiplayer
                 game.BlackPlayer = player2;
 
                 // Both players have been registered
-                matchUI.EnableStartButton();
+                versusUI.EnableStartButton();
             }
             else
             {
-                matchUI.WriteDebug("Unexpected registration: two players are already registered. Name: " + playerName + "\n");
+                versusUI.WriteDebug("Unexpected registration: two players are already registered. Name: " + playerName + "\n");
             }
 
-            matchUI.WritePlayerNames(player1, player2);
-            matchUI.UpdateStatistics(matchCount, matchIndex, player1, player2);
+            versusUI.WritePlayerNames(player1, player2);
+            versusUI.UpdateStatistics(gameCount, gameIndex, player1, player2);
         }
 
         private void MoveReceived(string moveLan, int iterativeSearchDepth)
         {
-            matchUI.WriteDebug("Move: " + moveLan + "\n");
+            versusUI.WriteDebug("Move: " + moveLan + "\n");
 
             RemotePlayer currentPlayer = ChessUtils.SameColor(game.Board.Turn, Piece.Color.White) ? (RemotePlayer)game.WhitePlayer : (RemotePlayer)game.BlackPlayer;
             currentPlayer.MoveCount++;
@@ -216,7 +216,7 @@ namespace Chess.Debugging.Multiplayer
             if (game.Status == GameStatus.Type.InProgress)
             {
                 RemotePlayer nextPlayer = ChessUtils.SameColor(game.Board.Turn, Piece.Color.White) ? (RemotePlayer)game.WhitePlayer : (RemotePlayer)game.BlackPlayer;
-                string json = MatchMessage.CreateMoveMessage(moveLan).ToJsonString();
+                string json = VersusMessage.CreateMoveMessage(moveLan).ToJsonString();
                 SendMessageToClient(nextPlayer.Client, json);
             }
             else
@@ -229,7 +229,7 @@ namespace Chess.Debugging.Multiplayer
         {
             SaveGamePgn();
             UpdateStatistics();
-            matchUI.UpdateStatistics(matchCount, matchIndex, player1, player2);
+            versusUI.UpdateStatistics(gameCount, gameIndex, player1, player2);
             StartNewMatch();
 
             void SaveGamePgn()
@@ -250,7 +250,7 @@ namespace Chess.Debugging.Multiplayer
                 Directory.CreateDirectory(saveDirectory);
 
                 string pgn = game.ToPGN();
-                string path = Path.Combine(saveDirectory, $"Game {matchIndex}.txt");
+                string path = Path.Combine(saveDirectory, $"Game {gameIndex}.txt");
                 StreamWriter writer = new StreamWriter(path);
                 writer.Write(pgn);
                 writer.Close();

@@ -54,7 +54,7 @@ namespace Chess.Debugging.Multiplayer
         {
             base.OnConnected();
 
-            string message = MatchMessage.CreateRegisterPlayerMessage(playerName).ToJsonString();
+            string message = VersusMessage.CreateRegisterPlayerMessage(playerName).ToJsonString();
             SendMessageToServer(message);
             connected = true;
             remotePlayerUI.ShowConnected();
@@ -65,14 +65,14 @@ namespace Chess.Debugging.Multiplayer
             base.MessageReceived(client, message);
 
             // Parse message
-            MatchMessage matchMessage = MatchMessage.CreateFromJson(message);
-            switch (matchMessage.messageType)
+            VersusMessage versusMessage = VersusMessage.CreateFromJson(message);
+            switch (versusMessage.messageType)
             {
-                case MatchMessage.MessageType.NewGame:
-                    StartNewGame(matchMessage.initialFen, matchMessage.pieceColor, matchMessage.maxThinkingTimeMs);
+                case VersusMessage.MessageType.NewGame:
+                    StartNewGame(versusMessage.initialFen, versusMessage.pieceColor, versusMessage.maxThinkingTimeMs);
                     break;
-                case MatchMessage.MessageType.MakeMove:
-                    OpponentMoveReceived(matchMessage.moveName);
+                case VersusMessage.MessageType.MakeMove:
+                    OpponentMoveReceived(versusMessage.moveName);
                     break;
             }
         }
@@ -115,11 +115,11 @@ namespace Chess.Debugging.Multiplayer
             Move move = await player.FindBestMove();
             board.MakeMove(move);
             string moveLan = move.ToLAN();
-            MatchMessage matchMessage = MatchMessage.CreateMoveMessage(moveLan);
+            VersusMessage versusMessage = VersusMessage.CreateMoveMessage(moveLan);
 
-            matchMessage.iterativeSearchDepth = player.Search.Diagnostic.MaxDepth;
+            versusMessage.iterativeSearchDepth = player.Search.Diagnostic.MaxDepth;
 
-            string message = matchMessage.ToJsonString();
+            string message = versusMessage.ToJsonString();
             SendMessageToServer(message);
             remotePlayerUI.ShowSentMove(moveLan);
         }

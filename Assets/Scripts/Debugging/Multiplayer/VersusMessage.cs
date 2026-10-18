@@ -4,7 +4,7 @@ using Chess.Core;
 namespace Chess.Debugging.Multiplayer
 {
     [System.Serializable]
-    public class MatchMessage
+    public class VersusMessage
     {
         // Types of messages that can be sent
         public enum MessageType { None, RegisterPlayer, MakeMove, NewGame }
@@ -24,9 +24,9 @@ namespace Chess.Debugging.Multiplayer
         public int maxThinkingTimeMs;
 
         // Method to create a player registration message
-        public static MatchMessage CreateRegisterPlayerMessage(string playerName)
+        public static VersusMessage CreateRegisterPlayerMessage(string playerName)
         {
-            MatchMessage message = new MatchMessage()
+            VersusMessage message = new VersusMessage()
             {
                 messageType = MessageType.RegisterPlayer,
                 playerName = playerName
@@ -36,9 +36,9 @@ namespace Chess.Debugging.Multiplayer
         }
 
         // Method to create a new game message
-        public static MatchMessage CreateNewGameMessage(string fen, Piece.Color color, int maxThinkingTimeMs)
+        public static VersusMessage CreateNewGameMessage(string fen, Piece.Color color, int maxThinkingTimeMs)
         {
-            MatchMessage message = new MatchMessage()
+            VersusMessage message = new VersusMessage()
             {
                 messageType = MessageType.NewGame,
                 initialFen = fen,
@@ -50,9 +50,9 @@ namespace Chess.Debugging.Multiplayer
         }
 
         // Method to create a move message
-        public static MatchMessage CreateMoveMessage(string move)
+        public static VersusMessage CreateMoveMessage(string move)
         {
-            MatchMessage message = new MatchMessage()
+            VersusMessage message = new VersusMessage()
             {
                 messageType = MessageType.MakeMove,
                 moveName = move
@@ -68,9 +68,9 @@ namespace Chess.Debugging.Multiplayer
         }
 
         // Create a message from a JSON string
-        public static MatchMessage CreateFromJson(string json)
+        public static VersusMessage CreateFromJson(string json)
         {
-            return JsonUtility.FromJson<MatchMessage>(json);
+            return JsonUtility.FromJson<VersusMessage>(json);
         }
     }
 }
