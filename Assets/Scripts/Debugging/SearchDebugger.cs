@@ -78,7 +78,7 @@ namespace Chess.Debugging
 
         public void SaveLog(string name = "search")
         {
-            string logsFolder = Path.Combine(Application.persistentDataPath, "Logs Busqueda");
+            string logsFolder = Path.Combine(Application.persistentDataPath, "Search logs");
             logsFolder = Path.GetFullPath(logsFolder); // Normalize the path
 
             if (!Directory.Exists(logsFolder))
