@@ -245,7 +245,7 @@ GameObject:
   - component: {fileID: 139199226}
   - component: {fileID: 139199225}
   m_Layer: 0
-  m_Name: VersusManager
+  m_Name: VersusHostManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1173,7 +1173,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1908840992}
-        m_TargetAssemblyTypeName: Chess.Debugging.Versus.VersusUI,
+        m_TargetAssemblyTypeName: Chess.Debugging.Versus.VersusHostUI,
           Assembly-CSharp
         m_MethodName: StartButton
         m_Mode: 1
@@ -2470,7 +2470,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1908840992}
-        m_TargetAssemblyTypeName: Chess.Debugging.Versus.VersusUI,
+        m_TargetAssemblyTypeName: Chess.Debugging.Versus.VersusHostUI,
           Assembly-CSharp
         m_MethodName: ValidateMaxThinkingTime
         m_Mode: 0
@@ -2658,7 +2658,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1908840992}
-        m_TargetAssemblyTypeName: Chess.Debugging.Versus.VersusUI,
+        m_TargetAssemblyTypeName: Chess.Debugging.Versus.VersusHostUI,
           Assembly-CSharp
         m_MethodName: ValidateMaxMovesPerGame
         m_Mode: 0
@@ -3503,7 +3503,7 @@ GameObject:
   - component: {fileID: 1908840993}
   - component: {fileID: 1908840992}
   m_Layer: 0
-  m_Name: VersusUI
+  m_Name: VersusHostUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
