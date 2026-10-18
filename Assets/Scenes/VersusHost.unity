@@ -264,7 +264,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boardUI: {fileID: 1237692899}
-  versusUI: {fileID: 1908840992}
+  versusHostUI: {fileID: 1908840992}
   maxThinkingTime: 100
   maxMovesPerGame: 100
   initialPositions: {fileID: 4900000, guid: c21737275fd95914fa218f8239dfbf2c, type: 3}
@@ -3521,7 +3521,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9235ae24cb5934441beba10ea837dcfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  versusManager: {fileID: 139199225}
+  versusHostManager: {fileID: 139199225}
   playersText: {fileID: 1126263831}
   statisticsText: {fileID: 1843584225}
   whitePlayerNameText: {fileID: 1805114460}

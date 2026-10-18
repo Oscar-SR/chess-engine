@@ -8,7 +8,7 @@ namespace Chess.Debugging.Versus
 {
     public class VersusHostUI : MonoBehaviour
     {
-        [SerializeField] private VersusHostManager versusManager;
+        [SerializeField] private VersusHostManager versusHostManager;
         [SerializeField] private TMP_Text playersText;
         [SerializeField] private TMP_Text statisticsText;
         [SerializeField] private TMP_Text whitePlayerNameText;
@@ -69,7 +69,7 @@ namespace Chess.Debugging.Versus
         {
             if (int.TryParse(text, out int value) && value > 0)
             {
-                versusManager.MaxThinkingTime = value;
+                versusHostManager.MaxThinkingTime = value;
             }
             else
             {
@@ -81,7 +81,7 @@ namespace Chess.Debugging.Versus
         {
             if (int.TryParse(text, out int value) && value > 0)
             {
-                versusManager.MaxMovesPerGame = value;
+                versusHostManager.MaxMovesPerGame = value;
             }
             else
             {
@@ -97,7 +97,7 @@ namespace Chess.Debugging.Versus
         public void StartButton()
         {
             startButton.interactable = false;
-            versusManager.StartNewGame();
+            versusHostManager.StartNewGame();
         }
 
         public void WriteDebug(string message)

@@ -12,7 +12,7 @@ namespace Chess.Debugging.Versus
     public class VersusHostManager : ServerTCP
     {
         [SerializeField] private BoardUI boardUI;
-        [SerializeField] private VersusHostUI versusUI;
+        [SerializeField] private VersusHostUI versusHostUI;
         [SerializeField] private int maxThinkingTime = 1000;
         [SerializeField] private int maxMovesPerGame = 100;
         [SerializeField] private TextAsset initialPositions;
@@ -40,15 +40,15 @@ namespace Chess.Debugging.Versus
         {
             if (type == LogType.Error || type == LogType.Exception)
             {
-                versusUI.WriteDebug("[ERROR] " + logString + "\n" + stackTrace);
+                versusHostUI.WriteDebug("[ERROR] " + logString + "\n" + stackTrace);
             }
             else if (type == LogType.Warning)
             {
-                versusUI.WriteDebug("[WARNING] " + logString);
+                versusHostUI.WriteDebug("[WARNING] " + logString);
             }
             else
             {
-                versusUI.WriteDebug(logString);
+                versusHostUI.WriteDebug(logString);
             }
         }
 
@@ -60,8 +60,8 @@ namespace Chess.Debugging.Versus
             gameCount = bothPlayEachPosition ? initialPositionFens.Length * 2 : initialPositionFens.Length;
             game = new Game();
             boardUI.Init(null);
-            versusUI.Init(maxThinkingTime, maxMovesPerGame);
-            versusUI.UpdateStatistics(gameCount, gameIndex, player1, player2);
+            versusHostUI.Init(maxThinkingTime, maxMovesPerGame);
+            versusHostUI.UpdateStatistics(gameCount, gameIndex, player1, player2);
             StartServer();
         }
 
@@ -83,8 +83,8 @@ namespace Chess.Debugging.Versus
 
                 // Update UI
                 boardUI.ChangePosition(game.Board);
-                versusUI.SetWhitePlayerName(game.WhitePlayer.Name);
-                versusUI.SetBlackPlayerName(game.BlackPlayer.Name);
+                versusHostUI.SetWhitePlayerName(game.WhitePlayer.Name);
+                versusHostUI.SetBlackPlayerName(game.BlackPlayer.Name);
 
                 string whiteMessage = VersusMessage.CreateNewGameMessage(game.StartingFen, Piece.Color.White, maxThinkingTime).ToJsonString();
                 string blackMessage = VersusMessage.CreateNewGameMessage(game.StartingFen, Piece.Color.Black, maxThinkingTime).ToJsonString();
@@ -93,13 +93,13 @@ namespace Chess.Debugging.Versus
                 SendMessageToClient(((VersusPlayer)game.BlackPlayer).Client, blackMessage);
             }
 
-            versusUI.UpdateStatistics(gameCount, gameIndex, player1, player2);
+            versusHostUI.UpdateStatistics(gameCount, gameIndex, player1, player2);
         }
 
         protected override void OnClientConnected(TcpClient client)
         {
             base.OnClientConnected(client);
-            versusUI.WriteDebug("Client connected\n");
+            versusHostUI.WriteDebug("Client connected\n");
         }
 
         protected override void MessageReceived(TcpClient client, string message)
@@ -118,7 +118,7 @@ namespace Chess.Debugging.Versus
 
         private void RegisterPlayer(TcpClient client, string playerName)
         {
-            versusUI.WriteDebug("Register " + playerName + "\n");
+            versusHostUI.WriteDebug("Register " + playerName + "\n");
 
             if (player1 == null)
             {
@@ -132,20 +132,20 @@ namespace Chess.Debugging.Versus
                 game.BlackPlayer = player2;
 
                 // Both players have been registered
-                versusUI.EnableStartButton();
+                versusHostUI.EnableStartButton();
             }
             else
             {
-                versusUI.WriteDebug("Unexpected registration: two players are already registered. Name: " + playerName + "\n");
+                versusHostUI.WriteDebug("Unexpected registration: two players are already registered. Name: " + playerName + "\n");
             }
 
-            versusUI.WritePlayerNames(player1, player2);
-            versusUI.UpdateStatistics(gameCount, gameIndex, player1, player2);
+            versusHostUI.WritePlayerNames(player1, player2);
+            versusHostUI.UpdateStatistics(gameCount, gameIndex, player1, player2);
         }
 
         private void MoveReceived(string moveLan, int iterativeSearchDepth)
         {
-            versusUI.WriteDebug("Move: " + moveLan + "\n");
+            versusHostUI.WriteDebug("Move: " + moveLan + "\n");
 
             VersusPlayer currentPlayer = ChessUtils.SameColor(game.Board.Turn, Piece.Color.White) ? (VersusPlayer)game.WhitePlayer : (VersusPlayer)game.BlackPlayer;
             currentPlayer.MoveCount++;
@@ -177,7 +177,7 @@ namespace Chess.Debugging.Versus
         {
             SaveGamePgn();
             UpdateStatistics();
-            versusUI.UpdateStatistics(gameCount, gameIndex, player1, player2);
+            versusHostUI.UpdateStatistics(gameCount, gameIndex, player1, player2);
             StartNewGame();
 
             void SaveGamePgn()
