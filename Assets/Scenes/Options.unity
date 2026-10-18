@@ -1724,9 +1724,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9526d07452a15f4aadee5652969895d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sliderVolumenGeneral: {fileID: 111130096}
-  sliderVolumenEfectos: {fileID: 409369488}
-  sliderVolumenMusica: {fileID: 1495484248}
+  generalVolumeSlider: {fileID: 111130096}
+  effectsVolumeSlider: {fileID: 409369488}
+  musicVolumeSlider: {fileID: 1495484248}
 --- !u!4 &1506808007
 Transform:
   m_ObjectHideFlags: 0

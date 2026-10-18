@@ -263,13 +263,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 089f1d945c040f14bb2eecfc58a40d83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tableroUI: {fileID: 1237692899}
-  enfrentamientoUI: {fileID: 1908840992}
-  maxTiempoPensar: 100
-  maxMovimientosPartida: 100
-  posicionesIniciales: {fileID: 4900000, guid: c21737275fd95914fa218f8239dfbf2c, type: 3}
-  ambosJueganCadaPosicion: 1
-  rutaDeGuardado: 
+  boardUI: {fileID: 1237692899}
+  matchUI: {fileID: 1908840992}
+  maxThinkingTime: 100
+  maxMovesPerGame: 100
+  initialPositions: {fileID: 4900000, guid: c21737275fd95914fa218f8239dfbf2c, type: 3}
+  bothPlayEachPosition: 1
+  savePath: 
 --- !u!4 &139199226
 Transform:
   m_ObjectHideFlags: 0
@@ -1821,11 +1821,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0664a1469eec76d4bb0957cd6a6491fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tableroTransform: {fileID: 362651593}
-  casillaPrefab: {fileID: 1005922701090754317, guid: 653485930bf99654e80549bc32b44538, type: 3}
-  coloresTablero: {fileID: 11400000, guid: 7218d9984d7cfb94f9eb04891fa96b5f, type: 2}
-  piezasSet: {fileID: 11400000, guid: 72d34913b316a3241802af30a76ae146, type: 2}
-  textoCoordenadaPrefab: {fileID: 7059299848291692136, guid: 9aacd2919e9e8d344ae43310c5ca594a, type: 3}
+  boardTransform: {fileID: 362651593}
+  squarePrefab: {fileID: 1005922701090754317, guid: 653485930bf99654e80549bc32b44538, type: 3}
+  boardColors: {fileID: 11400000, guid: 7218d9984d7cfb94f9eb04891fa96b5f, type: 2}
+  pieceSet: {fileID: 11400000, guid: 72d34913b316a3241802af30a76ae146, type: 2}
+  coordinateTextPrefab: {fileID: 7059299848291692136, guid: 9aacd2919e9e8d344ae43310c5ca594a, type: 3}
 --- !u!4 &1237692900
 Transform:
   m_ObjectHideFlags: 0
@@ -3521,15 +3521,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9235ae24cb5934441beba10ea837dcfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enfrentamientoManager: {fileID: 139199225}
-  textoJugadores: {fileID: 1126263831}
-  textoEstadisticas: {fileID: 1843584225}
-  textoNombreBlancas: {fileID: 1805114460}
-  textoNombreNegras: {fileID: 1513648435}
-  textoDebug: {fileID: 187429247}
-  maxTiempoPensar: {fileID: 1723924461}
-  maxMovimientosPartida: {fileID: 1728387561}
-  botonEmpezar: {fileID: 842080142}
+  matchManager: {fileID: 139199225}
+  playersText: {fileID: 1126263831}
+  statisticsText: {fileID: 1843584225}
+  whitePlayerNameText: {fileID: 1805114460}
+  blackPlayerNameText: {fileID: 1513648435}
+  debugText: {fileID: 187429247}
+  maxThinkingTime: {fileID: 1723924461}
+  maxMovesPerGame: {fileID: 1728387561}
+  startButton: {fileID: 842080142}
 --- !u!4 &1908840993
 Transform:
   m_ObjectHideFlags: 0

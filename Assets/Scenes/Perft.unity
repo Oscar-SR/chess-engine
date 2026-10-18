@@ -238,13 +238,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 571dceff3e1477e468d5aa611260c66c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textoPerft: {fileID: 638459655}
-  entradaFEN: {fileID: 1544593272}
-  entradaLimiteProfundidad: {fileID: 2004954169}
-  botonPerft: {fileID: 908495955}
-  botonDivide: {fileID: 1885777045}
-  botonDetenerEjecucion: {fileID: 1460909839}
-  contenidoScrollView: {fileID: 619833041}
+  perftText: {fileID: 638459655}
+  fenInput: {fileID: 1544593272}
+  depthLimitInput: {fileID: 2004954169}
+  perftButton: {fileID: 908495955}
+  divideButton: {fileID: 1885777045}
+  stopExecutionButton: {fileID: 1460909839}
+  scrollViewContent: {fileID: 619833041}
   suite: {fileID: 4900000, guid: 1c8d437e9ba807844a8b35c5f87f3db9, type: 3}
 --- !u!4 &33293741
 Transform:

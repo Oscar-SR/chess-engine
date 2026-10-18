@@ -12128,12 +12128,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24a48deb3a72c0d4abd926ef1491523e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapasPiezas: {fileID: 294670711}
-  colorMinimo: {r: 0.010815193, g: 0.746505, b: 0.81886786, a: 1}
-  colorMaximo: {r: 0.10340331, g: 0.15085675, b: 0.5320754, a: 1}
-  tipoPieza: 0
-  valorEndgame: 0
-  salida: '-80, -70, -70, -70, -70, -70, -70, -80
+  pieceMaps: {fileID: 294670711}
+  minColor: {r: 0.010815193, g: 0.746505, b: 0.81886786, a: 1}
+  maxColor: {r: 0.10340331, g: 0.15085675, b: 0.5320754, a: 1}
+  pieceType: 0
+  endgameValue: 0
+  output: '-80, -70, -70, -70, -70, -70, -70, -80
 
     -60, -60, -60, -60, -60,
     -60, -60, -60

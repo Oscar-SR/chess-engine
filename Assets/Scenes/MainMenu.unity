@@ -306,14 +306,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 24100000, guid: 087a10088cf2c044ea9bb6bc8cba45f0, type: 2}
-  mixerGrupoEfectos: {fileID: -6239720119933801128, guid: 087a10088cf2c044ea9bb6bc8cba45f0, type: 2}
-  mixerGrupoMusica: {fileID: -184010466024147511, guid: 087a10088cf2c044ea9bb6bc8cba45f0, type: 2}
-  sonidoMovimiento: {fileID: 8300000, guid: 86791299aa266db4b96eb04805d0a36d, type: 3}
-  sonidoCaptura: {fileID: 8300000, guid: a6a81cc8337d6f94b9d1f6812cbbb503, type: 3}
-  sonidoEnroque: {fileID: 8300000, guid: 1495c96bb7138604d81519333de6689c, type: 3}
-  sonidoPromocion: {fileID: 8300000, guid: 92f39294a2231344798e35164742d8f2, type: 3}
-  sonidoJaque: {fileID: 8300000, guid: a0f6393ef01acd2469ea3883b3e63422, type: 3}
-  musicaMenu: {fileID: 0}
+  effectsMixerGroup: {fileID: -6239720119933801128, guid: 087a10088cf2c044ea9bb6bc8cba45f0, type: 2}
+  musicMixerGroup: {fileID: -184010466024147511, guid: 087a10088cf2c044ea9bb6bc8cba45f0, type: 2}
+  moveSound: {fileID: 8300000, guid: 86791299aa266db4b96eb04805d0a36d, type: 3}
+  captureSound: {fileID: 8300000, guid: a6a81cc8337d6f94b9d1f6812cbbb503, type: 3}
+  castleSound: {fileID: 8300000, guid: 1495c96bb7138604d81519333de6689c, type: 3}
+  promotionSound: {fileID: 8300000, guid: 92f39294a2231344798e35164742d8f2, type: 3}
+  checkSound: {fileID: 8300000, guid: a0f6393ef01acd2469ea3883b3e63422, type: 3}
+  menuMusic: {fileID: 0}
 --- !u!4 &254069301
 Transform:
   m_ObjectHideFlags: 0

@@ -702,16 +702,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   remotePlayerManager: {fileID: 1482261341}
-  colorVerde: {r: 0.14901961, g: 0.85490197, b: 0.43529412, a: 1}
-  TMP_nombre: {fileID: 417167668}
-  TMP_conectado: {fileID: 866009158}
-  TMP_tablero: {fileID: 2124960998}
-  TMP_colorPiezas: {fileID: 982113007}
-  TMP_tiempoPensar: {fileID: 362656442}
-  TMP_movimientoRecibido: {fileID: 1876171603}
-  TMP_movimientoEnviado: {fileID: 741114718}
-  textoDebug: {fileID: 1467001738}
-  enlaceCommitGithub: 
+  connectedColor: {r: 0.14901961, g: 0.85490197, b: 0.43529412, a: 1}
+  nameText: {fileID: 417167668}
+  connectedText: {fileID: 866009158}
+  boardText: {fileID: 2124960998}
+  pieceColorText: {fileID: 982113007}
+  thinkingTimeText: {fileID: 362656442}
+  receivedMoveText: {fileID: 1876171603}
+  sentMoveText: {fileID: 741114718}
+  debugText: {fileID: 1467001738}
+  githubCommitLink: 
 --- !u!4 &470094725
 Transform:
   m_ObjectHideFlags: 0
